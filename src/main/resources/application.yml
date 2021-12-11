@@ -1,0 +1,32 @@
+
+spring:
+  main:
+    allow-circular-references: true
+  port: 8900
+  application:
+    name: WP
+
+  datasource:
+    username: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+    #    url: { $SPRING_DATASOURCE_URL }
+    url: jdbc:postgresql://localhost:5432/wp
+
+  jpa:
+    generate-ddl: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+
+logging:
+  level:
+    root: INFO
+
+springdoc:
+  api-docs:
+    path: /docs
+
+  swagger-ui:
+    path: /swagger
+    csrf:
+      enabled: true
