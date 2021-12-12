@@ -10,9 +10,7 @@ import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRolePermissionRepository;
 import com.wp.system.repository.user.UserRoleRepository;
-import com.wp.system.request.user.AddPermissionToRoleRequest;
-import com.wp.system.request.user.CreateUserRequest;
-import com.wp.system.request.user.CreateUserRoleRequest;
+import com.wp.system.request.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +39,56 @@ public class UserService {
     @Autowired
     private PermissionManager permissionManager;
 
+    public User addTokenToUser(AddUserDeviceTokenRequest request) {
+        User user = this.getUserById(request.getUserId());
+
+        if(user.getDeviceTokens().contains(request.getToken()))
+            throw new ServiceException(UserErrorCode.DEVICE_TOKEN_ALREADY_EXIST);
+
+        user.addDeviceToken(request.getToken());
+
+        userRepository.save(user);
+
+        return user;
+    }
+
+    public User removeDeviceTokenFromUser(UUID userId, String token) {
+        User user = this.getUserById(userId);
+
+        user.removeDeviceToken(token);
+
+        userRepository.save(user);
+
+        return user;
+    }
+
+    public User cleanUserData(UUID userId) {
+        User user = this.getUserById(userId);
+
+
+        return user;
+    }
+
+    public User setUserPincode(SetUserPincodeRequest request) {
+        User user = this.getUserById(request.getUserId());
+
+        user.setPinCode(request.getCode());
+
+        userRepository.save(user);
+
+        return user;
+    }
+
+    public User removeUserPincode(UUID userId) {
+        User user = this.getUserById(userId);
+
+        user.setPinCode(null);
+
+        userRepository.save(user);
+
+        return user;
+    }
+
     public User createUser(CreateUserRequest request) {
         byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
 
@@ -60,6 +108,7 @@ public class UserService {
 
         user.setRole(role);
         user.setWallet(request.getWalletType());
+        user.setEmail(request.getEmail());
 
         userRepository.save(user);
 

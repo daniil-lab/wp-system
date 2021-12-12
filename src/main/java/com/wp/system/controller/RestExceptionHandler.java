@@ -8,10 +8,13 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,16 +25,12 @@ import java.util.List;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
+@RestControllerAdvice
 public class RestExceptionHandler {
+
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ServiceErrorResponse> handleServiceException(ServiceException e) {
         return new ResponseEntity<>(new ServiceErrorResponse(e), e.getHttpCode());
-    }
-
-    @ExceptionHandler(value = {AccessDeniedException.class})
-    public void commence(HttpServletRequest request, HttpServletResponse response,
-                         AccessDeniedException accessDeniedException) throws IOException {
-        throw new ServiceException(AuthErrorCode.NO_AUTH);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -50,4 +49,11 @@ public class RestExceptionHandler {
         advices.forEach(errorResponse::addAdvice);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ServiceErrorResponse> handleNotReadableException(HttpMessageNotReadableException e) {
+        return new ResponseEntity<>(new ServiceErrorResponse(new ServiceException(SystemErrorCode.CANT_READ)), HttpStatus.BAD_REQUEST);
+    }
+
+
 }

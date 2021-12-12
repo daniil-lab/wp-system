@@ -4,7 +4,8 @@ import com.wp.system.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum SystemErrorCode implements ErrorCode {
-    VALIDATION_FAILED("Validation data failed", "Check given data", "SYSTEM_1", HttpStatus.BAD_REQUEST);
+    VALIDATION_FAILED("Validation data failed", "Check given data", "SYSTEM_1", HttpStatus.BAD_REQUEST),
+    CANT_READ("Cant read data from request body", "Check given data", "SYSTEM_2", HttpStatus.BAD_REQUEST);
 
     private String errorName;
 

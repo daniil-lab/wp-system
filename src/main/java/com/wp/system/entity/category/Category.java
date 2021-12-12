@@ -16,23 +16,37 @@ public class Category {
 
     private String description;
 
+    private int categoryLimit;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="user_id")
     private User user;
 
+    private String categoryIcon;
+
     public Category() {};
 
-    public Category(String name, String hexColor, User user) {
+    public Category(String name, String hexColor, User user, String icon) {
         this.name = name;
         this.hexColor = hexColor;
         this.user = user;
+        this.categoryIcon = icon;
     }
 
-    public Category(String name, String hexColor, String description, User user) {
+    public Category(String name, String hexColor, String description, User user, String icon) {
         this.name = name;
         this.hexColor = hexColor;
         this.description = description;
         this.user = user;
+        this.categoryIcon = icon;
+    }
+
+    public int getCategoryLimit() {
+        return categoryLimit;
+    }
+
+    public void setCategoryLimit(int categoryLimit) {
+        this.categoryLimit = categoryLimit;
     }
 
     public User getUser() {
@@ -69,5 +83,13 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCategoryIcon() {
+        return categoryIcon;
+    }
+
+    public void setCategoryIcon(String categoryIcon) {
+        this.categoryIcon = categoryIcon;
     }
 }

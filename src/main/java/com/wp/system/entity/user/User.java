@@ -1,8 +1,16 @@
 package com.wp.system.entity.user;
 
+import com.wp.system.entity.auth.PhoneAuthData;
+import com.wp.system.entity.bill.Bill;
+import com.wp.system.entity.category.Category;
+import com.wp.system.entity.transaction.Transaction;
 import com.wp.system.other.WalletType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,11 +23,33 @@ public class User {
 
     private String password;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private String email;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "role_id")
     private UserRole role;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<PhoneAuthData> phoneAuthRequests;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Category> categories;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Bill> bills;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Transaction> transactions;
+
+    @ElementCollection
+    private List<String> deviceTokens = new ArrayList<>();
+
     private WalletType wallet;
+
+    private String pinCode;
 
     public User() {};
 
@@ -28,8 +58,44 @@ public class User {
         this.password = password;
     }
 
+    public List<String> getDeviceTokens() {
+        return deviceTokens;
+    }
+
+    public void setDeviceTokens(List<String> deviceTokens) {
+        this.deviceTokens = deviceTokens;
+    }
+
+    public void addDeviceToken(String token) {
+        this.deviceTokens.add(token);
+    }
+
+    public void removeDeviceToken(String token) {
+        this.deviceTokens.remove(token);
+    }
+
+    public void removeDeviceToken(int idx) {
+        this.deviceTokens.remove(idx);
+    }
+
+    public String getPinCode() {
+        return pinCode;
+    }
+
+    public void setPinCode(String pinCode) {
+        this.pinCode = pinCode;
+    }
+
     public WalletType getWallet() {
         return wallet;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setWallet(WalletType wallet) {

@@ -19,6 +19,8 @@ public class CategoryDTO {
 
     private String description;
 
+    private int categoryLimit;
+
     private UserDTO user;
 
     public CategoryDTO(Category category) {
@@ -27,6 +29,7 @@ public class CategoryDTO {
         this.hexColor = category.getHexColor();
         this.description = category.getDescription();
         this.user = new UserDTO(category.getUser());
+        this.categoryLimit = category.getCategoryLimit();
     }
 
     public UUID getId() {
@@ -67,5 +70,13 @@ public class CategoryDTO {
 
     public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public int getCategoryLimit() {
+        return categoryLimit;
+    }
+
+    public void setCategoryLimit(int categoryLimit) {
+        this.categoryLimit = categoryLimit;
     }
 }

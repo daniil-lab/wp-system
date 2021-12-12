@@ -7,7 +7,10 @@ public enum AuthErrorCode implements ErrorCode {
     INVALID_DATA("Invalid data", "Check given data", "AUTH_1", HttpStatus.BAD_REQUEST),
     NO_AUTH("Unauthorized", "Try auth and repeat request", "AUTH_2", HttpStatus.UNAUTHORIZED),
     PASSWORD_DECODE_ERROR("Password Decode Failed", "Can`t convert password from base64", "AUTH_3", HttpStatus.UNAUTHORIZED),
-    NO_ACCESS("No access", "Give needed permissions to user role", "AUTH_4", HttpStatus.FORBIDDEN);
+    NO_ACCESS("No access", "Give needed permissions to user role", "AUTH_4", HttpStatus.FORBIDDEN),
+    PHONE_AUTH_DATA_NOT_FOUND("Auth Phone Request not found", "Check given data", "AUTH_5", HttpStatus.NOT_FOUND),
+    INVALID_PHONE_CODE("Invalid code", "Check given data", "AUTH_6", HttpStatus.BAD_REQUEST),
+    INVALID_PINCODE("Invalid pincode", "Check given data", "AUTH_7", HttpStatus.BAD_REQUEST);
 
     private String errorName;
 

@@ -1,17 +1,18 @@
 package com.wp.system.response.auth;
 
+import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.user.User;
 
 public class AuthDataResponse {
     private String token;
 
-    private User user;
+    private UserDTO user;
 
     public AuthDataResponse () {};
 
     public AuthDataResponse(String token, User user) {
         this.token = token;
-        this.user = user;
+        this.user = new UserDTO(user);
     }
 
     public String getToken() {
@@ -22,11 +23,11 @@ public class AuthDataResponse {
         this.token = token;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 }

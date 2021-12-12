@@ -3,6 +3,7 @@ package com.wp.system.request.category;
 import com.wp.system.other.ValidationErrorMessages;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.UUID;
 
 public class CreateCategoryRequest {
@@ -12,6 +13,10 @@ public class CreateCategoryRequest {
     private String description;
 
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private String categoryIcon;
+
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    @Pattern(regexp = "^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$", message = ValidationErrorMessages.INVALID_HEX_CODE)
     private String hexColor;
 
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
@@ -19,11 +24,20 @@ public class CreateCategoryRequest {
 
     public CreateCategoryRequest() {}
 
-    public CreateCategoryRequest(String name, String description, String hexColor, UUID userId) {
+    public CreateCategoryRequest(String name, String description, String categoryIcon, String hexColor, UUID userId) {
         this.name = name;
         this.description = description;
+        this.categoryIcon = categoryIcon;
         this.hexColor = hexColor;
         this.userId = userId;
+    }
+
+    public String getCategoryIcon() {
+        return categoryIcon;
+    }
+
+    public void setCategoryIcon(String categoryIcon) {
+        this.categoryIcon = categoryIcon;
     }
 
     public String getHexColor() {

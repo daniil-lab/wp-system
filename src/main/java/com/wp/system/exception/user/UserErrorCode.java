@@ -13,7 +13,9 @@ public enum UserErrorCode implements ErrorCode {
     AUTOAPPLY_ROLE_NOT_FOUND("User Role with autoApply not found", "Check given data", "USER_ROLE_4", HttpStatus.NOT_FOUND),
 
     PERMISSION_ROLE_NOT_FOUND("User Role Permission not found", "Check given data", "USER_ROLE_PERMISSION_1", HttpStatus.NOT_FOUND),
-    PERMISSION_ROLE_ALREADY_EXIST("User Role Permission already exist in this role", "Check given data", "USER_ROLE_PERMISSION_2", HttpStatus.BAD_REQUEST);
+    PERMISSION_ROLE_ALREADY_EXIST("User Role Permission already exist in this role", "Check given data", "USER_ROLE_PERMISSION_2", HttpStatus.BAD_REQUEST),
+
+    DEVICE_TOKEN_ALREADY_EXIST("Given device token already exist", "Check given data", "USER_3", HttpStatus.BAD_REQUEST);
 
     private String errorName;
 
