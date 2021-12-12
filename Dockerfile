@@ -18,11 +18,9 @@ COPY --from=build /home/gradle/wp/nginx/nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
-RUN systemctl start nginx
-
 RUN rm -rf /usr/share/nginx/html/*
 
 EXPOSE 8080 80
 
-RUN java -jar system-dev.jar
+ENTRYPOINT java -jar system-dev.jar
 
