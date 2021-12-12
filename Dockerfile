@@ -10,14 +10,19 @@ WORKDIR wp
 
 RUN gradle clean build
 
-FROM nginx:alpine
+FROM openjdk:17-alpine
 
-COPY --from=build /wp/build/libs/system-dev.jar .
+RUN apk add nginx
 
-RUN apk add --no-cache java-cacerts
+COPY --from=build /home/gradle/wp/nginx/nginx.conf /etc/nginx/nginx.conf
 
-ENV JAVA_HOME=/opt/openjdk-17
-ENV PATH=/opt/openjdk-17/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
+
+RUN systemctl start nginx
+
+RUN rm -rf /usr/share/nginx/html/*
+
+EXPOSE 8080 80
 
 RUN java -jar system-dev.jar
 
