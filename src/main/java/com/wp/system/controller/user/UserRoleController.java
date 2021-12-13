@@ -60,7 +60,7 @@ public class UserRoleController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserRoleDTO(this.userRoleService.removeUserRole(roleId)), "User Role removed"), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('USER_ROLE_CREATE', 'USER_ROLE_FULL')")
+//    @PreAuthorize("hasAnyAuthority('USER_ROLE_CREATE', 'USER_ROLE_FULL')")
     @Operation(summary = "Создание роли")
     @PostMapping("/")
     public ResponseEntity<ServiceResponse<UserRoleDTO>> createUserRole(@Valid @RequestBody CreateUserRoleRequest request) {

@@ -42,7 +42,7 @@ public class UserRolePermissionController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userRolePermissionService.getAllPermissionVariants(), "User Role Permissions returned"), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('USER_ROLE_PERMISSION_CREATE', 'USER_ROLE_PERMISSION_FULL')")
+//    @PreAuthorize("hasAnyAuthority('USER_ROLE_PERMISSION_CREATE', 'USER_ROLE_PERMISSION_FULL')")
     @Operation(summary = "Добавление доступа к роли")
     @PostMapping("/{roleId}")
     public ResponseEntity<ServiceResponse<UserRolePermission>> addPermissionToUserRole(@Valid @RequestBody AddPermissionToRoleRequest request, @PathVariable UUID roleId) {
