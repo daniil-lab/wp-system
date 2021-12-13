@@ -5,6 +5,7 @@ import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.transaction.Transaction;
 import com.wp.system.other.WalletType;
+import com.wp.system.other.user.UserType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -25,6 +26,8 @@ public class User {
 
     private String email;
 
+    private UserType userType;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "role_id")
     private UserRole role;
@@ -36,13 +39,9 @@ public class User {
     @Fetch(FetchMode.SUBSELECT)
     private List<Category> categories;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-    @Fetch(FetchMode.SUBSELECT)
-    private List<Bill> bills;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-    @Fetch(FetchMode.SUBSELECT)
-    private List<Transaction> transactions;
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+//    @Fetch(FetchMode.SUBSELECT)
+//    private List<Bill> bills;
 
     @ElementCollection
     private List<String> deviceTokens = new ArrayList<>();
@@ -56,6 +55,14 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public List<String> getDeviceTokens() {

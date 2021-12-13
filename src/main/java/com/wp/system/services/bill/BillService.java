@@ -1,0 +1,139 @@
+package com.wp.system.services.bill;
+
+import com.wp.system.entity.bill.Bill;
+import com.wp.system.entity.bill.BillBalance;
+import com.wp.system.entity.category.Category;
+import com.wp.system.entity.user.User;
+import com.wp.system.exception.ServiceException;
+import com.wp.system.exception.bill.BillErrorCode;
+import com.wp.system.other.bill.BillBalanceFacade;
+import com.wp.system.other.bill.BillBalanceFacadeFactory;
+import com.wp.system.repository.bill.BillBalanceRepository;
+import com.wp.system.repository.bill.BillRepository;
+import com.wp.system.request.bill.CreateBillRequest;
+import com.wp.system.request.bill.DepositBillRequest;
+import com.wp.system.request.bill.EditBillRequest;
+import com.wp.system.request.bill.WithdrawBillRequest;
+import com.wp.system.services.category.CategoryService;
+import com.wp.system.services.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+public class BillService {
+    @Autowired
+    private BillRepository billRepository;
+
+    @Autowired
+    private BillBalanceRepository billBalanceRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    private BillBalanceFacadeFactory billBalanceFacadeFactory;
+
+    public Bill updateBill(EditBillRequest request, UUID billId) {
+        Bill bill = this.getBillById(billId);
+
+        if(request.getName() != null && !bill.getName().equals(request.getName()))
+            bill.setName(request.getName());
+
+        this.billRepository.save(bill);
+
+        return bill;
+    }
+
+    @Transactional
+    public Bill createBill(CreateBillRequest request) {
+        User user = this.userService.getUserById(request.getUserId());
+
+        Bill bill = new Bill(request.getName(), user);
+        BillBalance balance = new BillBalance(bill);
+
+        bill.setBalance(balance);
+        bill.getBalance().deposit(request.getBalance(), request.getCents());
+
+        this.billRepository.save(bill);
+
+        return bill;
+    }
+
+    public List<Bill> getAllBills() {
+        Iterable<Bill> foundBills = this.billRepository.findAll();
+        List<Bill> bills = new ArrayList<>();
+
+        foundBills.forEach(bills::add);
+
+        return bills;
+    }
+
+    public Bill getBillById(UUID id) {
+        Optional<Bill> bill = this.billRepository.findById(id);
+
+        if(bill.isEmpty())
+            throw new ServiceException(BillErrorCode.NOT_FOUND);
+
+        return bill.get();
+    }
+
+    public List<Bill> getUserBills(UUID userId) {
+        List<Bill> bills = this.billRepository.getAllUserBills(userId);
+
+        return bills;
+    }
+
+    @Transactional
+    public Bill withdrawBill(WithdrawBillRequest request, UUID billId) {
+        Bill bill = this.getBillById(billId);
+
+        Category category = null;
+
+        if(request.getCategoryId() != null)
+            category = this.categoryService.getCategoryById(request.getCategoryId());
+
+        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(category, bill);
+
+        facade.withdraw(request.getAmount(), request.getCents(), request.getDescription());
+
+        this.billRepository.save(bill);
+
+        return bill;
+    }
+
+    @Transactional
+    public Bill depositBill(DepositBillRequest request, UUID billId) {
+        Bill bill = this.getBillById(billId);
+
+        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(null, bill);
+
+        facade.deposit(request.getAmount(), request.getCents(), request.getDescription());
+
+        this.billRepository.save(bill);
+
+        return bill;
+    }
+
+    @Transactional
+    public Bill removeBill(UUID billId) {
+        Bill bill = this.getBillById(billId);
+
+        this.billRepository.delete(bill);
+        this.billBalanceRepository.delete(bill.getBalance());
+
+        return bill;
+    }
+}

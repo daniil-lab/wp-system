@@ -2,6 +2,7 @@ package com.wp.system.dto.user;
 
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
+import com.wp.system.other.user.UserType;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +18,8 @@ public class UserDTO {
 
     private List<String> deviceTokens;
 
+    private UserType type;
+
     public UserDTO() {};
 
     public UserDTO(User user) {
@@ -25,6 +28,7 @@ public class UserDTO {
         this.id = user.getId();
         this.email = user.getEmail();
         this.deviceTokens = user.getDeviceTokens();
+        this.type = user.getUserType();
     }
 
     public List<String> getDeviceTokens() {

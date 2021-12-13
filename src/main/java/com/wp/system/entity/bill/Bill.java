@@ -1,8 +1,14 @@
 package com.wp.system.entity.bill;
 
 import com.wp.system.entity.user.User;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,17 +18,42 @@ public class Bill {
 
     private String name;
 
-    private double balance = 0;
+    @OneToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private BillBalance balance;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name="user_id")
     private User user;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "bill")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<BillTransaction> transactions = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "bill")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<BillLog> logs = new ArrayList<>();
 
     public Bill() {};
 
     public Bill(String name, User user) {
         this.name = name;
         this.user = user;
+    }
+
+    public List<BillLog> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<BillLog> logs) {
+        this.logs = logs;
+    }
+
+    public List<BillTransaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<BillTransaction> transactions) {
+        this.transactions = transactions;
     }
 
     public User getUser() {
@@ -45,11 +76,11 @@ public class Bill {
         this.name = name;
     }
 
-//    public float getCheck() {
-//        return check;
-//    }
-//
-//    public void setCheck(float check) {
-//        this.check = check;
-//    }
+    public BillBalance getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BillBalance balance) {
+        this.balance = balance;
+    }
 }

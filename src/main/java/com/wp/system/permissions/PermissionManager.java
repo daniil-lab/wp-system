@@ -1,5 +1,6 @@
 package com.wp.system.permissions;
 
+import com.wp.system.permissions.bill.BillPermissions;
 import com.wp.system.permissions.category.CategoryPermissions;
 import com.wp.system.permissions.notification.NotificationPermissions;
 import com.wp.system.permissions.user.UserPermissions;
@@ -21,6 +22,7 @@ public class PermissionManager {
         permissionList.addAll(Arrays.stream(UserRolePermissionPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(CategoryPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(NotificationPermissions.values()).toList());
+        permissionList.addAll(Arrays.stream(BillPermissions.values()).toList());
     }
 
     public Permission getPermissionBySystemName(String systemName) {

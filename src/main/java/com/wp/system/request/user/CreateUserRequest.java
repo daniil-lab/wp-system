@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.wp.system.other.ValidationErrorMessages;
 import com.wp.system.other.WalletType;
+import com.wp.system.other.user.UserType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -28,9 +29,20 @@ public class CreateUserRequest {
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = ValidationErrorMessages.EMAIL_VALIDATION_FAILED)
     private String email;
 
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private UserType type;
+
     private String roleName;
 
     public CreateUserRequest() {};
+
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
+    }
 
     public String getUsername() {
         return username;
