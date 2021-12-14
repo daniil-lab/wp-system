@@ -17,6 +17,8 @@ services:
     image: test2
     ports:
       - "8080:8080"
+    expose:
+      - "8080"
     networks:
       - backend
     environment:

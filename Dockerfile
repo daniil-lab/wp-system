@@ -12,15 +12,9 @@ RUN gradle clean build
 
 FROM openjdk:17-alpine
 
-RUN apk add nginx
-
-COPY --from=build /home/gradle/wp/nginx/nginx.conf /etc/nginx/nginx.conf
-
 COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
-RUN rm -rf /usr/share/nginx/html/*
-
-EXPOSE 8080 80
+EXPOSE 8080
 
 ENTRYPOINT java -jar system-dev.jar
 
