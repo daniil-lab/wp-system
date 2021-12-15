@@ -6,6 +6,7 @@ import com.wp.system.entity.user.User;
 import com.wp.system.permissions.user.UserPermissions;
 import com.wp.system.request.user.AddUserDeviceTokenRequest;
 import com.wp.system.request.user.CreateUserRequest;
+import com.wp.system.request.user.EditUserRequest;
 import com.wp.system.request.user.SetUserPincodeRequest;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.user.UserService;
@@ -41,7 +42,7 @@ public class UserController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('USER_UPDATE', 'USER_FULL')")
     @Operation(summary = "Изменение пользователя")
     @PatchMapping("/{userId}")
-    public ResponseEntity<ServiceResponse<UserDTO>> updateUser(@RequestBody CreateUserRequest request, @PathVariable UUID userId) {
+    public ResponseEntity<ServiceResponse<UserDTO>> updateUser(@Valid @RequestBody EditUserRequest request, @PathVariable UUID userId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.updateUser(request, userId)), "User updated"), HttpStatus.OK);
     }
 

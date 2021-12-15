@@ -2,14 +2,17 @@ package com.wp.system.services.bill;
 
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillBalance;
+import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.bill.BillErrorCode;
+import com.wp.system.other.Geocoder;
 import com.wp.system.other.bill.BillBalanceFacade;
 import com.wp.system.other.bill.BillBalanceFacadeFactory;
 import com.wp.system.repository.bill.BillBalanceRepository;
 import com.wp.system.repository.bill.BillRepository;
+import com.wp.system.repository.bill.BillTransactionRepository;
 import com.wp.system.request.bill.CreateBillRequest;
 import com.wp.system.request.bill.DepositBillRequest;
 import com.wp.system.request.bill.EditBillRequest;
@@ -33,6 +36,9 @@ public class BillService {
 
     @Autowired
     private BillBalanceRepository billBalanceRepository;
+
+    @Autowired
+    private BillTransactionRepository billTransactionRepository;
 
     @Autowired
     private UserService userService;
@@ -105,9 +111,19 @@ public class BillService {
         if(request.getCategoryId() != null)
             category = this.categoryService.getCategoryById(request.getCategoryId());
 
-        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(category, bill);
+        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(category, bill, bill.getUser());
 
-        facade.withdraw(request.getAmount(), request.getCents(), request.getDescription());
+        BillTransaction transaction = facade.withdraw(request.getAmount(), request.getCents(), request.getDescription());
+
+        if(request.getLon() != null && request.getLat() != null) {
+            String place = Geocoder.getPlaceByCoords(request.getLon(), request.getLat());
+
+            transaction.setGeocodedPlace(place);
+            transaction.setLatitude(request.getLat());
+            transaction.setLongitude(request.getLon());
+
+            this.billTransactionRepository.save(transaction);
+        }
 
         this.billRepository.save(bill);
 
@@ -118,7 +134,7 @@ public class BillService {
     public Bill depositBill(DepositBillRequest request, UUID billId) {
         Bill bill = this.getBillById(billId);
 
-        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(null, bill);
+        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(null, bill, bill.getUser());
 
         facade.deposit(request.getAmount(), request.getCents(), request.getDescription());
 

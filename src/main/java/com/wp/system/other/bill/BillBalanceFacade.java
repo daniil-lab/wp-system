@@ -4,6 +4,7 @@ import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillBalance;
 import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
+import com.wp.system.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,22 +17,26 @@ public class BillBalanceFacade {
 
     private Bill bill;
 
-    public BillBalanceFacade(BillBalanceLogger logger, BillTransactionManager transactionManager, Category category, Bill bill) {
+    private User user;
+
+    public BillBalanceFacade(BillBalanceLogger logger, BillTransactionManager transactionManager, Category category, Bill bill, User user) {
         this.logger = logger;
         this.transactionManager = transactionManager;
         this.category = category;
         this.bill = bill;
+        this.user = user;
     }
 
-    public void deposit(int amount,
+    public BillTransaction deposit(int amount,
                         int cents,
                         String description) {
-        this.transactionManager.createTransaction(BillBalanceAction.DEPOSIT,
+        BillTransaction transaction = this.transactionManager.createTransaction(BillBalanceAction.DEPOSIT,
                 amount,
                 cents,
                 bill,
                 category,
-                description);
+                description,
+                user);
 
         this.logger.createBillLog(BillBalanceAction.DEPOSIT,
                 amount,
@@ -40,17 +45,20 @@ public class BillBalanceFacade {
                 category);
 
         this.bill.getBalance().deposit(amount, cents);
+
+        return transaction;
     }
 
-    public void withdraw(int amount,
+    public BillTransaction withdraw(int amount,
                          int cents,
                          String description) {
-        this.transactionManager.createTransaction(BillBalanceAction.WITHDRAW,
+        BillTransaction transaction = this.transactionManager.createTransaction(BillBalanceAction.WITHDRAW,
                 amount,
                 cents,
                 bill,
                 category,
-                description);
+                description,
+                user);
 
         this.logger.createBillLog(BillBalanceAction.WITHDRAW,
                 amount,
@@ -59,5 +67,7 @@ public class BillBalanceFacade {
                 category);
 
         this.bill.getBalance().withdraw(amount, cents);
+
+        return transaction;
     }
 }

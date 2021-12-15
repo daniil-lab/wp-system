@@ -11,6 +11,9 @@ import java.util.UUID;
 
 @Repository
 public interface BillTransactionRepository extends CrudRepository<BillTransaction, UUID> {
-//    @Query("SELECT t FROM BillTransaction t JOIN t.bill b JOIN b.user u WHERE u.id = ?1")
-//    List<Category> getAllUserTransactions(UUID userId);
+    @Query("SELECT t FROM BillTransaction t JOIN t.bill b JOIN b.user u WHERE u.id = ?1")
+    List<BillTransaction> getAllUserTransactions(UUID userId);
+
+    @Query("SELECT t FROM BillTransaction t JOIN t.bill b WHERE b.id = ?1")
+    List<BillTransaction> getAllBillTransactions(UUID billId);
 }

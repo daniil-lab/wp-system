@@ -7,13 +7,14 @@ import reactor.util.annotation.NonNull;
 import javax.annotation.Nonnegative;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 public class DepositBillRequest {
     @Positive(message = ValidationErrorMessages.NEGATIVE_AMOUNT)
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private int amount;
 
-    @Positive(message = ValidationErrorMessages.NEGATIVE_AMOUNT)
+    @PositiveOrZero(message = ValidationErrorMessages.NEGATIVE_CENTS)
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private int cents;
 

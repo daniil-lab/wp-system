@@ -5,9 +5,12 @@ import com.wp.system.entity.auth.PhoneAuthData;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.auth.AuthErrorCode;
+import com.wp.system.exception.user.UserErrorCode;
 import com.wp.system.other.CurrencyLayerAdapter;
 import com.wp.system.other.WalletType;
 import com.wp.system.repository.auth.PhoneAuthRequestRepository;
+import com.wp.system.repository.user.UserRepository;
+import com.wp.system.request.auth.EmailAuthRequest;
 import com.wp.system.request.auth.PhoneAuthAttemptRequest;
 import com.wp.system.request.auth.AuthRequest;
 import com.wp.system.request.auth.PhoneAuthCheckRequest;
@@ -28,6 +31,9 @@ public class AuthService {
     private UserService userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -38,6 +44,22 @@ public class AuthService {
 
     @Autowired
     private PhoneAuthRequestRepository phoneAuthRequestRepository;
+
+    public AuthDataResponse authUserByEmail(EmailAuthRequest request) {
+        Optional<User> foundUser = this.userRepository.findByEmail(request.getEmail());
+
+        if(foundUser.isEmpty())
+            throw new ServiceException(UserErrorCode.NOT_FOUND);
+
+        User user = foundUser.get();
+
+        byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
+
+        if(passwordEncoder.matches(new String(passwordBytes), user.getPassword()))
+            return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
+
+        throw new ServiceException(AuthErrorCode.INVALID_DATA);
+    }
 
     public AuthDataResponse authUser(AuthRequest request) {
         User user = this.userService.getUserByUsername(request.getUsername());

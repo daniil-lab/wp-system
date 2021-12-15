@@ -3,6 +3,7 @@ package com.wp.system.controller.auth;
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.exception.ServiceErrorResponse;
 import com.wp.system.request.auth.AuthRequest;
+import com.wp.system.request.auth.EmailAuthRequest;
 import com.wp.system.request.auth.PhoneAuthAttemptRequest;
 import com.wp.system.request.auth.PhoneAuthCheckRequest;
 import com.wp.system.response.ServiceResponse;
@@ -37,6 +38,12 @@ public class AuthController extends DocumentedRestController {
     @PostMapping("/")
     public ResponseEntity<ServiceResponse<AuthDataResponse>> authUser(@Valid @RequestBody AuthRequest request) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authUser(request), "Success auth"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Авторизация пользователя по E-MAIL")
+    @PostMapping("/email")
+    public ResponseEntity<ServiceResponse<AuthDataResponse>> authUserByEmail(@Valid @RequestBody EmailAuthRequest request) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authUserByEmail(request), "Success auth"), HttpStatus.OK);
     }
 
     @Operation(summary = "Начальный этап авторизации по СМС")

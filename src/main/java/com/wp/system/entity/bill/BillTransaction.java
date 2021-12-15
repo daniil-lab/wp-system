@@ -1,9 +1,11 @@
 package com.wp.system.entity.bill;
 
 import com.wp.system.entity.category.Category;
+import com.wp.system.other.WalletType;
 import com.wp.system.other.bill.BillBalanceAction;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -13,9 +15,17 @@ public class BillTransaction {
 
     private BillBalanceAction action;
 
-    private String sum;
+    private Double sum;
 
     private String description;
+
+    private WalletType currency;
+
+    private String geocodedPlace;
+
+    private Double longitude;
+
+    private Double latitude;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="bill_id")
@@ -25,14 +35,50 @@ public class BillTransaction {
     @JoinColumn(name="category_id")
     private Category category;
 
+    private String createAt;
+
     public BillTransaction() {};
 
-    public BillTransaction(BillBalanceAction action, int amount, int cents, Bill bill, Category category, String description) {
+    public BillTransaction(BillBalanceAction action, int amount, int cents, String description, Bill bill, Category category, WalletType currency) {
         this.action = action;
-        this.sum = String.format("%d.%d", amount, cents);
+        this.sum = Double.parseDouble(amount+"."+cents);
+        this.description = description;
+        this.currency = currency;
         this.bill = bill;
         this.category = category;
-        this.description = description;
+        this.createAt = Instant.now().toString();
+    }
+
+    public String getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(String createAt) {
+        this.createAt = createAt;
+    }
+
+    public String getGeocodedPlace() {
+        return geocodedPlace;
+    }
+
+    public void setGeocodedPlace(String geocodedPlace) {
+        this.geocodedPlace = geocodedPlace;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public UUID getId() {
@@ -47,11 +93,11 @@ public class BillTransaction {
         this.action = action;
     }
 
-    public String getSum() {
+    public Double getSum() {
         return sum;
     }
 
-    public void setSum(String sum) {
+    public void setSum(Double sum) {
         this.sum = sum;
     }
 
@@ -69,5 +115,21 @@ public class BillTransaction {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public WalletType getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(WalletType currency) {
+        this.currency = currency;
     }
 }

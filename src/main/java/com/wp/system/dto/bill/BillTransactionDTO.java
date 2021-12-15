@@ -1,0 +1,126 @@
+package com.wp.system.dto.bill;
+
+import com.wp.system.dto.category.CategoryDTO;
+import com.wp.system.entity.bill.BillTransaction;
+import com.wp.system.other.WalletType;
+import com.wp.system.other.bill.BillBalanceAction;
+
+import javax.persistence.Id;
+import java.util.UUID;
+
+public class BillTransactionDTO {
+    private UUID id;
+
+    private BillBalanceAction action;
+
+    private Double sum;
+
+    private String description;
+
+    private WalletType currency;
+
+    private String geocodedPlace;
+
+    private Double longitude;
+
+    private Double latitude;
+
+    private CategoryDTO category;
+
+    private String createAt;
+
+    public BillTransactionDTO() {}
+
+    public BillTransactionDTO(BillTransaction transaction) {
+        this.id = transaction.getId();
+        this.action = transaction.getAction();
+        this.sum = transaction.getSum();
+        this.description = transaction.getDescription();
+        this.currency = transaction.getCurrency();
+        this.longitude = transaction.getLongitude();
+        this.latitude = transaction.getLatitude();
+        this.category = transaction.getCategory() == null ? null : new CategoryDTO(transaction.getCategory());
+        this.createAt = transaction.getCreateAt();
+        this.geocodedPlace = transaction.getGeocodedPlace();
+    }
+
+    public String getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(String createAt) {
+        this.createAt = createAt;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public BillBalanceAction getAction() {
+        return action;
+    }
+
+    public void setAction(BillBalanceAction action) {
+        this.action = action;
+    }
+
+    public Double getSum() {
+        return sum;
+    }
+
+    public void setSum(Double sum) {
+        this.sum = sum;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public WalletType getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(WalletType currency) {
+        this.currency = currency;
+    }
+
+    public String getGeocodedPlace() {
+        return geocodedPlace;
+    }
+
+    public void setGeocodedPlace(String geocodedPlace) {
+        this.geocodedPlace = geocodedPlace;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public CategoryDTO getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryDTO category) {
+        this.category = category;
+    }
+}

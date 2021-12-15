@@ -142,20 +142,29 @@ public class UserService {
         return foundUser.get();
     }
 
-    public User updateUser(CreateUserRequest request, UUID userId) {
+    public User updateUser(EditUserRequest request, UUID userId) {
         User user = this.getUserById(userId);
 
         if(request.getUsername() != null && !request.getUsername().equals(user.getUsername()))
             user.setUsername(request.getUsername());
 
-        if(request.getPassword() != null &&!passwordEncoder.matches(request.getPassword(), user.getPassword()))
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        if(request.getPassword() != null &&!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
+            user.setPassword(passwordEncoder.encode(new String(passwordBytes)));
+        }
 
         if(request.getRoleName() != null) {
             UserRole role = this.userRoleService.getUserRoleByName(request.getRoleName());
 
-            user.setRole(role);
+            if(!user.getRole().getName().equals(role.getName()))
+                user.setRole(role);
         }
+
+        if(request.getWalletType() != null && !request.getWalletType().equals(user.getWallet()))
+            user.setWallet(request.getWalletType());
+
+        if(request.getEmail() != null && !user.getEmail().equals(request.getEmail()))
+            user.setEmail(request.getEmail());
 
         userRepository.save(user);
 

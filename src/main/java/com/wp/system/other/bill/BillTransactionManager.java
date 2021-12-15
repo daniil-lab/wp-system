@@ -4,6 +4,7 @@ import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillLog;
 import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
+import com.wp.system.entity.user.User;
 import com.wp.system.repository.bill.BillLogRepository;
 import com.wp.system.repository.bill.BillTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,15 @@ public class BillTransactionManager {
                                              int cents,
                                              Bill bill,
                                              Category category,
-                                             String description) {
+                                             String description,
+                                             User user) {
         BillTransaction transaction = new BillTransaction(action,
                 amount,
                 cents,
+                description,
                 bill,
                 category,
-                description);
+                user.getWallet());
 
         this.billTransactionRepository.save(transaction);
 

@@ -2,6 +2,7 @@ package com.wp.system.other.bill;
 
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.category.Category;
+import com.wp.system.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ public class BillBalanceFacadeFactory {
 
     public BillBalanceFacadeFactory() {};
 
-    public BillBalanceFacade getFacade(Category category, Bill bill) {
-        return new BillBalanceFacade(logger, transactionManager, category, bill);
+    public BillBalanceFacade getFacade(Category category, Bill bill, User user) {
+        return new BillBalanceFacade(logger, transactionManager, category, bill, user);
     }
 }
