@@ -10,7 +10,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 public class DepositBillRequest {
-    @Positive(message = ValidationErrorMessages.NEGATIVE_AMOUNT)
+    @PositiveOrZero(message = ValidationErrorMessages.NEGATIVE_AMOUNT)
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private int amount;
 

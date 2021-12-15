@@ -4,22 +4,25 @@ import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.user.User;
 import com.wp.system.permissions.user.UserPermissions;
-import com.wp.system.request.user.AddUserDeviceTokenRequest;
-import com.wp.system.request.user.CreateUserRequest;
-import com.wp.system.request.user.EditUserRequest;
-import com.wp.system.request.user.SetUserPincodeRequest;
+import com.wp.system.request.user.*;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -92,6 +95,24 @@ public class UserController extends DocumentedRestController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<ServiceResponse<UserDTO>> removeUser(@PathVariable UUID userId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.removeUser(userId)), "User removed"), HttpStatus.OK);
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<InputStreamResource> exportUserData (@Valid @RequestBody ExportDataRequest request) throws FileNotFoundException {
+        File file = this.userService.exportCSVData(request);
+
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
     @SecurityRequirement(name = "Bearer")

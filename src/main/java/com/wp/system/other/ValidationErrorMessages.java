@@ -12,4 +12,5 @@ public class ValidationErrorMessages {
     public final static String NEGATIVE_AMOUNT = "amount can`t have negative value";
     public final static String MAXIMUM_CENTS = "cents can`t have value between 100";
     public final static String INVALID_BILL_NAME = "minimum bill name length 4. maximum 64";
+    public final static String PLANNED_INCOME_NEGATIVE = "planned income can`t have negative value";
 }

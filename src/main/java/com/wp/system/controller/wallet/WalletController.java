@@ -2,12 +2,17 @@ package com.wp.system.controller.wallet;
 
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.permission.PermissionDTO;
+import com.wp.system.exception.ServiceException;
+import com.wp.system.exception.system.SystemErrorCode;
+import com.wp.system.other.CurrencySingleton;
 import com.wp.system.other.WalletType;
 import com.wp.system.response.ServiceResponse;
+import com.wp.system.response.wallet.WalletCourseResponse;
 import com.wp.system.response.wallet.WalletResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +28,21 @@ import java.util.List;
 @RequestMapping("/api/v1/wallet")
 public class WalletController extends DocumentedRestController {
 
+    @Autowired
+    private CurrencySingleton currencySingleton;
+
     @Operation(summary = "Получение всех возможных валют в системе")
     @GetMapping("/")
     public ResponseEntity<ServiceResponse<List<WalletResponse>>> getWalletTypes() {
-        List<WalletResponse> responseData = new ArrayList<>();
-
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), Arrays.stream(WalletType.values()).map(walletType -> new WalletResponse(walletType.name(), walletType.getWalletName())).toList()), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Получение всех курсов валют по отношению к доллару")
+    @GetMapping("/course")
+    public ResponseEntity<ServiceResponse<List<WalletCourseResponse>>> getWalletCourses() {
+        if(currencySingleton.isError())
+            throw new ServiceException(SystemErrorCode.INTERNAL_ERROR);
+
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), currencySingleton.getCourseList().stream().map(wallet -> new WalletCourseResponse(wallet.getWallet(), wallet.getCourse())).toList()), HttpStatus.OK);
     }
 }

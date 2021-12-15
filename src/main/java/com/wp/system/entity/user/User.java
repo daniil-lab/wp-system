@@ -1,9 +1,7 @@
 package com.wp.system.entity.user;
 
 import com.wp.system.entity.auth.PhoneAuthData;
-import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.category.Category;
-import com.wp.system.entity.transaction.Transaction;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import org.hibernate.annotations.Fetch;
@@ -27,6 +25,10 @@ public class User {
     private String email;
 
     private UserType userType;
+
+    private boolean notificationsEnable = true;
+
+    private int plannedIncome;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "role_id")
@@ -55,6 +57,22 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public int getPlannedIncome() {
+        return plannedIncome;
+    }
+
+    public void setPlannedIncome(int plannedIncome) {
+        this.plannedIncome = plannedIncome;
+    }
+
+    public boolean isNotificationsEnable() {
+        return notificationsEnable;
+    }
+
+    public void setNotificationsEnable(boolean notificationsEnable) {
+        this.notificationsEnable = notificationsEnable;
     }
 
     public UserType getUserType() {

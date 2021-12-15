@@ -4,8 +4,10 @@ import com.wp.system.other.ValidationErrorMessages;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 public class EditUserRequest {
@@ -24,6 +26,11 @@ public class EditUserRequest {
 
     private String roleName;
 
+    private Boolean notificationsEnable;
+
+    @PositiveOrZero(message = ValidationErrorMessages.PLANNED_INCOME_NEGATIVE)
+    private Integer plannedIncome;
+
     public EditUserRequest() {}
 
     public EditUserRequest(String username, String password, WalletType walletType, String email, UserType type, String roleName) {
@@ -33,6 +40,22 @@ public class EditUserRequest {
         this.email = email;
         this.type = type;
         this.roleName = roleName;
+    }
+
+    public Integer getPlannedIncome() {
+        return plannedIncome;
+    }
+
+    public void setPlannedIncome(Integer plannedIncome) {
+        this.plannedIncome = plannedIncome;
+    }
+
+    public Boolean getNotificationsEnable() {
+        return notificationsEnable;
+    }
+
+    public void setNotificationsEnable(Boolean notificationsEnable) {
+        this.notificationsEnable = notificationsEnable;
     }
 
     public String getUsername() {

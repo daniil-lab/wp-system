@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public enum SystemErrorCode implements ErrorCode {
     VALIDATION_FAILED("Validation data failed", "Check given data", "SYSTEM_1", HttpStatus.BAD_REQUEST),
-    CANT_READ("Cant read data from request body", "Check given data", "SYSTEM_2", HttpStatus.BAD_REQUEST);
+    CANT_READ("Cant read data from request body", "Check given data", "SYSTEM_2", HttpStatus.BAD_REQUEST),
+    INTERNAL_ERROR("Internal Error", "Internal Error", "SYSTEM_3", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private String errorName;
 

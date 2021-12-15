@@ -4,7 +4,8 @@ import com.wp.system.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum BillErrorCode implements ErrorCode {
-    NOT_FOUND("Bill not found", "Check given data", "BILL_1", HttpStatus.NOT_FOUND);
+    NOT_FOUND("Bill not found", "Check given data", "BILL_1", HttpStatus.NOT_FOUND),
+    NOT_FOUND_PARAMS("Give one param: userId or billId", "Check given data", "BILL_2", HttpStatus.BAD_REQUEST);
 
     private String errorName;
 

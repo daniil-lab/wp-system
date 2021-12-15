@@ -2,6 +2,7 @@ package com.wp.system.dto.user;
 
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
+import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 
 import java.util.List;
@@ -16,9 +17,9 @@ public class UserDTO {
 
     private String email;
 
-    private List<String> deviceTokens;
-
     private UserType type;
+
+    private WalletType walletType;
 
     public UserDTO() {};
 
@@ -27,16 +28,24 @@ public class UserDTO {
         this.role = new UserRoleDTO(user.getRole());
         this.id = user.getId();
         this.email = user.getEmail();
-        this.deviceTokens = user.getDeviceTokens();
         this.type = user.getUserType();
+        this.walletType = user.getWallet();
     }
 
-    public List<String> getDeviceTokens() {
-        return deviceTokens;
+    public WalletType getWalletType() {
+        return walletType;
     }
 
-    public void setDeviceTokens(List<String> deviceTokens) {
-        this.deviceTokens = deviceTokens;
+    public void setWalletType(WalletType walletType) {
+        this.walletType = walletType;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
     }
 
     public String getEmail() {

@@ -116,14 +116,31 @@ public class BillService {
         BillTransaction transaction = facade.withdraw(request.getAmount(), request.getCents(), request.getDescription());
 
         if(request.getLon() != null && request.getLat() != null) {
-            String place = Geocoder.getPlaceByCoords(request.getLon(), request.getLat());
+            if(request.getPlaceName() != null)
+                transaction.setGeocodedPlace(request.getPlaceName());
+             else {
+                String place = Geocoder.getPlaceByCoords(request.getLon(), request.getLat());
 
-            transaction.setGeocodedPlace(place);
-            transaction.setLatitude(request.getLat());
-            transaction.setLongitude(request.getLon());
+                transaction.setGeocodedPlace(place);
+                transaction.setLatitude(request.getLat());
+                transaction.setLongitude(request.getLon());
+            }
 
             this.billTransactionRepository.save(transaction);
         }
+
+        this.billRepository.save(bill);
+
+        return bill;
+    }
+
+    @Transactional
+    public Bill updateBillBalance(UUID billId, int amount, int cents) {
+        Bill bill = this.getBillById(billId);
+
+        bill.getBalance().setAmount(amount);
+        bill.getBalance().setCents(cents);
+        bill.getBalance().deposit(0, 0);
 
         this.billRepository.save(bill);
 

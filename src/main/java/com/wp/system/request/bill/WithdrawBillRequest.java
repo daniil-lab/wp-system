@@ -8,7 +8,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
 public class WithdrawBillRequest {
-    @Positive(message = ValidationErrorMessages.NEGATIVE_AMOUNT)
+    @PositiveOrZero(message = ValidationErrorMessages.NEGATIVE_AMOUNT)
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private int amount;
 
@@ -24,6 +24,8 @@ public class WithdrawBillRequest {
 
     private Double lat;
 
+    private String placeName;
+
     public WithdrawBillRequest() {}
 
     public WithdrawBillRequest(int amount, int cents, String description, UUID categoryId) {
@@ -31,6 +33,14 @@ public class WithdrawBillRequest {
         this.cents = cents;
         this.description = description;
         this.categoryId = categoryId;
+    }
+
+    public String getPlaceName() {
+        return placeName;
+    }
+
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
     }
 
     public Double getLon() {

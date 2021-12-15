@@ -1,6 +1,16 @@
 package com.wp.system.other.bill;
 
 public enum BillBalanceAction {
-    WITHDRAW,
-    DEPOSIT
+    WITHDRAW("Расход"),
+    DEPOSIT("Внесение");
+
+    private String paymentType;
+
+    BillBalanceAction(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
 }

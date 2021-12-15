@@ -1,22 +1,40 @@
 package com.wp.system.services.user;
 
+import com.wp.system.entity.bill.Bill;
+import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.user.UserRolePermission;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.exception.system.SystemErrorCode;
 import com.wp.system.exception.user.UserErrorCode;
+import com.wp.system.other.CSVConverter;
+import com.wp.system.other.CurrencySingleton;
+import com.wp.system.other.CurrencySingletonCourse;
+import com.wp.system.other.bill.BillBalanceAction;
 import com.wp.system.permissions.Permission;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRolePermissionRepository;
 import com.wp.system.repository.user.UserRoleRepository;
 import com.wp.system.request.user.*;
+import com.wp.system.services.bill.BillService;
+import com.wp.system.services.bill.BillTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -38,6 +56,68 @@ public class UserService {
 
     @Autowired
     private PermissionManager permissionManager;
+
+    @Autowired
+    private BillService billService;
+
+    @Autowired
+    private CurrencySingleton currencySingleton;
+
+    @Autowired
+    private BillTransactionService billTransactionService;
+
+    public File exportCSVData(ExportDataRequest request) {
+        User user = this.getUserById(request.getUserId());
+
+        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
+                request.getStart(),
+                request.getEnd(),
+                -1,
+                user.getId(),
+                null
+        );
+
+        File csvFile = new File("data" + Instant.now() + user.getId() + ".csv");
+
+        List<String[]> dataLines = new ArrayList<>();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss").withZone(ZoneId.systemDefault());
+
+        dataLines.add(new String[] {
+                "Дата",
+                "Место",
+                "Действие",
+                "Сумма",
+                "Валюта",
+                "Счет"
+        });
+
+        for(BillTransaction transaction : transactions)
+            dataLines.add(new String[] {
+                    formatter.format(Instant.parse(transaction.getCreateAt())),
+                    (transaction.getGeocodedPlace() != null ?
+                            transaction.getGeocodedPlace() : "Отсутствует"),
+                    transaction.getAction().getPaymentType(),
+                    transaction.getSum().toString(),
+                    transaction.getCurrency().getWalletName(),
+                    transaction.getBill().getName()
+            });
+
+        try {
+            PrintWriter writer = new PrintWriter(csvFile);
+
+            for (String[] data : dataLines) {
+                String result = CSVConverter.convertToCSV(data);
+                writer.write(result);
+            }
+
+            writer.close();
+
+            return csvFile;
+        } catch (FileNotFoundException e) {
+            throw new ServiceException(SystemErrorCode.INTERNAL_ERROR);
+        }
+    }
 
     public User addTokenToUser(AddUserDeviceTokenRequest request) {
         User user = this.getUserById(request.getUserId());
@@ -142,6 +222,7 @@ public class UserService {
         return foundUser.get();
     }
 
+    @Transactional
     public User updateUser(EditUserRequest request, UUID userId) {
         User user = this.getUserById(userId);
 
@@ -160,8 +241,32 @@ public class UserService {
                 user.setRole(role);
         }
 
-        if(request.getWalletType() != null && !request.getWalletType().equals(user.getWallet()))
+        if(request.getWalletType() != null && !request.getWalletType().equals(user.getWallet())) {
+            List<Bill> bills = this.billService.getUserBills(user.getId());
+
+            for (Bill bill : bills) {
+                CurrencySingletonCourse baseCourse = this.currencySingleton.findCourse(user.getWallet());
+                CurrencySingletonCourse needCourse = this.currencySingleton.findCourse(request.getWalletType());
+
+                Double amount = Double.parseDouble("%d.%d".formatted(bill.getBalance().getAmount(), bill.getBalance().getCents())) / baseCourse.getCourse() * needCourse.getCourse();
+
+                String formattedValue = "%.2f".formatted(amount);
+
+                if(!formattedValue.equals("0")) {
+                    this.billService.updateBillBalance(bill.getId(),
+                        Integer.parseInt(formattedValue.split(",")[0]),
+                        Integer.parseInt(formattedValue.split(",")[1]));
+                }
+            }
+
             user.setWallet(request.getWalletType());
+        }
+
+        if(request.getPlannedIncome() != null && request.getPlannedIncome() != user.getPlannedIncome())
+            user.setPlannedIncome(request.getPlannedIncome());
+
+        if(request.getNotificationsEnable() != null && request.getNotificationsEnable() != user.isNotificationsEnable())
+            user.setNotificationsEnable(request.getNotificationsEnable());
 
         if(request.getEmail() != null && !user.getEmail().equals(request.getEmail()))
             user.setEmail(request.getEmail());
