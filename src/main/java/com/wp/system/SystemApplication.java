@@ -1,5 +1,6 @@
 package com.wp.system;
 
+import com.wp.system.other.sms.SendPulseSmsSender;
 import com.wp.system.request.auth.AuthRequest;
 import com.wp.system.services.auth.AuthService;
 import com.wp.system.services.user.UserService;
@@ -33,13 +34,9 @@ import java.util.Random;
 @ComponentScan(basePackages = "com.wp.system.*")
 public class SystemApplication {
 
-	@Autowired
-	private AuthService authService;
-
 	public static void main(String[] args) {
 		System.out.println(System.getenv("SPRING_DATASOURCE_URL"));
 
-//		this.authService.authUser(new AuthRequest("+75555555555", "dGVzdA=="));
 		SpringApplication.run(SystemApplication.class, args);
 	}
 

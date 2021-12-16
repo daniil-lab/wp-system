@@ -2,13 +2,12 @@ package com.wp.system.controller.auth;
 
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.exception.ServiceErrorResponse;
-import com.wp.system.request.auth.AuthRequest;
-import com.wp.system.request.auth.EmailAuthRequest;
-import com.wp.system.request.auth.PhoneAuthAttemptRequest;
-import com.wp.system.request.auth.PhoneAuthCheckRequest;
+import com.wp.system.request.auth.*;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.response.auth.AuthDataResponse;
+import com.wp.system.response.auth.CheckOnRegisterRequest;
 import com.wp.system.response.auth.PhoneAuthRequestResponse;
+import com.wp.system.response.auth.SmsSubmitResponse;
 import com.wp.system.services.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -62,31 +61,64 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authUserByEmail(request), "Success auth"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Начальный этап авторизации по СМС")
-    @PostMapping("/phone")
-    public ResponseEntity<ServiceResponse<PhoneAuthRequestResponse>> phoneAuthRequest(
+    @Operation(summary = "Начальный этап SMS верификации")
+    @PostMapping("/sms-submit")
+    public ResponseEntity<ServiceResponse<SmsSubmitResponse>> smsSubmitTry(
+            @Valid
+            @Parameter(required = true, description = """
+                        Обязательные поля: phone.\n
+                        В ответ на запрос получаем UUID.\n
+                        Как получили код от пользователя, делаем запрос /sms-submit/result и передаем туда полученный из 
+                        этого запроса ID вместе с кодом.
+                    """)
+            @RequestBody
+                SmsSubmitRequest request
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.smsSubmitAttempt(request), "Try success"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Заключительный этап SMS верификации")
+    @PostMapping("/sms-submit/result")
+    public ResponseEntity<ServiceResponse<Boolean>> smsSubmitResult(
+            @Valid
+            @Parameter(required = true, description = """
+                        Обязательные поля: id, code.\n
+                        В id передаем UUID, полученный из /sms-submit\n
+                        В code передаем введеный пользователем код из СМС\n
+                        При совпадении данных получаем data: true и статус 200
+                    """)
+            @RequestBody
+                    SmsSubmitResultRequest request
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.smsSubmitResult(request), "Verification success"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Авторизация с помощью SMS верификации")
+    @PostMapping("/sms")
+    public ResponseEntity<ServiceResponse<AuthDataResponse>> authBySmsSubmit(
+            @Valid
+            @Parameter(required = true, description = """
+                        Обязательные поля: id, code.\n
+                        В id передаем UUID, полученный из /sms-submit\n
+                        В code передаем введеный пользователем код из СМС\n
+                        При совпадении данных получаем данные по авторизации
+                    """)
+            @RequestBody
+                    SmsSubmitResultRequest request
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authBySmsSubmit(request), "Auth success"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Проверка на регистрацию")
+    @PostMapping("/check-register")
+    public ResponseEntity<ServiceResponse<Boolean>> checkRegister(
             @Valid
             @Parameter(required = true, description = """
                     Обязательные поля: phone.\n
-                    Если у пользователя установлен пин-код, передать его в pincode.\n
-                    В ответ получаем requestId, который запоминаем.\n
-                    Как пользователь ввел полученный код из SMS, переходим на /phone/submit/ и отправляем туда код с requestId.
+                    Если пользователь сущетствует, вернет data: true и статус 200, если нет, то ошибку 404.
                     """)
             @RequestBody
-                    PhoneAuthAttemptRequest request) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.createPhoneAuthRequest(request), "Success attempt"), HttpStatus.OK);
-    }
-
-    @Operation(summary = "Заключительный этап авторизации по СМС")
-    @PostMapping("/phone/submit")
-    public ResponseEntity<ServiceResponse<AuthDataResponse>> phoneAuthSubmit(
-            @Valid
-            @Parameter(required = true, description = """
-                    Обязательные поля: code, requestId.\n
-                    Если код совпал с пришедшим в SMS, то отдает токен и объект пользователя.
-                    """)
-            @RequestBody
-                    PhoneAuthCheckRequest request) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.checkPhoneAuthRequest(request), "Success auth"), HttpStatus.OK);
+                    CheckOnRegisterRequest request) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.checkOnRegister(request), "Success check"), HttpStatus.OK);
     }
 }

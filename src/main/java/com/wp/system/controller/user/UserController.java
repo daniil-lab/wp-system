@@ -8,6 +8,7 @@ import com.wp.system.request.user.*;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,19 @@ public class UserController extends DocumentedRestController {
 //    @PreAuthorize("hasAnyAuthority('USER_CREATE', 'USER_FULL')")
     @Operation(summary = "Создание пользователя")
     @PostMapping("/")
-    public ResponseEntity<ServiceResponse<UserDTO>> createUser(@Valid @RequestBody CreateUserRequest request) {
+    public ResponseEntity<ServiceResponse<UserDTO>> createUser(
+            @Valid
+            @Parameter(required = true, description = """
+                        Обязательные поля: username, password, walletType, type.\n
+                        Возможные значения walletType и type указаны ниже.\n
+                        type - тип пользователя в системе, если пользователь выбрал создание аккаунта через AppleID и т.п,
+                        нужно это указать соответствующим элементом.\n
+                        walletType - валюта пользователя, которая будет использоваться им.\n
+                        Пароль передавать в password, предварительно закодировав его в base64.\n
+                        В username передавать номер телефона.
+                        """)
+            @RequestBody
+                    CreateUserRequest request) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new UserDTO(this.userService.createUser(request)), "User created"), HttpStatus.CREATED);
     }
 

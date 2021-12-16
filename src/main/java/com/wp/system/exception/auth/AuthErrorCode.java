@@ -10,7 +10,10 @@ public enum AuthErrorCode implements ErrorCode {
     NO_ACCESS("No access", "Give needed permissions to user role", "AUTH_4", HttpStatus.FORBIDDEN),
     PHONE_AUTH_DATA_NOT_FOUND("Auth Phone Request not found", "Check given data", "AUTH_5", HttpStatus.NOT_FOUND),
     INVALID_PHONE_CODE("Invalid code", "Check given data", "AUTH_6", HttpStatus.BAD_REQUEST),
-    INVALID_PINCODE("Invalid pincode", "Check given data", "AUTH_7", HttpStatus.BAD_REQUEST);
+    INVALID_PINCODE("Invalid pincode", "Check given data", "AUTH_7", HttpStatus.BAD_REQUEST),
+    INVALID_SMS_CODE("Invalid SMS code", "Check given data", "AUTH_8", HttpStatus.BAD_REQUEST),
+    INVALID_SMS_SUBMIT_ID("Invalid SMS submit id", "Check given data", "AUTH_9", HttpStatus.BAD_REQUEST),
+    SMS_NOT_SEND("Can`t send SMS", "Internal error", "AUTH_10", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private String errorName;
 

@@ -2,20 +2,23 @@ package com.wp.system.services.auth;
 
 import com.wp.system.config.jwt.JwtProvider;
 import com.wp.system.entity.auth.PhoneAuthData;
+import com.wp.system.entity.auth.SmsSubmit;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.auth.AuthErrorCode;
 import com.wp.system.exception.user.UserErrorCode;
 import com.wp.system.other.CurrencyLayerAdapter;
+import com.wp.system.other.SmsSender;
 import com.wp.system.other.WalletType;
+import com.wp.system.other.sms.SendPulseSmsSender;
 import com.wp.system.repository.auth.PhoneAuthRequestRepository;
+import com.wp.system.repository.auth.SmsSubmitRepository;
 import com.wp.system.repository.user.UserRepository;
-import com.wp.system.request.auth.EmailAuthRequest;
-import com.wp.system.request.auth.PhoneAuthAttemptRequest;
-import com.wp.system.request.auth.AuthRequest;
-import com.wp.system.request.auth.PhoneAuthCheckRequest;
+import com.wp.system.request.auth.*;
 import com.wp.system.response.auth.AuthDataResponse;
+import com.wp.system.response.auth.CheckOnRegisterRequest;
 import com.wp.system.response.auth.PhoneAuthRequestResponse;
+import com.wp.system.response.auth.SmsSubmitResponse;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,6 +47,68 @@ public class AuthService {
 
     @Autowired
     private PhoneAuthRequestRepository phoneAuthRequestRepository;
+
+    @Autowired
+    private SmsSubmitRepository smsSubmitRepository;
+
+    public Boolean checkOnRegister(CheckOnRegisterRequest request) {
+        this.userService.getUserByUsername(request.getPhone());
+
+        return true;
+    }
+
+    @Transactional
+    public SmsSubmitResponse smsSubmitAttempt(SmsSubmitRequest request) {
+        int code = new Random().nextInt(1000, 9999);
+
+        SmsSubmit smsSubmit = new SmsSubmit(code, request.getPhone());
+
+        smsSubmitRepository.save(smsSubmit);
+
+        SmsSender smsSender = new SendPulseSmsSender();
+
+        smsSender.setPhone(request.getPhone());
+        smsSender.setContent("Ваш код для подтверждения: " + code);
+
+        if(!smsSender.send())
+            throw new ServiceException(AuthErrorCode.SMS_NOT_SEND);
+
+        return new SmsSubmitResponse(smsSubmit.getId());
+    }
+
+    public Boolean smsSubmitResult(SmsSubmitResultRequest request) {
+        Optional<SmsSubmit> foundSubmit = this.smsSubmitRepository.findById(request.getId());
+
+        if(foundSubmit.isEmpty())
+            throw new ServiceException(AuthErrorCode.INVALID_SMS_SUBMIT_ID);
+
+        SmsSubmit smsSubmit = foundSubmit.get();
+
+        if(smsSubmit.getCode() != request.getCode())
+            throw new ServiceException(AuthErrorCode.INVALID_SMS_CODE);
+
+        smsSubmitRepository.delete(smsSubmit);
+
+        return true;
+    }
+
+    public AuthDataResponse authBySmsSubmit(SmsSubmitResultRequest request) {
+        Optional<SmsSubmit> foundSubmit = this.smsSubmitRepository.findById(request.getId());
+
+        if(foundSubmit.isEmpty())
+            throw new ServiceException(AuthErrorCode.INVALID_SMS_SUBMIT_ID);
+
+        SmsSubmit smsSubmit = foundSubmit.get();
+
+        if(smsSubmit.getCode() != request.getCode())
+            throw new ServiceException(AuthErrorCode.INVALID_SMS_CODE);
+
+        smsSubmitRepository.delete(smsSubmit);
+
+        User user = this.userService.getUserByUsername(smsSubmit.getPhone());
+
+        return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
+    }
 
     public AuthDataResponse authUserByEmail(EmailAuthRequest request) {
         Optional<User> foundUser = this.userRepository.findByEmail(request.getEmail());
@@ -86,8 +151,6 @@ public class AuthService {
                 throw new ServiceException(AuthErrorCode.INVALID_PINCODE);
 
         int code = random.nextInt(1000, 9999);
-
-        System.out.println(code);
 
         PhoneAuthData data = new PhoneAuthData(request.getPhone(), code, foundUser);
 
