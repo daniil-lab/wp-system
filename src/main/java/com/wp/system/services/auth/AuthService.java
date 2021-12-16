@@ -75,7 +75,7 @@ public class AuthService {
 //
 //        emailSender.sendEmail();
         Random random = new Random();
-        int code = random.nextInt(1000, 9999);
+        int code = Integer.parseInt("%04d".formatted(random.nextInt(9999)));
 
         SmsSubmit smsSubmit = new SmsSubmit(code, request.getPhone());
 
