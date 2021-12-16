@@ -7,9 +7,8 @@ import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.auth.AuthErrorCode;
 import com.wp.system.exception.user.UserErrorCode;
-import com.wp.system.other.CurrencyLayerAdapter;
-import com.wp.system.other.SmsSender;
-import com.wp.system.other.WalletType;
+import com.wp.system.other.*;
+import com.wp.system.other.email.SendPulseEmailSender;
 import com.wp.system.other.sms.SendPulseSmsSender;
 import com.wp.system.repository.auth.PhoneAuthRequestRepository;
 import com.wp.system.repository.auth.SmsSubmitRepository;
@@ -25,6 +24,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 @Service
@@ -59,6 +61,20 @@ public class AuthService {
 
     @Transactional
     public SmsSubmitResponse smsSubmitAttempt(SmsSubmitRequest request) {
+//        EmailSender emailSender = new SendPulseEmailSender();
+//
+//        emailSender.setSubject("test");
+//        emailSender.addBody("test");
+//        emailSender.setTo("test", "developerdaniil@gmail.com");
+//
+//        try {
+//            emailSender.addFile("testt", Files.readAllBytes(new File(CategoryIcon.HOME.getIconPath()).toPath()));
+//        } catch (IOException e) {
+//            System.out.println(e);
+//        }
+//
+//        emailSender.sendEmail();
+
         int code = new Random().nextInt(1000, 9999);
 
         SmsSubmit smsSubmit = new SmsSubmit(code, request.getPhone());

@@ -3,15 +3,13 @@ package com.wp.system.other;
 public interface EmailSender {
     boolean sendEmail();
 
-    void setContentType(EmailContentType type);
-
     void addBody(String text);
 
     void setSubject(String subject);
 
-    void setFrom(String from);
+    void setFrom(String name, String email);
 
-    void setTo(String to);
+    void setTo(String name, String email);
 
-    void addFile();
+    void addFile(String fileName, byte[] file);
 }
