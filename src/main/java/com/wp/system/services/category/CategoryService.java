@@ -34,7 +34,7 @@ public class CategoryService {
     public Category createCategory(CreateCategoryRequest request) {
         User user = this.userService.getUserById(request.getUserId());
 
-        Category category = new Category(request.getName(), request.getHexColor(), request.getDescription(), user, request.getCategoryIcon());
+        Category category = new Category(request.getName(), request.getColor(), request.getDescription(), user, request.getIcon());
 
         categoryRepository.save(category);
 
@@ -50,11 +50,11 @@ public class CategoryService {
         if(request.getName() != null && !category.getName().equals(request.getName()))
             category.setName(request.getName());
 
-        if(request.getHexColor() != null && !category.getHexColor().equals(request.getHexColor()))
-            category.setHexColor(request.getHexColor());
+        if(request.getColor() != null && !category.getColor().equals(request.getColor()))
+            category.setColor(request.getColor());
 
-        if(request.getCategoryIcon() != null && !category.getCategoryIcon().equals(request.getCategoryIcon()))
-            category.setCategoryIcon(request.getCategoryIcon());
+        if(request.getIcon() != null && !category.getCategoryIcon().equals(request.getIcon()))
+            category.setCategoryIcon(request.getIcon());
 
         categoryRepository.save(category);
 

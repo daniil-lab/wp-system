@@ -1,37 +1,34 @@
 package com.wp.system.request.category;
 
+import com.wp.system.other.CategoryColor;
+import com.wp.system.other.CategoryIcon;
 import com.wp.system.other.ValidationErrorMessages;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.UUID;
 
 public class EditCategoryRequest {
     private String name;
 
     private String description;
 
-    @Pattern(regexp = "^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$", message = ValidationErrorMessages.INVALID_HEX_CODE)
-    private String hexColor;
+    private CategoryColor color;
 
-    private String categoryIcon;
+    private CategoryIcon icon;
 
     @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
     private int categoryLimit;
 
     public EditCategoryRequest() {}
 
-    public EditCategoryRequest(String name, String description, String hexColor, String categoryIcon) {
+    public EditCategoryRequest(String name, String description, CategoryColor color, CategoryIcon categoryIcon) {
         this.name = name;
         this.description = description;
-        this.hexColor = hexColor;
-        this.categoryIcon = categoryIcon;
+        this.color = color;
+        this.icon = categoryIcon;
     }
 
-    public String getCategoryIcon() {
-        return categoryIcon;
+    public CategoryIcon getIcon() {
+        return icon;
     }
 
     public int getCategoryLimit() {
@@ -42,16 +39,16 @@ public class EditCategoryRequest {
         this.categoryLimit = categoryLimit;
     }
 
-    public void setCategoryIcon(String categoryIcon) {
-        this.categoryIcon = categoryIcon;
+    public void setIcon(CategoryIcon icon) {
+        this.icon = icon;
     }
 
-    public String getHexColor() {
-        return hexColor;
+    public CategoryColor getColor() {
+        return color;
     }
 
-    public void setHexColor(String hexColor) {
-        this.hexColor = hexColor;
+    public void setColor(CategoryColor color) {
+        this.color = color;
     }
 
     public String getName() {

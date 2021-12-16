@@ -189,6 +189,7 @@ public class UserService {
         user.setRole(role);
         user.setWallet(request.getWalletType());
         user.setEmail(request.getEmail());
+        user.setUserType(request.getType());
 
         userRepository.save(user);
 

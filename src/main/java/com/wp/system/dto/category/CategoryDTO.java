@@ -15,7 +15,9 @@ public class CategoryDTO {
 
     private String name;
 
-    private String hexColor;
+    private CategoryDTOColor color;
+
+    private CategoryDTOIcon icon;
 
     private String description;
 
@@ -26,7 +28,8 @@ public class CategoryDTO {
     public CategoryDTO(Category category) {
         this.id = category.getId();
         this.name = category.getName();
-        this.hexColor = category.getHexColor();
+        this.color = new CategoryDTOColor(category.getColor());
+        this.icon = new CategoryDTOIcon(category.getCategoryIcon());
         this.description = category.getDescription();
         this.user = new UserDTO(category.getUser());
         this.categoryLimit = category.getCategoryLimit();
@@ -48,12 +51,20 @@ public class CategoryDTO {
         this.name = name;
     }
 
-    public String getHexColor() {
-        return hexColor;
+    public CategoryDTOColor getColor() {
+        return color;
     }
 
-    public void setHexColor(String hexColor) {
-        this.hexColor = hexColor;
+    public void setColor(CategoryDTOColor color) {
+        this.color = color;
+    }
+
+    public CategoryDTOIcon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(CategoryDTOIcon icon) {
+        this.icon = icon;
     }
 
     public String getDescription() {

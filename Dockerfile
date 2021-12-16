@@ -14,6 +14,8 @@ FROM openjdk:17-alpine
 
 COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
+COPY ./images .
+
 EXPOSE 8080
 
 ENTRYPOINT java -jar system-dev.jar

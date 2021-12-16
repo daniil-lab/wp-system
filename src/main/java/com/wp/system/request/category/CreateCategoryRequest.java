@@ -1,9 +1,10 @@
 package com.wp.system.request.category;
 
+import com.wp.system.other.CategoryColor;
+import com.wp.system.other.CategoryIcon;
 import com.wp.system.other.ValidationErrorMessages;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.UUID;
 
 public class CreateCategoryRequest {
@@ -12,40 +13,38 @@ public class CreateCategoryRequest {
 
     private String description;
 
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    private String categoryIcon;
+    private CategoryIcon icon;
 
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    @Pattern(regexp = "^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$", message = ValidationErrorMessages.INVALID_HEX_CODE)
-    private String hexColor;
+    private CategoryColor color;
 
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private UUID userId;
 
     public CreateCategoryRequest() {}
 
-    public CreateCategoryRequest(String name, String description, String categoryIcon, String hexColor, UUID userId) {
+    public CreateCategoryRequest(String name, String description, CategoryIcon categoryIcon, CategoryColor categoryColor, UUID userId) {
         this.name = name;
+        this.color = categoryColor;
         this.description = description;
-        this.categoryIcon = categoryIcon;
-        this.hexColor = hexColor;
+        this.icon = categoryIcon;
         this.userId = userId;
     }
 
-    public String getCategoryIcon() {
-        return categoryIcon;
+    public CategoryIcon getIcon() {
+        return icon;
     }
 
-    public void setCategoryIcon(String categoryIcon) {
-        this.categoryIcon = categoryIcon;
+    public void setIcon(CategoryIcon icon) {
+        this.icon = icon;
     }
 
-    public String getHexColor() {
-        return hexColor;
+    public CategoryColor getColor() {
+        return color;
     }
 
-    public void setHexColor(String hexColor) {
-        this.hexColor = hexColor;
+    public void setColor(CategoryColor color) {
+        this.color = color;
     }
 
     public String getName() {

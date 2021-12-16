@@ -1,6 +1,8 @@
 package com.wp.system.entity.category;
 
 import com.wp.system.entity.user.User;
+import com.wp.system.other.CategoryColor;
+import com.wp.system.other.CategoryIcon;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -12,7 +14,7 @@ public class Category {
 
     private String name;
 
-    private String hexColor;
+    private CategoryColor color;
 
     private String description;
 
@@ -22,20 +24,20 @@ public class Category {
     @JoinColumn(name="user_id")
     private User user;
 
-    private String categoryIcon;
+    private CategoryIcon categoryIcon;
 
     public Category() {};
 
-    public Category(String name, String hexColor, User user, String icon) {
+    public Category(String name, CategoryColor categoryColor, User user, CategoryIcon icon) {
         this.name = name;
-        this.hexColor = hexColor;
+        this.color = categoryColor;
         this.user = user;
         this.categoryIcon = icon;
     }
 
-    public Category(String name, String hexColor, String description, User user, String icon) {
+    public Category(String name, CategoryColor categoryColor, String description, User user, CategoryIcon icon) {
         this.name = name;
-        this.hexColor = hexColor;
+        this.color = categoryColor;
         this.description = description;
         this.user = user;
         this.categoryIcon = icon;
@@ -69,12 +71,12 @@ public class Category {
         this.name = name;
     }
 
-    public String getHexColor() {
-        return hexColor;
+    public CategoryColor getColor() {
+        return color;
     }
 
-    public void setHexColor(String hexColor) {
-        this.hexColor = hexColor;
+    public void setColor(CategoryColor color) {
+        this.color = color;
     }
 
     public String getDescription() {
@@ -85,11 +87,11 @@ public class Category {
         this.description = description;
     }
 
-    public String getCategoryIcon() {
+    public CategoryIcon getCategoryIcon() {
         return categoryIcon;
     }
 
-    public void setCategoryIcon(String categoryIcon) {
+    public void setCategoryIcon(CategoryIcon categoryIcon) {
         this.categoryIcon = categoryIcon;
     }
 }
