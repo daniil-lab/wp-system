@@ -14,7 +14,7 @@ FROM openjdk:17-alpine
 
 COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
-COPY ./images .
+COPY ./images ./images
 
 EXPOSE 8080
 
