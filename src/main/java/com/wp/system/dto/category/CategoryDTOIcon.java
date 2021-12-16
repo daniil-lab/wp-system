@@ -1,14 +1,19 @@
 package com.wp.system.dto.category;
 
 import com.wp.system.other.CategoryIcon;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CategoryDTOIcon {
+    @Schema(description = "Название иконки")
     private String name;
 
+    @Schema(description = "Системное название иконки")
     private String systemName;
 
+    @Schema(description = "URL иконки")
     private String url;
 
+    @Schema(description = "URL темной иконки")
     private String darkUrl;
 
     public CategoryDTOIcon() {};

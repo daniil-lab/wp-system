@@ -16,4 +16,7 @@ public interface BillTransactionRepository extends CrudRepository<BillTransactio
 
     @Query("SELECT t FROM BillTransaction t JOIN t.bill b WHERE b.id = ?1")
     List<BillTransaction> getAllBillTransactions(UUID billId);
+
+    @Query("SELECT t FROM BillTransaction t JOIN t.category c WHERE c.id = ?1")
+    List<BillTransaction> getAllCategoryTransactions(UUID categoryId);
 }

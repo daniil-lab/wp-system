@@ -1,17 +1,25 @@
 package com.wp.system.request.help;
 
 import com.wp.system.other.ValidationErrorMessages;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class CreateHelpLeadRequest {
 
-    @Pattern(regexp = "^((\\+7|7|8)+([0-9]){10})$", message = ValidationErrorMessages.PHONE_VALIDATION_FAILED)
+    @Schema(required = true, description = "Номер телефона заявителя")
+    @Pattern(regexp = "^((\\+7)+([0-9]){10})$", message = ValidationErrorMessages.PHONE_VALIDATION_FAILED)
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String phone;
 
+    @Schema(required = true, description = "Электронная почта заявителя")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = ValidationErrorMessages.EMAIL_VALIDATION_FAILED)
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String email;
 
+    @Schema(required = true, description = "Текст сообщения")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String content;
 
     public CreateHelpLeadRequest() {}

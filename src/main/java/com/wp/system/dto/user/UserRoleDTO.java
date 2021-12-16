@@ -1,14 +1,18 @@
 package com.wp.system.dto.user;
 
 import com.wp.system.entity.user.UserRole;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.UUID;
 
 public class UserRoleDTO {
+    @Schema(description = "ID роли")
     private UUID id;
 
+    @Schema(description = "Название роли")
     private String name;
 
+    @Schema(description = "Автоприменение")
     private boolean autoApply;
 
     public UserRoleDTO() {};

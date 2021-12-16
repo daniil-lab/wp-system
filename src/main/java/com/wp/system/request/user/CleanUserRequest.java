@@ -7,13 +7,12 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 
-public class ExportDataRequest {
-
-    @Schema(required = true, description = "Начальная дата, с которой начинать экспорт данных")
+public class CleanUserRequest {
+    @Schema(required = true, description = "Начальная дата, с которой начинать чистку")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private Instant start;
 
-    @Schema(required = true, description = "Конечная дата, с которой заканчивать экспорт данных")
+    @Schema(required = true, description = "Конечная дата, с которой заканчивать чистку")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private Instant end;
 
@@ -21,7 +20,13 @@ public class ExportDataRequest {
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private UUID userId;
 
-    public ExportDataRequest() {}
+    public CleanUserRequest() {}
+
+    public CleanUserRequest(Instant start, Instant end, UUID userId) {
+        this.start = start;
+        this.end = end;
+        this.userId = userId;
+    }
 
     public Instant getStart() {
         return start;

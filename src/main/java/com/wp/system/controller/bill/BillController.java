@@ -2,6 +2,7 @@ package com.wp.system.controller.bill;
 
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.bill.BillDTO;
+import com.wp.system.dto.bill.BillTransactionDTO;
 import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.request.bill.CreateBillRequest;
 import com.wp.system.request.bill.DepositBillRequest;
@@ -37,7 +38,10 @@ public class BillController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('BILL_CREATE', 'BILL_FULL')")
     @Operation(summary = "Создание счета и прикрепление ее к пользователю")
     @PostMapping("/")
-    public ResponseEntity<ServiceResponse<BillDTO>> createBill(@Valid @RequestBody CreateBillRequest request) {
+    public ResponseEntity<ServiceResponse<BillDTO>> createBill(
+            @Valid
+            @RequestBody
+                    CreateBillRequest request) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new BillDTO(this.billService.createBill(request)), "Bill created"), HttpStatus.CREATED);
     }
 
@@ -51,15 +55,15 @@ public class BillController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('BILL_UPDATE', 'BILL_FULL')")
     @Operation(summary = "Пополнение счета")
     @PatchMapping("/deposit/{billId}")
-    public ResponseEntity<ServiceResponse<BillDTO>> depositBill(@Valid @RequestBody DepositBillRequest request, @PathVariable UUID billId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillDTO(this.billService.depositBill(request, billId)), "Bill updated"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<BillTransactionDTO>> depositBill(@Valid @RequestBody DepositBillRequest request, @PathVariable UUID billId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billService.depositBill(request, billId)), "Bill updated"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('BILL_UPDATE', 'BILL_FULL')")
     @Operation(summary = "Снятие счета")
     @PatchMapping("/withdraw/{billId}")
-    public ResponseEntity<ServiceResponse<BillDTO>> withdrawBill(@Valid @RequestBody WithdrawBillRequest request, @PathVariable UUID billId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillDTO(this.billService.withdrawBill(request, billId)), "Bill updated"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<BillTransactionDTO>> withdrawBill(@Valid @RequestBody WithdrawBillRequest request, @PathVariable UUID billId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billService.withdrawBill(request, billId)), "Bill updated"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('BILL', 'BILL_FULL')")

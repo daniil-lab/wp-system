@@ -1,7 +1,6 @@
-package com.wp.system.other.email;
+package com.wp.system.other.email.sendpulse;
 
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.auth.AuthErrorCode;
 import com.wp.system.exception.system.SystemErrorCode;
 import com.wp.system.other.EmailSender;
 import com.wp.system.other.EmailCredData;

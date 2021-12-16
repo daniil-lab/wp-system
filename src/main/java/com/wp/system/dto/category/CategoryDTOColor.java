@@ -1,12 +1,16 @@
 package com.wp.system.dto.category;
 
 import com.wp.system.other.CategoryColor;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CategoryDTOColor {
+    @Schema(description = "Название цвета")
     private String name;
 
+    @Schema(description = "HEX цвета")
     private String hex;
 
+    @Schema(description = "Системное название цвета")
     private String systemName;
 
     public CategoryDTOColor() {};

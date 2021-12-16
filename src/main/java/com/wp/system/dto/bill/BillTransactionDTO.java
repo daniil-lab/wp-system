@@ -4,29 +4,40 @@ import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.bill.BillBalanceAction;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.Id;
 import java.util.UUID;
 
 public class BillTransactionDTO {
+    @Schema(description = "ID транзакции")
     private UUID id;
 
+    @Schema(description = "Действие транзакции")
     private BillBalanceAction action;
 
+    @Schema(description = "Сумма транзакции")
     private Double sum;
 
+    @Schema(description = "Комментарий транзакции")
     private String description;
 
+    @Schema(description = "Валюта транзакции")
     private WalletType currency;
 
+    @Schema(description = "Место транзакции")
     private String geocodedPlace;
 
+    @Schema(description = "Широта места транзакции")
     private Double longitude;
 
+    @Schema(description = "Долгота места транзакции")
     private Double latitude;
 
+    @Schema(description = "Категория, к которой относится транзакции")
     private CategoryDTO category;
 
+    @Schema(description = "Дата транзакции")
     private String createAt;
 
     public BillTransactionDTO() {}

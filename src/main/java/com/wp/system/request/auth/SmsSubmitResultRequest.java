@@ -1,12 +1,16 @@
 package com.wp.system.request.auth;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class SmsSubmitResultRequest {
+    @Schema(required = true, description = "ID, полученный из первого этапа верификации по SMS")
     @NotNull
     private UUID id;
 
+    @Schema(required = true, description = "Полученный код")
     @NotNull
     private int code;
 

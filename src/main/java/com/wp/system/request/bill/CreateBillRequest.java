@@ -1,6 +1,7 @@
 package com.wp.system.request.bill;
 
 import com.wp.system.other.ValidationErrorMessages;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
@@ -10,16 +11,20 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
 public class CreateBillRequest {
+    @Schema(required = true, description = "ID пользователя")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private UUID userId;
 
+    @Schema(required = true, description = "Название счета")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     @Length(min = 4, max = 64, message = ValidationErrorMessages.INVALID_BILL_NAME)
     private String name;
 
+    @Schema(required = true, description = "Изначальный баланс")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private int balance;
 
+    @Schema(required = true, description = "Изначальный баланс (копейки)")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     @Min(value = 0, message = ValidationErrorMessages.NEGATIVE_CENTS)
     @Max(value = 99, message = ValidationErrorMessages.MAXIMUM_CENTS)

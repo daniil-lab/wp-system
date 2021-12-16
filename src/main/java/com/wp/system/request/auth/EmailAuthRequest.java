@@ -1,13 +1,18 @@
 package com.wp.system.request.auth;
 
 import com.wp.system.other.ValidationErrorMessages;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 public class EmailAuthRequest {
+    @Schema(required = true, description = "Электронный адрес")
+    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = ValidationErrorMessages.EMAIL_VALIDATION_FAILED)
     @NotEmpty(message = ValidationErrorMessages.NO_EMPTY)
     private String email;
 
+    @Schema(required = true, description = "Пароль, закодированный в Base64")
     @NotEmpty(message = ValidationErrorMessages.NO_EMPTY)
     private String password;
 

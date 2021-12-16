@@ -1,17 +1,21 @@
 package com.wp.system.request.notification;
 
 import com.wp.system.other.ValidationErrorMessages;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class SendNotificationToUserRequest {
+    @Schema(required = true, description = "ID пользователя")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private UUID userId;
 
+    @Schema(required = true, description = "Тело уведомления")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String body;
 
+    @Schema(required = true, description = "Заголовок уведомления")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String header;
 

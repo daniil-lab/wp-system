@@ -3,6 +3,7 @@ package com.wp.system.request.user;
 import com.wp.system.other.ValidationErrorMessages;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -11,23 +12,34 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 public class EditUserRequest {
-    @Pattern(regexp = "^((\\+7|7|8)+([0-9]){10})$", message = ValidationErrorMessages.PHONE_VALIDATION_FAILED)
+    @Schema(required = false, description = "Номер телефона")
+    @Pattern(regexp = "^((\\+7)+([0-9]){10})$", message = ValidationErrorMessages.PHONE_VALIDATION_FAILED)
     private String username;
 
-    @Size(min = 6, max = 32, message = ValidationErrorMessages.INVALID_PASSWORD_LENGTH)
+    @Schema(required = false, description = "Пароль, закодированный в Base64")
+//    @Size(min = 6, max = 32, message = ValidationErrorMessages.INVALID_PASSWORD_LENGTH)
     private String password;
 
+    @Schema(required = false, description = "Валюта пользователя")
     private WalletType walletType;
 
+    @Schema(required = false, description = "Электронная почта")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = ValidationErrorMessages.EMAIL_VALIDATION_FAILED)
     private String email;
 
+    @Schema(required = true, description = "Тип пользователя. По стандарту передавать SYSTEM," +
+            "если пользователь авторизовывался через APPLE или др., то указать соответствующее значение из списка.")
     private UserType type;
 
+    @Schema(required = false, description = "Название роли. Если таковой существовать не будет, выдаст ошибку." +
+            "Если опустить, то попытается найти роль с полем 'autoApply': true и прикрепить ее к пользователю." +
+            "Если таковой не будет, и поле будет отсутствовать, то выдаст ошибку.")
     private String roleName;
 
+    @Schema(required = false, description = "Включенные уведомления. true - включены, false - отключены")
     private Boolean notificationsEnable;
 
+    @Schema(required = false, description = "Запланированный доход")
     @PositiveOrZero(message = ValidationErrorMessages.PLANNED_INCOME_NEGATIVE)
     private Integer plannedIncome;
 

@@ -69,9 +69,9 @@ public class UserController extends DocumentedRestController {
     @SecurityRequirement(name = "Bearer")
     @PreAuthorize("hasAnyAuthority('USER_UPDATE', 'USER_FULL')")
     @Operation(summary = "Чистка данных пользователя")
-    @PatchMapping("/clean/{userId}")
-    public ResponseEntity<ServiceResponse<UserDTO>> cleanUserData(@PathVariable UUID userId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.cleanUserData(userId)), "User updated"), HttpStatus.OK);
+    @PatchMapping("/clean")
+    public ResponseEntity<ServiceResponse<UserDTO>> cleanUserData(@Valid @RequestBody CleanUserRequest request) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.cleanUserData(request)), "User updated"), HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer")
@@ -114,6 +114,9 @@ public class UserController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.removeUser(userId)), "User removed"), HttpStatus.OK);
     }
 
+    @SecurityRequirement(name = "Bearer")
+    @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
+    @Operation(summary = "Экспорт данных пользователя за период в CSV (пока нет EMAIL сервиса, качается файлом)")
     @PostMapping("/export")
     public ResponseEntity<InputStreamResource> exportUserData (@Valid @RequestBody ExportDataRequest request) throws FileNotFoundException {
         File file = this.userService.exportCSVData(request);

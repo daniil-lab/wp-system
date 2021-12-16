@@ -4,13 +4,16 @@ import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.transaction.Transaction;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.bill.BillErrorCode;
+import com.wp.system.exception.bill.BillTransactionErrorCode;
 import com.wp.system.repository.bill.BillTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,11 +21,30 @@ public class BillTransactionService {
     @Autowired
     private BillTransactionRepository billTransactionRepository;
 
+    @Transactional
+    public BillTransaction removeTransaction(UUID transactionId) {
+        BillTransaction transaction = this.getBillTransactionById(transactionId);
+
+        billTransactionRepository.delete(transaction);
+
+        return transaction;
+    }
+
+    public BillTransaction getBillTransactionById(UUID transactionId) {
+        Optional<BillTransaction> foundTransaction = billTransactionRepository.findById(transactionId);
+
+        if(foundTransaction.isEmpty())
+            throw new ServiceException(BillTransactionErrorCode.NOT_FOUND);
+
+        return foundTransaction.get();
+    }
+
     public List<BillTransaction> getAllTransactionsByPeriod(Instant start,
                                                             Instant end,
                                                             Integer count,
                                                             UUID userId,
-                                                            UUID billId) {
+                                                            UUID billId,
+                                                            UUID categoryId) {
         if (userId == null && billId == null)
             throw new ServiceException(BillErrorCode.NOT_FOUND_PARAMS);
 
@@ -32,8 +54,13 @@ public class BillTransactionService {
 
         if (userId != null)
             transactions = this.getAllUserTransactions(userId);
-        else
+        else if(billId != null)
             transactions = this.getAllTransactionsByBillId(billId);
+        else if (categoryId != null)
+            transactions = this.getAllCategoryTransactions(categoryId);
+
+        if(transactions == null)
+            return new ArrayList<>();
 
         for (BillTransaction transaction : transactions) {
             if(transaction.getCreateAt() == null)
@@ -50,6 +77,12 @@ public class BillTransactionService {
         }
 
         return parsedTransactions;
+    }
+
+    public List<BillTransaction> getAllCategoryTransactions(UUID categoryId) {
+        List<BillTransaction> transactions = this.billTransactionRepository.getAllCategoryTransactions(categoryId);
+
+        return transactions;
     }
 
     public List<BillTransaction> getAllUserTransactions(UUID userId) {

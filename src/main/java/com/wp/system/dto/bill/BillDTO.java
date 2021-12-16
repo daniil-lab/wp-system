@@ -2,17 +2,22 @@ package com.wp.system.dto.bill;
 
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.bill.Bill;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.UUID;
 
 public class BillDTO {
 
+    @Schema(description = "ID счета")
     private UUID id;
 
+    @Schema(description = "Название счета")
     private String name;
 
+    @Schema(description = "Пользователь, к которому прикреплен счет")
     private UserDTO user;
 
+    @Schema(description = "Баланс счета")
     private BillBalanceDTO balance;
 
     public BillDTO() {}

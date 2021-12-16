@@ -1,21 +1,13 @@
 package com.wp.system;
 
-import com.wp.system.other.sms.SendPulseSmsSender;
-import com.wp.system.request.auth.AuthRequest;
-import com.wp.system.services.auth.AuthService;
-import com.wp.system.services.user.UserService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.util.Random;
 
 @SpringBootApplication
 @SecurityScheme(

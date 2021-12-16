@@ -1,11 +1,14 @@
 package com.wp.system.dto.bill;
 
 import com.wp.system.entity.bill.BillBalance;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class BillBalanceDTO {
 
+    @Schema(description = "Целочисленая часть баланса")
     private int amount;
 
+    @Schema(description = "Десятичная часть баланса (копейки)")
     private int cents;
 
     public BillBalanceDTO() {}

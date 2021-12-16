@@ -8,8 +8,7 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.auth.AuthErrorCode;
 import com.wp.system.exception.user.UserErrorCode;
 import com.wp.system.other.*;
-import com.wp.system.other.email.SendPulseEmailSender;
-import com.wp.system.other.sms.SendPulseSmsSender;
+import com.wp.system.other.sms.sendpulse.SendPulseSmsSender;
 import com.wp.system.repository.auth.PhoneAuthRequestRepository;
 import com.wp.system.repository.auth.SmsSubmitRepository;
 import com.wp.system.repository.user.UserRepository;
@@ -24,9 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 
 @Service
@@ -145,34 +141,12 @@ public class AuthService {
     public AuthDataResponse authUser(AuthRequest request) {
         User user = this.userService.getUserByUsername(request.getUsername());
 
-        if(user.getPinCode() != null)
-            if(request.getCode() == null || !user.getPinCode().equals(request.getCode()))
-                throw new ServiceException(AuthErrorCode.INVALID_PINCODE);
-
         byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
 
         if(passwordEncoder.matches(new String(passwordBytes), user.getPassword()))
             return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
 
         throw new ServiceException(AuthErrorCode.INVALID_DATA);
-    }
-
-    public PhoneAuthRequestResponse createPhoneAuthRequest(PhoneAuthAttemptRequest request) {
-        User foundUser = this.userService.getUserByUsername(request.getPhone());
-
-        Random random = new Random();
-
-        if(foundUser.getPinCode() != null)
-            if(request.getPincode() == null || !foundUser.getPinCode().equals(request.getPincode()))
-                throw new ServiceException(AuthErrorCode.INVALID_PINCODE);
-
-        int code = random.nextInt(1000, 9999);
-
-        PhoneAuthData data = new PhoneAuthData(request.getPhone(), code, foundUser);
-
-        phoneAuthRequestRepository.save(data);
-
-        return new PhoneAuthRequestResponse(data.getId());
     }
 
     public PhoneAuthData getPhoneAuthDataById(UUID id) {
@@ -182,17 +156,5 @@ public class AuthService {
             throw new ServiceException(AuthErrorCode.PHONE_AUTH_DATA_NOT_FOUND);
 
         return phoneAuthData.get();
-    }
-
-    @Transactional
-    public AuthDataResponse checkPhoneAuthRequest(PhoneAuthCheckRequest request) {
-        PhoneAuthData authData = this.getPhoneAuthDataById(request.getRequestId());
-
-        if(authData.getCode() != request.getCode())
-            throw new ServiceException(AuthErrorCode.INVALID_PHONE_CODE);
-
-        this.phoneAuthRequestRepository.delete(authData);
-
-        return new AuthDataResponse(jwtProvider.generateToken(authData.getUser().getUsername()), authData.getUser());
     }
 }

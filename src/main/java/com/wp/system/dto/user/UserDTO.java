@@ -4,21 +4,28 @@ import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 import java.util.UUID;
 
 public class UserDTO {
+    @Schema(description = "ID пользователя")
     private UUID id;
 
+    @Schema(description = "Номер телефона пользователя")
     private String username;
 
+    @Schema(description = "Роль пользователя")
     private UserRoleDTO role;
 
+    @Schema(description = "Электронная почта пользователя")
     private String email;
 
+    @Schema(description = "Тип пользователя")
     private UserType type;
 
+    @Schema(description = "Валюта пользователя")
     private WalletType walletType;
 
     public UserDTO() {};

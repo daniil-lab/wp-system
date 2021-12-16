@@ -74,6 +74,7 @@ public class UserService {
                 request.getEnd(),
                 -1,
                 user.getId(),
+                null,
                 null
         );
 
@@ -142,9 +143,20 @@ public class UserService {
         return user;
     }
 
-    public User cleanUserData(UUID userId) {
-        User user = this.getUserById(userId);
+    public User cleanUserData(CleanUserRequest request) {
+        User user = this.getUserById(request.getUserId());
 
+        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
+                request.getStart(),
+                request.getEnd(),
+                -1,
+                request.getUserId(),
+                null,
+                null
+        );
+
+        for (BillTransaction transaction : transactions)
+            this.billTransactionService.removeTransaction(transaction.getId());
 
         return user;
     }

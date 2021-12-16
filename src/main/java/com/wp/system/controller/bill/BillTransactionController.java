@@ -33,13 +33,15 @@ public class BillTransactionController extends DocumentedRestController {
                                                                                               @RequestParam Instant end,
                                                                                               @RequestParam Integer count,
                                                                                               @RequestParam(required = false) UUID userId,
-                                                                                              @RequestParam(required = false) UUID billId) {
+                                                                                              @RequestParam(required = false) UUID billId,
+                                                                                              @RequestParam(required = false) UUID categoryId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllTransactionsByPeriod(
                 start,
                 end,
                 count,
                 userId,
-                billId
+                billId,
+                categoryId
         ).stream().map(BillTransactionDTO::new).collect(Collectors.toList()), "Bill Transactions returned"), HttpStatus.OK);
     }
 
@@ -55,5 +57,12 @@ public class BillTransactionController extends DocumentedRestController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<ServiceResponse<List<BillTransactionDTO>>> getAllUserTransactions(@PathVariable UUID userId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllUserTransactions(userId).stream().map(BillTransactionDTO::new).collect(Collectors.toList()), "Bill Transactions returned"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")
+    @Operation(summary = "Получение всех транзакций категории")
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<ServiceResponse<List<BillTransactionDTO>>> getAllCategoryTransactions(@PathVariable UUID categoryId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllCategoryTransactions(categoryId).stream().map(BillTransactionDTO::new).collect(Collectors.toList()), "Bill Transactions returned"), HttpStatus.OK);
     }
 }

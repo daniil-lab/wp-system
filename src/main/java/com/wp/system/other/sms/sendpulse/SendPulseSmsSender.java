@@ -1,9 +1,10 @@
-package com.wp.system.other.sms;
+package com.wp.system.other.sms.sendpulse;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.auth.AuthErrorCode;
+import com.wp.system.exception.sms.SmsErrorCode;
 import com.wp.system.exception.system.SystemErrorCode;
 import com.wp.system.other.sendpulse.SendPulseData;
 import com.wp.system.other.sendpulse.SendPulseIntegration;
@@ -29,7 +30,7 @@ public class SendPulseSmsSender extends SendPulseIntegration implements SmsSende
     @Override
     public boolean send() {
         if(phone == null || body == null)
-            return false;
+            throw new ServiceException(SmsErrorCode.NOT_SEND);
 
         try {
             Map<String, Object> data = new HashMap<>();
@@ -49,11 +50,11 @@ public class SendPulseSmsSender extends SendPulseIntegration implements SmsSende
             HttpResponse<String> sendResponse = HttpClient.newBuilder().build().send(sendRequest, HttpResponse.BodyHandlers.ofString());
 
             if(sendResponse.statusCode() != 200)
-                throw new ServiceException(AuthErrorCode.SMS_NOT_SEND);
+                throw new ServiceException(SmsErrorCode.NOT_SEND);
 
             return true;
         } catch (Exception e) {
-            throw new ServiceException(SystemErrorCode.INTERNAL_ERROR);
+            throw new ServiceException(SmsErrorCode.NOT_SEND);
         }
     }
 

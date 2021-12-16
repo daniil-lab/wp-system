@@ -1,13 +1,16 @@
 package com.wp.system.request.notification;
 
 import com.wp.system.other.ValidationErrorMessages;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 
 public class SendNotificationToAllUserRequest {
+    @Schema(required = true, description = "Тело уведомления")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String body;
 
+    @Schema(required = true, description = "Заголовок уведомления")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String header;
 

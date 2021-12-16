@@ -7,6 +7,7 @@ import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,23 +16,32 @@ import javax.validation.constraints.Size;
 import java.util.Optional;
 
 public class CreateUserRequest {
+    @Schema(required = true, description = "Номер телефона")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    @Pattern(regexp = "^((\\+7|7|8)+([0-9]){10})$", message = ValidationErrorMessages.PHONE_VALIDATION_FAILED)
+    @Pattern(regexp = "^((\\+7)+([0-9]){10})$", message = ValidationErrorMessages.PHONE_VALIDATION_FAILED)
     private String username;
 
+    @Schema(required = true, description = "Пароль, закодированный в Base64")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    @Size(min = 6, max = 32, message = ValidationErrorMessages.INVALID_PASSWORD_LENGTH)
+//    @Size(min = 6, max = 32, message = ValidationErrorMessages.INVALID_PASSWORD_LENGTH)
     private String password;
 
+    @Schema(required = true, description = "Валюта пользователя")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private WalletType walletType;
 
+    @Schema(required = true, description = "Электронная почта")
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = ValidationErrorMessages.EMAIL_VALIDATION_FAILED)
     private String email;
 
+    @Schema(required = true, description = "Тип пользователя. По стандарту передавать SYSTEM," +
+            "если пользователь авторизовывался через APPLE или др., то указать соответствующее значение из списка.")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private UserType type;
 
+    @Schema(required = false, description = "Название роли. Если таковой существовать не будет, выдаст ошибку." +
+            "Если опустить, то попытается найти роль с полем 'autoApply': true и прикрепить ее к пользователю." +
+            "Если таковой не будет, и поле будет отсутствовать, то выдаст ошибку.")
     private String roleName;
 
     public CreateUserRequest() {};

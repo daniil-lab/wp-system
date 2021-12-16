@@ -3,18 +3,31 @@ package com.wp.system.request.category;
 import com.wp.system.other.CategoryColor;
 import com.wp.system.other.CategoryIcon;
 import com.wp.system.other.ValidationErrorMessages;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.UUID;
 
 public class EditCategoryRequest {
+    @Schema(required = false, description = "Название категории")
+    @Length(min = 4, max = 64, message = ValidationErrorMessages.INVALID_CATEGORY_NAME)
     private String name;
 
+    @Schema(required = false, description = "Описание категории")
     private String description;
 
-    private CategoryColor color;
-
+    @Schema(required = false, description = "Иконка категории")
     private CategoryIcon icon;
 
+    @Schema(required = false, description = "Цвет категории")
+    private CategoryColor color;
+
+    @Schema(required = false, description = "Пользователь, к которому будет относится категория")
+    private UUID userId;
+
+    @Schema(required = false, description = "Лимит категории")
     @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
     private int categoryLimit;
 

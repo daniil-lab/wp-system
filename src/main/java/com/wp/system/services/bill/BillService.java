@@ -103,7 +103,7 @@ public class BillService {
     }
 
     @Transactional
-    public Bill withdrawBill(WithdrawBillRequest request, UUID billId) {
+    public BillTransaction withdrawBill(WithdrawBillRequest request, UUID billId) {
         Bill bill = this.getBillById(billId);
 
         Category category = null;
@@ -115,10 +115,10 @@ public class BillService {
 
         BillTransaction transaction = facade.withdraw(request.getAmount(), request.getCents(), request.getDescription());
 
-        if(request.getLon() != null && request.getLat() != null) {
-            if(request.getPlaceName() != null)
-                transaction.setGeocodedPlace(request.getPlaceName());
-             else {
+        if(request.getPlaceName() != null)
+            transaction.setGeocodedPlace(request.getPlaceName());
+        else
+            if(request.getLon() != null && request.getLat() != null) {
                 String place = Geocoder.getPlaceByCoords(request.getLon(), request.getLat());
 
                 transaction.setGeocodedPlace(place);
@@ -126,12 +126,11 @@ public class BillService {
                 transaction.setLongitude(request.getLon());
             }
 
-            this.billTransactionRepository.save(transaction);
-        }
+        this.billTransactionRepository.save(transaction);
 
         this.billRepository.save(bill);
 
-        return bill;
+        return transaction;
     }
 
     @Transactional
@@ -148,16 +147,16 @@ public class BillService {
     }
 
     @Transactional
-    public Bill depositBill(DepositBillRequest request, UUID billId) {
+    public BillTransaction depositBill(DepositBillRequest request, UUID billId) {
         Bill bill = this.getBillById(billId);
 
         BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(null, bill, bill.getUser());
 
-        facade.deposit(request.getAmount(), request.getCents(), request.getDescription());
+        BillTransaction transaction = facade.deposit(request.getAmount(), request.getCents(), request.getDescription());
 
         this.billRepository.save(bill);
 
-        return bill;
+        return transaction;
     }
 
     @Transactional

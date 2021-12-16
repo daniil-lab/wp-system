@@ -1,12 +1,16 @@
 package com.wp.system.dto.permission;
 
 import com.wp.system.permissions.Permission;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class PermissionDTO {
+    @Schema(description = "Название доступа")
     private String name;
 
+    @Schema(description = "Описание доступа")
     private String description;
 
+    @Schema(description = "Системное значение доступа")
     private String systemValue;
 
     public PermissionDTO() {};

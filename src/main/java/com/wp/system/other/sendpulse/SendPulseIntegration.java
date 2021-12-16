@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.exception.sendpulse.SendPulseErrorCode;
 import com.wp.system.exception.system.SystemErrorCode;
 
 import java.net.URI;
@@ -18,9 +19,9 @@ public class SendPulseIntegration {
 
     protected final String API_URL = "https://api.sendpulse.com/";
 
-    protected final String CLIENT_ID = "d9bdd184a2a4a14b830a8b264ce33f31";
+    protected final String CLIENT_ID = System.getenv("SENDPULSE_CLIENT_ID");
 
-    protected final String CLIENT_SECRET = "e6a25e4d987db74d7e63543d9ca429c1";
+    protected final String CLIENT_SECRET = System.getenv("SENDPULSE_CLIENT_SECRET");
 
     protected final String GRANT_TYPE = "client_credentials";
 
@@ -52,7 +53,7 @@ public class SendPulseIntegration {
 
             return (String) responseData.get("access_token");
         } catch (Exception e) {
-            throw new ServiceException(SystemErrorCode.INTERNAL_ERROR);
+            throw new ServiceException(SendPulseErrorCode.AUTH_ERROR);
         }
     }
 }

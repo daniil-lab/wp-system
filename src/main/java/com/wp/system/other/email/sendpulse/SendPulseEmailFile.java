@@ -1,4 +1,4 @@
-package com.wp.system.other.email;
+package com.wp.system.other.email.sendpulse;
 
 public class SendPulseEmailFile {
     private String fileName;

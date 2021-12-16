@@ -3,21 +3,30 @@ package com.wp.system.request.category;
 import com.wp.system.other.CategoryColor;
 import com.wp.system.other.CategoryIcon;
 import com.wp.system.other.ValidationErrorMessages;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class CreateCategoryRequest {
+    @Schema(required = true, description = "Название категории")
+    @Length(min = 4, max = 64, message = ValidationErrorMessages.INVALID_CATEGORY_NAME)
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String name;
 
+    @Schema(required = false, description = "Описание категории")
     private String description;
 
+    @Schema(required = true, description = "Иконка категории")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private CategoryIcon icon;
 
+    @Schema(required = true, description = "Цвет категории")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private CategoryColor color;
 
+    @Schema(required = true, description = "Пользователь, к которому будет относится категория")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private UUID userId;
 

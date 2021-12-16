@@ -3,6 +3,7 @@ package com.wp.system.dto.category;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
@@ -11,18 +12,25 @@ import javax.persistence.ManyToOne;
 import java.util.UUID;
 
 public class CategoryDTO {
+    @Schema(description = "ID категории")
     private UUID id;
 
+    @Schema(description = "Название категории")
     private String name;
 
+    @Schema(description = "Цвет категории")
     private CategoryDTOColor color;
 
+    @Schema(description = "Иконка категории")
     private CategoryDTOIcon icon;
 
+    @Schema(description = "Описание категории")
     private String description;
 
+    @Schema(description = "Лимит категории")
     private int categoryLimit;
 
+    @Schema(description = "Пользователь, к которому прикреплена категория")
     private UserDTO user;
 
     public CategoryDTO(Category category) {
