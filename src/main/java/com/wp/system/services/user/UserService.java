@@ -12,6 +12,7 @@ import com.wp.system.other.CSVConverter;
 import com.wp.system.other.CurrencySingleton;
 import com.wp.system.other.CurrencySingletonCourse;
 import com.wp.system.other.bill.BillBalanceAction;
+import com.wp.system.other.email.local.LocalMailSender;
 import com.wp.system.permissions.Permission;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
