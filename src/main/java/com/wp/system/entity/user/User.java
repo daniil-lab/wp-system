@@ -30,6 +30,10 @@ public class User {
 
     private int plannedIncome;
 
+    private boolean touchId;
+
+    private boolean faceId;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "role_id")
     private UserRole role;
@@ -57,6 +61,22 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public boolean isTouchId() {
+        return touchId;
+    }
+
+    public void setTouchId(boolean touchId) {
+        this.touchId = touchId;
+    }
+
+    public boolean isFaceId() {
+        return faceId;
+    }
+
+    public void setFaceId(boolean faceId) {
+        this.faceId = faceId;
     }
 
     public int getPlannedIncome() {

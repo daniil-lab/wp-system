@@ -285,6 +285,12 @@ public class UserService {
         if(request.getEmail() != null && !user.getEmail().equals(request.getEmail()))
             user.setEmail(request.getEmail());
 
+        if(request.getTouchId() != null && !request.getTouchId().equals(user.isTouchId()))
+            user.setTouchId(request.getTouchId());
+
+        if(request.getFaceId() != null && !request.getFaceId().equals(user.isFaceId()))
+            user.setFaceId(request.getFaceId());
+
         userRepository.save(user);
 
         return user;

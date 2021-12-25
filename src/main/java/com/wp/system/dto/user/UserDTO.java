@@ -28,6 +28,12 @@ public class UserDTO {
     @Schema(description = "Валюта пользователя")
     private WalletType walletType;
 
+    @Schema(description = "Включена ли проверка по TouchID пользователя")
+    private boolean touchId;
+
+    @Schema(description = "Включена ли проверка по FaceID пользователя")
+    private boolean faceId;
+
     public UserDTO() {};
 
     public UserDTO(User user) {
@@ -37,6 +43,24 @@ public class UserDTO {
         this.email = user.getEmail();
         this.type = user.getUserType();
         this.walletType = user.getWallet();
+        this.touchId = user.isTouchId();
+        this.faceId = user.isFaceId();
+    }
+
+    public boolean isTouchId() {
+        return touchId;
+    }
+
+    public void setTouchId(boolean touchId) {
+        this.touchId = touchId;
+    }
+
+    public boolean isFaceId() {
+        return faceId;
+    }
+
+    public void setFaceId(boolean faceId) {
+        this.faceId = faceId;
     }
 
     public WalletType getWalletType() {

@@ -23,6 +23,8 @@ services:
       - backend
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/wp
+      - SENDPULSE_CLIENT_ID=d9bdd184a2a4a14b830a8b264ce33f31
+      - SENDPULSE_CLIENT_SECRET=e6a25e4d987db74d7e63543d9ca429c1
     depends_on:
       - database
 

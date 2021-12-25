@@ -43,6 +43,12 @@ public class EditUserRequest {
     @PositiveOrZero(message = ValidationErrorMessages.PLANNED_INCOME_NEGATIVE)
     private Integer plannedIncome;
 
+    @Schema(required = false, description = "Проверка по FaceID")
+    private Boolean faceId;
+
+    @Schema(required = false, description = "Проверка по TouchID")
+    private Boolean touchId;
+
     public EditUserRequest() {}
 
     public EditUserRequest(String username, String password, WalletType walletType, String email, UserType type, String roleName) {
@@ -52,6 +58,22 @@ public class EditUserRequest {
         this.email = email;
         this.type = type;
         this.roleName = roleName;
+    }
+
+    public Boolean getFaceId() {
+        return faceId;
+    }
+
+    public void setFaceId(Boolean faceId) {
+        this.faceId = faceId;
+    }
+
+    public Boolean getTouchId() {
+        return touchId;
+    }
+
+    public void setTouchId(Boolean touchId) {
+        this.touchId = touchId;
     }
 
     public Integer getPlannedIncome() {
