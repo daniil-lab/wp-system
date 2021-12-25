@@ -1,12 +1,10 @@
 package com.wp.system.dto.user;
 
 import com.wp.system.entity.user.User;
-import com.wp.system.entity.user.UserRole;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
 import java.util.UUID;
 
 public class UserDTO {
@@ -29,10 +27,13 @@ public class UserDTO {
     private WalletType walletType;
 
     @Schema(description = "Включена ли проверка по TouchID пользователя")
-    private boolean touchId;
+    private boolean touchID;
 
     @Schema(description = "Включена ли проверка по FaceID пользователя")
-    private boolean faceId;
+    private boolean faceID;
+
+    @Schema(description = "Пин-код пользователя")
+    private String pinCode;
 
     public UserDTO() {};
 
@@ -43,24 +44,33 @@ public class UserDTO {
         this.email = user.getEmail();
         this.type = user.getUserType();
         this.walletType = user.getWallet();
-        this.touchId = user.isTouchId();
-        this.faceId = user.isFaceId();
+        this.touchID = user.isTouchId();
+        this.faceID = user.isFaceId();
+        this.pinCode = user.getPinCode();
     }
 
-    public boolean isTouchId() {
-        return touchId;
+    public String getPinCode() {
+        return pinCode;
     }
 
-    public void setTouchId(boolean touchId) {
-        this.touchId = touchId;
+    public void setPinCode(String pinCode) {
+        this.pinCode = pinCode;
     }
 
-    public boolean isFaceId() {
-        return faceId;
+    public boolean isTouchID() {
+        return touchID;
     }
 
-    public void setFaceId(boolean faceId) {
-        this.faceId = faceId;
+    public void setTouchID(boolean touchID) {
+        this.touchID = touchID;
+    }
+
+    public boolean isFaceID() {
+        return faceID;
+    }
+
+    public void setFaceID(boolean faceID) {
+        this.faceID = faceID;
     }
 
     public WalletType getWalletType() {
