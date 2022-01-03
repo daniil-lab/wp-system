@@ -1,12 +1,10 @@
 package com.wp.system.request.category;
 
 import com.wp.system.other.CategoryColor;
-import com.wp.system.other.CategoryIcon;
 import com.wp.system.other.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
@@ -19,7 +17,7 @@ public class EditCategoryRequest {
     private String description;
 
     @Schema(required = false, description = "Иконка категории")
-    private CategoryIcon icon;
+    private UUID icon;
 
     @Schema(required = false, description = "Цвет категории")
     private CategoryColor color;
@@ -33,14 +31,14 @@ public class EditCategoryRequest {
 
     public EditCategoryRequest() {}
 
-    public EditCategoryRequest(String name, String description, CategoryColor color, CategoryIcon categoryIcon) {
+    public EditCategoryRequest(String name, String description, CategoryColor color, UUID UUID) {
         this.name = name;
         this.description = description;
         this.color = color;
-        this.icon = categoryIcon;
+        this.icon = UUID;
     }
 
-    public CategoryIcon getIcon() {
+    public UUID getIcon() {
         return icon;
     }
 
@@ -52,7 +50,7 @@ public class EditCategoryRequest {
         this.categoryLimit = categoryLimit;
     }
 
-    public void setIcon(CategoryIcon icon) {
+    public void setIcon(UUID icon) {
         this.icon = icon;
     }
 

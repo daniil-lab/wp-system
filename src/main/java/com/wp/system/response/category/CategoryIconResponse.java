@@ -1,7 +1,5 @@
 package com.wp.system.response.category;
 
-import com.wp.system.other.CategoryIcon;
-
 public class CategoryIconResponse {
     private String name;
 

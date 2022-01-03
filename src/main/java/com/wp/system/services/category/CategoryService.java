@@ -1,12 +1,15 @@
 package com.wp.system.services.category;
 
 import com.wp.system.entity.category.Category;
+import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.category.CategoryErrorCode;
+import com.wp.system.other.SystemImageTag;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.request.category.CreateCategoryRequest;
 import com.wp.system.request.category.EditCategoryRequest;
+import com.wp.system.services.image.ImageService;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,9 @@ public class CategoryService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ImageService imageService;
+
     public List<Category> getUserCategories(UUID userId) {
         if(userId == null)
             throw new ServiceException(CategoryErrorCode.NO_USER_ID);
@@ -33,8 +39,12 @@ public class CategoryService {
 
     public Category createCategory(CreateCategoryRequest request) {
         User user = this.userService.getUserById(request.getUserId());
+        SystemImage image = this.imageService.getImageById(request.getIcon());
 
-        Category category = new Category(request.getName(), request.getColor(), request.getDescription(), user, request.getIcon());
+        if(!image.getTag().equals(SystemImageTag.CATEGORY_ICON))
+            throw new ServiceException(CategoryErrorCode.INVALID_IMAGE_TAG);
+
+        Category category = new Category(request.getName(), request.getColor(), request.getDescription(), user, image);
 
         categoryRepository.save(category);
 
@@ -53,8 +63,14 @@ public class CategoryService {
         if(request.getColor() != null && !category.getColor().equals(request.getColor()))
             category.setColor(request.getColor());
 
-        if(request.getIcon() != null && !category.getCategoryIcon().equals(request.getIcon()))
-            category.setCategoryIcon(request.getIcon());
+        if(request.getIcon() != null && !request.getIcon().equals(category.getIcon().getId())) {
+            SystemImage image = this.imageService.getImageById(request.getIcon());
+
+            if(!image.getTag().equals(SystemImageTag.CATEGORY_ICON))
+                throw new ServiceException(CategoryErrorCode.INVALID_IMAGE_TAG);
+
+            category.setIcon(image);
+        }
 
         categoryRepository.save(category);
 

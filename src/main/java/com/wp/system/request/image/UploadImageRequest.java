@@ -1,0 +1,47 @@
+package com.wp.system.request.image;
+
+import com.wp.system.other.SystemImageTag;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotNull;
+
+public class UploadImageRequest {
+    @NotNull
+    private String name;
+
+    @NotNull
+    private MultipartFile file;
+
+    @NotNull
+    private SystemImageTag tag;
+
+    public UploadImageRequest() {}
+
+    public UploadImageRequest(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public SystemImageTag getTag() {
+        return tag;
+    }
+
+    public void setTag(SystemImageTag tag) {
+        this.tag = tag;
+    }
+}

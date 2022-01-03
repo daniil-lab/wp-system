@@ -2,6 +2,7 @@ package com.wp.system.entity.user;
 
 import com.wp.system.entity.auth.PhoneAuthData;
 import com.wp.system.entity.category.Category;
+import com.wp.system.entity.loyalty.LoyaltyCard;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import org.hibernate.annotations.Fetch;
@@ -33,6 +34,9 @@ public class User {
     private boolean touchId;
 
     private boolean faceId;
+
+    @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<LoyaltyCard> cards;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "role_id")

@@ -1,7 +1,6 @@
 package com.wp.system.request.category;
 
 import com.wp.system.other.CategoryColor;
-import com.wp.system.other.CategoryIcon;
 import com.wp.system.other.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
@@ -20,7 +19,7 @@ public class CreateCategoryRequest {
 
     @Schema(required = true, description = "Иконка категории")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    private CategoryIcon icon;
+    private UUID icon;
 
     @Schema(required = true, description = "Цвет категории")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
@@ -32,19 +31,19 @@ public class CreateCategoryRequest {
 
     public CreateCategoryRequest() {}
 
-    public CreateCategoryRequest(String name, String description, CategoryIcon categoryIcon, CategoryColor categoryColor, UUID userId) {
+    public CreateCategoryRequest(String name, String description, UUID UUID, CategoryColor categoryColor, java.util.UUID userId) {
         this.name = name;
         this.color = categoryColor;
         this.description = description;
-        this.icon = categoryIcon;
+        this.icon = UUID;
         this.userId = userId;
     }
 
-    public CategoryIcon getIcon() {
+    public UUID getIcon() {
         return icon;
     }
 
-    public void setIcon(CategoryIcon icon) {
+    public void setIcon(UUID icon) {
         this.icon = icon;
     }
 
@@ -72,11 +71,11 @@ public class CreateCategoryRequest {
         this.description = description;
     }
 
-    public UUID getUserId() {
+    public java.util.UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(java.util.UUID userId) {
         this.userId = userId;
     }
 }

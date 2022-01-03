@@ -1,10 +1,15 @@
 
 spring:
+  mvc:
+    static-path-pattern: /images/**
   main:
     allow-circular-references: true
   port: 8900
   application:
     name: WP
+  web:
+    resources:
+      static-locations: file:/images
 
   datasource:
     username: postgres

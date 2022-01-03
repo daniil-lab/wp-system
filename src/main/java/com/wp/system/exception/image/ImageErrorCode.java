@@ -1,12 +1,12 @@
-package com.wp.system.exception.category;
+package com.wp.system.exception.image;
 
 import com.wp.system.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-public enum CategoryErrorCode implements ErrorCode {
-    NOT_FOUND("Category not found", "Check given data", "CATEGORY_1", HttpStatus.NOT_FOUND),
-    NO_USER_ID("Pass 'userId' to Request Params", "Check given data", "CATEGORY_2", HttpStatus.BAD_REQUEST),
-    INVALID_IMAGE_TAG("Invalid image tag", "Check given data", "CATEGORY_3", HttpStatus.BAD_REQUEST);
+public enum ImageErrorCode implements ErrorCode {
+    NOT_FOUND("Image not found", "Check given data", "IMAGE_1",HttpStatus.NOT_FOUND),
+    UPLOAD_ERROR("Image not saved", "Internal error", "IMAGE_2",HttpStatus.INTERNAL_SERVER_ERROR),
+    SEND_ERROR("Can`t read image", "Internal error", "IMAGE_3",HttpStatus.INTERNAL_SERVER_ERROR);
 
     private String errorName;
 
@@ -16,7 +16,7 @@ public enum CategoryErrorCode implements ErrorCode {
 
     private HttpStatus errorHttpStatus;
 
-    CategoryErrorCode(String errorName, String errorDescription, String errorCode, HttpStatus errorHttpStatus) {
+    ImageErrorCode(String errorName, String errorDescription, String errorCode, HttpStatus errorHttpStatus) {
         this.errorName = errorName;
         this.errorDescription = errorDescription;
         this.errorCode = errorCode;

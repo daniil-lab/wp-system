@@ -1,5 +1,6 @@
 package com.wp.system.dto.category;
 
+import com.wp.system.dto.image.SystemImageDTO;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
@@ -22,7 +23,7 @@ public class CategoryDTO {
     private CategoryDTOColor color;
 
     @Schema(description = "Иконка категории")
-    private CategoryDTOIcon icon;
+    private SystemImageDTO icon;
 
     @Schema(description = "Описание категории")
     private String description;
@@ -37,7 +38,7 @@ public class CategoryDTO {
         this.id = category.getId();
         this.name = category.getName();
         this.color = new CategoryDTOColor(category.getColor());
-        this.icon = new CategoryDTOIcon(category.getCategoryIcon());
+        this.icon = new SystemImageDTO(category.getIcon());
         this.description = category.getDescription();
         this.user = new UserDTO(category.getUser());
         this.categoryLimit = category.getCategoryLimit();
@@ -67,11 +68,11 @@ public class CategoryDTO {
         this.color = color;
     }
 
-    public CategoryDTOIcon getIcon() {
+    public SystemImageDTO getIcon() {
         return icon;
     }
 
-    public void setIcon(CategoryDTOIcon icon) {
+    public void setIcon(SystemImageDTO icon) {
         this.icon = icon;
     }
 

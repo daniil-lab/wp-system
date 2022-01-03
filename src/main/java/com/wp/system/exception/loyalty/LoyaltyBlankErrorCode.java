@@ -1,12 +1,10 @@
-package com.wp.system.exception.category;
+package com.wp.system.exception.loyalty;
 
 import com.wp.system.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-public enum CategoryErrorCode implements ErrorCode {
-    NOT_FOUND("Category not found", "Check given data", "CATEGORY_1", HttpStatus.NOT_FOUND),
-    NO_USER_ID("Pass 'userId' to Request Params", "Check given data", "CATEGORY_2", HttpStatus.BAD_REQUEST),
-    INVALID_IMAGE_TAG("Invalid image tag", "Check given data", "CATEGORY_3", HttpStatus.BAD_REQUEST);
+public enum LoyaltyBlankErrorCode implements ErrorCode {
+    NOT_FOUND("Loyalty Blank not found", "Check given data", "LOYALTY_BLANK_1",HttpStatus.NOT_FOUND);
 
     private String errorName;
 
@@ -16,7 +14,7 @@ public enum CategoryErrorCode implements ErrorCode {
 
     private HttpStatus errorHttpStatus;
 
-    CategoryErrorCode(String errorName, String errorDescription, String errorCode, HttpStatus errorHttpStatus) {
+    LoyaltyBlankErrorCode(String errorName, String errorDescription, String errorCode, HttpStatus errorHttpStatus) {
         this.errorName = errorName;
         this.errorDescription = errorDescription;
         this.errorCode = errorCode;

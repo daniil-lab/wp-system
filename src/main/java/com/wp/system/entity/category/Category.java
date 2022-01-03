@@ -1,16 +1,17 @@
 package com.wp.system.entity.category;
 
+import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
 import com.wp.system.other.CategoryColor;
-import com.wp.system.other.CategoryIcon;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 public class Category {
     @Id
-    private UUID id = UUID.randomUUID();
+    private java.util.UUID id = java.util.UUID.randomUUID();
 
     private String name;
 
@@ -20,27 +21,37 @@ public class Category {
 
     private int categoryLimit;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="user_id")
     private User user;
 
-    private CategoryIcon categoryIcon;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name="icon_id")
+    private SystemImage icon;
 
     public Category() {};
 
-    public Category(String name, CategoryColor categoryColor, User user, CategoryIcon icon) {
+    public Category(String name, CategoryColor categoryColor, User user, SystemImage icon) {
         this.name = name;
         this.color = categoryColor;
         this.user = user;
-        this.categoryIcon = icon;
+        this.icon = icon;
     }
 
-    public Category(String name, CategoryColor categoryColor, String description, User user, CategoryIcon icon) {
+    public Category(String name, CategoryColor categoryColor, String description, User user, SystemImage icon) {
         this.name = name;
         this.color = categoryColor;
         this.description = description;
         this.user = user;
-        this.categoryIcon = icon;
+        this.icon = icon;
+    }
+
+    public SystemImage getIcon() {
+        return icon;
+    }
+
+    public void setIcon(SystemImage icon) {
+        this.icon = icon;
     }
 
     public int getCategoryLimit() {
@@ -59,7 +70,7 @@ public class Category {
         this.user = user;
     }
 
-    public UUID getId() {
+    public java.util.UUID getId() {
         return id;
     }
 
@@ -85,13 +96,5 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public CategoryIcon getCategoryIcon() {
-        return categoryIcon;
-    }
-
-    public void setCategoryIcon(CategoryIcon categoryIcon) {
-        this.categoryIcon = categoryIcon;
     }
 }
