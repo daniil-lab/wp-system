@@ -38,7 +38,7 @@ public class CategoryDTO {
         this.id = category.getId();
         this.name = category.getName();
         this.color = new CategoryDTOColor(category.getColor());
-        this.icon = new SystemImageDTO(category.getIcon());
+        this.icon = category.getIcon() != null ? new SystemImageDTO(category.getIcon()) : null;
         this.description = category.getDescription();
         this.user = new UserDTO(category.getUser());
         this.categoryLimit = category.getCategoryLimit();

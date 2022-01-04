@@ -20,7 +20,7 @@ public class LoyaltyBlankDTO {
         this.id = blank.getId();
         this.name = blank.getName();
         this.description = blank.getDescription();
-        this.image = new SystemImageDTO(blank.getImage());
+        this.image = blank.getImage() == null ? null : new SystemImageDTO(blank.getImage());
     }
 
     public UUID getId() {
