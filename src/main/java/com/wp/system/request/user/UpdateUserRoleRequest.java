@@ -5,25 +5,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
-import java.util.UUID;
 
-public class CreateUserRoleRequest {
+public class UpdateUserRoleRequest {
     @Schema(required = true, description = "Название роли")
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String name;
 
     @Schema(required = true, description = "Автоматическое применение к пользователю после создания." +
             " Может существовать исключительно одна таковая. Если такая уже существует, выдаст ошибку.")
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private Optional<Boolean> autoApply;
 
     @Schema(required = true, description = "Является ли данная роль ролью администратора.")
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private Optional<Boolean> isAdmin;
 
-    public CreateUserRoleRequest() {};
+    public UpdateUserRoleRequest() {};
 
-    public CreateUserRoleRequest(String name, Optional<Boolean> autoApply) {
+    public UpdateUserRoleRequest(String name, Optional<Boolean> autoApply) {
         this.name = name;
         this.autoApply = autoApply;
     }

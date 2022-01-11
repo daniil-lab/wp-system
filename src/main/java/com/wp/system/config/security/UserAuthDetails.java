@@ -15,11 +15,14 @@ public class UserAuthDetails implements UserDetails {
 
     private UserRole role;
 
+    private boolean admin;
+
     public static UserAuthDetails createUserAuthDetails(User user) {
         UserAuthDetails c = new UserAuthDetails();
         c.username = user.getUsername();
         c.password = user.getPassword();
         c.role = user.getRole();
+        c.admin = user.getRole().isAdmin();
 
         return c;
     }
@@ -57,5 +60,9 @@ public class UserAuthDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    public boolean isAdmin() {
+        return admin;
     }
 }

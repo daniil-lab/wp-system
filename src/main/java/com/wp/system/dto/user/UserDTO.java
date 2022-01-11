@@ -1,6 +1,7 @@
 package com.wp.system.dto.user;
 
 import com.wp.system.entity.user.User;
+import com.wp.system.entity.user.UserSubscription;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,6 +36,8 @@ public class UserDTO {
     @Schema(description = "Пин-код пользователя")
     private String pinCode;
 
+    private UserSubscription subscription;
+
     public UserDTO() {};
 
     public UserDTO(User user) {
@@ -47,6 +50,15 @@ public class UserDTO {
         this.touchID = user.isTouchId();
         this.faceID = user.isFaceId();
         this.pinCode = user.getPinCode();
+        this.subscription = user.getSubscription();
+    }
+
+    public UserSubscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(UserSubscription subscription) {
+        this.subscription = subscription;
     }
 
     public String getPinCode() {

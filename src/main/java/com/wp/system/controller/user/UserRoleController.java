@@ -7,6 +7,7 @@ import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.request.user.CreateUserRequest;
 import com.wp.system.request.user.CreateUserRoleRequest;
+import com.wp.system.request.user.UpdateUserRoleRequest;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.user.UserRoleService;
 import com.wp.system.services.user.UserService;
@@ -46,10 +47,18 @@ public class UserRoleController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserRoleDTO(this.userRoleService.getUserRoleById(roleId)), "User Role returned"), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('USER_ROLE_GET', 'USER_ROLE_FULL')")
+    @Operation(summary = "Получение роли по ID пользователя")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ServiceResponse<UserRoleDTO>> getUserRoleByUserId(@PathVariable UUID userId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserRoleDTO(this.userRoleService.getUserRoleByUserId(userId)), "User Role returned"), HttpStatus.OK);
+    }
+
+
     @PreAuthorize("hasAnyAuthority('USER_ROLE_UPDATE', 'USER_ROLE_FULL')")
     @Operation(summary = "Изменение роли")
     @PatchMapping("/{roleId}")
-    public ResponseEntity<ServiceResponse<UserRoleDTO>> updateUserRole(@RequestBody CreateUserRoleRequest request, @PathVariable UUID roleId) {
+    public ResponseEntity<ServiceResponse<UserRoleDTO>> updateUserRole(@RequestBody UpdateUserRoleRequest request, @PathVariable UUID roleId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserRoleDTO(this.userRoleService.updateUserRole(request, roleId)), "User Role updated"), HttpStatus.OK);
     }
 

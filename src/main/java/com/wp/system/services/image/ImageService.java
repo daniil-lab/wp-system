@@ -1,16 +1,21 @@
 package com.wp.system.services.image;
 
+import com.wp.system.config.security.AuthCredentials;
+import com.wp.system.config.security.UserAuthDetails;
 import com.wp.system.dto.image.SystemImageDTO;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.image.ImageErrorCode;
 import com.wp.system.exception.system.SystemErrorCode;
+import com.wp.system.other.AdminChecker;
 import com.wp.system.other.FileUploadUtil;
 import com.wp.system.other.SystemImageTag;
 import com.wp.system.repository.image.SystemImageRepository;
 import com.wp.system.request.image.UploadImageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.util.function.Tuple2;
@@ -33,6 +38,13 @@ import java.util.UUID;
 public class ImageService {
     @Autowired
     private SystemImageRepository systemImageRepository;
+
+    @Autowired
+    private AdminChecker adminChecker;
+
+    public List<SystemImage> getImagesByTag(SystemImageTag tag) {
+        return systemImageRepository.findByTag(tag);
+    }
 
     public List<SystemImage> getAllImages() {
         Iterable<SystemImage> foundImages = systemImageRepository.findAll();

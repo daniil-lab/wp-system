@@ -1,5 +1,6 @@
 package com.wp.system.services.user;
 
+import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.user.UserRolePermission;
 import com.wp.system.exception.ServiceException;
@@ -10,6 +11,7 @@ import com.wp.system.repository.user.UserRolePermissionRepository;
 import com.wp.system.repository.user.UserRoleRepository;
 import com.wp.system.request.user.AddPermissionToRoleRequest;
 import com.wp.system.request.user.CreateUserRoleRequest;
+import com.wp.system.request.user.UpdateUserRoleRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,12 @@ public class UserRoleService {
     @Autowired
     private PermissionManager permissionManager;
 
+    public UserRole getUserRoleByUserId(UUID id) {
+        User user = userService.getUserById(id);
+
+        return user.getRole();
+    }
+
     public List<UserRole> getAllUserRoles() {
         Iterable<UserRole> foundRoles = this.userRoleRepository.findAll();
         List<UserRole> roles = new ArrayList<>();
@@ -51,7 +59,7 @@ public class UserRoleService {
         return role;
     }
 
-    public UserRole updateUserRole(CreateUserRoleRequest request, UUID roleId) {
+    public UserRole updateUserRole(UpdateUserRoleRequest request, UUID roleId) {
         UserRole role = this.getUserRoleById(roleId);
 
         if (request.getName() != null && !role.getName().equals(request.getName()))
@@ -69,6 +77,9 @@ public class UserRoleService {
                 role.setAutoApply(request.getAutoApply().get());
             }
         }
+
+        if (request.getIsAdmin().isPresent() && role.isAutoApply() != request.getAutoApply().get())
+            role.setAdmin(request.getIsAdmin().get());
 
         userRoleRepository.save(role);
 
@@ -99,6 +110,8 @@ public class UserRoleService {
 
         if(foundRole.isPresent())
             throw new ServiceException(UserErrorCode.ROLE_ALREADY_EXIST);
+
+        userRole.setAdmin(request.getIsAdmin().get());
 
         userRoleRepository.save(userRole);
 

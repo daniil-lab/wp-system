@@ -5,6 +5,7 @@ import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.dto.image.SystemImageDTO;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.other.CategoryColor;
+import com.wp.system.other.SystemImageTag;
 import com.wp.system.request.image.UploadImageRequest;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.response.category.CategoryColorResponse;
@@ -57,6 +58,16 @@ public class ImageController extends DocumentedRestController {
             @PathVariable
                     UUID imageId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SystemImageDTO(imageService.getImageById(imageId)), "Image data returned"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('IMAGES_GET', 'IMAGES_FULL')")
+    @Operation(summary = "Получение изображений по тегу")
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping(value = "/tag/{imageTag}")
+    public ResponseEntity<ServiceResponse<List<SystemImageDTO>>> getImagesByTag(
+            @PathVariable
+                    SystemImageTag imageTag) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), imageService.getImagesByTag(imageTag).stream().map(SystemImageDTO::new).collect(Collectors.toList()), "Image data returned"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('IMAGES_GET', 'IMAGES_FULL')")

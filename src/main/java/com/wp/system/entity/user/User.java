@@ -49,6 +49,10 @@ public class User {
     @Fetch(FetchMode.SUBSELECT)
     private List<Category> categories;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "subscription_id")
+    private UserSubscription subscription;
+
 //    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
 //    @Fetch(FetchMode.SUBSELECT)
 //    private List<Bill> bills;
@@ -65,6 +69,14 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public UserSubscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(UserSubscription userSubscription) {
+        this.subscription = userSubscription;
     }
 
     public boolean isTouchId() {

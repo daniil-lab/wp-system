@@ -5,6 +5,7 @@ import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.user.UserRolePermission;
+import com.wp.system.entity.user.UserSubscription;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.exception.system.SystemErrorCode;
 import com.wp.system.exception.user.UserErrorCode;
@@ -203,6 +204,7 @@ public class UserService {
         user.setWallet(request.getWalletType());
         user.setEmail(request.getEmail());
         user.setUserType(request.getType());
+        user.setSubscription(new UserSubscription());
 
         userRepository.save(user);
 

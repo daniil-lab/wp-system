@@ -22,11 +22,21 @@ public class UserRole {
 
     private boolean autoApply;
 
+    private boolean isAdmin;
+
     public UserRole() {};
 
     public UserRole(String name, boolean autoApply) {
         this.name = name;
         this.autoApply = autoApply;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public boolean isAutoApply() {

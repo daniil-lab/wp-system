@@ -1,9 +1,11 @@
 package com.wp.system.permissions;
 
+import com.wp.system.exception.logging.SystemErrorLoggingErrorCode;
 import com.wp.system.permissions.bill.BillPermissions;
 import com.wp.system.permissions.bill.BillTransactionPermissions;
 import com.wp.system.permissions.category.CategoryPermissions;
 import com.wp.system.permissions.image.ImagePermissions;
+import com.wp.system.permissions.logging.SystemErrorLoggingPermissions;
 import com.wp.system.permissions.loyalty.LoyaltyBlankPermissions;
 import com.wp.system.permissions.loyalty.LoyaltyCardPermissions;
 import com.wp.system.permissions.notification.NotificationPermissions;
@@ -31,7 +33,7 @@ public class PermissionManager {
         permissionList.addAll(Arrays.stream(ImagePermissions.values()).toList());
         permissionList.addAll(Arrays.stream(LoyaltyBlankPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(LoyaltyCardPermissions.values()).toList());
-
+        permissionList.addAll(Arrays.stream(SystemErrorLoggingPermissions.values()).toList());
     }
 
     public Permission getPermissionBySystemName(String systemName) {

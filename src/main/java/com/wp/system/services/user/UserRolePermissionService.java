@@ -30,17 +30,12 @@ public class UserRolePermissionService {
     @Autowired
     private UserRoleService userRoleService;
 
-    public List<PermissionDTO> getAllPermissionVariants() {
-        return permissionManager.getPermissionList().stream().map(PermissionDTO::new).toList();
+    public List<UserRolePermission> getAllPermissionsInRole(UUID roleId) {
+        return userRolePermissionRepository.getAllPermissionsInRole(roleId);
     }
 
-    public List<UserRolePermission> getAllPermissions() {
-        Iterable<UserRolePermission> foundPermissions = this.userRolePermissionRepository.findAll();
-        List<UserRolePermission> permissions = new ArrayList<>();
-
-        foundPermissions.forEach(permissions::add);
-
-        return permissions;
+    public List<PermissionDTO> getAllPermissionVariants() {
+        return permissionManager.getPermissionList().stream().map(PermissionDTO::new).toList();
     }
 
     public UserRolePermission getPermissionById(UUID id) {

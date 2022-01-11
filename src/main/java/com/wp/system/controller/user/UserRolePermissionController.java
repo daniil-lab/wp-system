@@ -56,17 +56,17 @@ public class UserRolePermissionController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userRolePermissionService.getPermissionById(permissionId), "User Role Permission returns"), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('USER_ROLE_PERMISSION_GET', 'USER_ROLE_PERMISSION_FULL')")
+    @Operation(summary = "Получение прикрепленных доступов к определенной роли с указанным ID")
+    @GetMapping("/role/{roleId}")
+    public ResponseEntity<ServiceResponse<List<UserRolePermission>>> getAllPermissionsInRole(@PathVariable UUID roleId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userRolePermissionService.getAllPermissionsInRole(roleId), "User Role Permissions returns"), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAnyAuthority('USER_ROLE_PERMISSION_DELETE', 'USER_ROLE_PERMISSION_FULL')")
     @Operation(summary = "Удаление прикрепленного доступа")
     @DeleteMapping("/{permissionId}")
     public ResponseEntity<ServiceResponse<UserRolePermission>> removePermission(@PathVariable UUID permissionId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userRolePermissionService.removePermissionFromRole(permissionId), "User Role Permission returns"), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('USER_ROLE_PERMISSION_GET', 'USER_ROLE_PERMISSION_FULL')")
-    @Operation(summary = "Получение всех прикрепленных доступов")
-    @GetMapping("/")
-    public ResponseEntity<ServiceResponse<List<UserRolePermission>>> getAllPermission() {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userRolePermissionService.getAllPermissions(), "User Role Permissions returns"), HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package com.wp.system.repository.user;
 
 import com.wp.system.entity.user.UserRole;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
