@@ -89,6 +89,7 @@ public class SystemApplication implements CommandLineRunner {
 			request.setUsername("+77777777777");
 			request.setWalletType(WalletType.RUB);
 			request.setType(UserType.SYSTEM);
+			request.setRoleName("forTesting");
 
 			user = userService.createUser(request);
 		}
