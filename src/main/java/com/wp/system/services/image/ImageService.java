@@ -5,8 +5,6 @@ import com.wp.system.config.security.UserAuthDetails;
 import com.wp.system.dto.image.SystemImageDTO;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.image.ImageErrorCode;
-import com.wp.system.exception.system.SystemErrorCode;
 import com.wp.system.other.AdminChecker;
 import com.wp.system.other.FileUploadUtil;
 import com.wp.system.other.SystemImageTag;
@@ -14,6 +12,7 @@ import com.wp.system.repository.image.SystemImageRepository;
 import com.wp.system.request.image.UploadImageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -64,7 +63,7 @@ public class ImageService {
 
             return Tuples.of(bytes, Files.probeContentType(image.toPath()));
         } catch(Exception e) {
-            throw new ServiceException(ImageErrorCode.SEND_ERROR);
+            throw new ServiceException("Error on send image", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -72,7 +71,7 @@ public class ImageService {
         Optional<SystemImage> image = systemImageRepository.findById(id);
 
         if(image.isEmpty())
-            throw new ServiceException(ImageErrorCode.NOT_FOUND);
+            throw new ServiceException("Image not found", HttpStatus.NOT_FOUND);
 
         return image.get();
     }
@@ -111,7 +110,7 @@ public class ImageService {
 
             return image;
         } catch (Exception e) {
-            throw new ServiceException(ImageErrorCode.UPLOAD_ERROR);
+            throw new ServiceException("Upload error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

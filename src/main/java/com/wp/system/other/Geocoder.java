@@ -3,8 +3,8 @@ package com.wp.system.other;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.geocode.GeocodeErrorCode;
 import org.apache.http.client.utils.URIBuilder;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -35,7 +35,7 @@ public class Geocoder {
 
             return (String) data.get("display_name");
         } catch (URISyntaxException | IOException | InterruptedException e) {
-            throw new ServiceException(GeocodeErrorCode.GET_PLACE_ERROR);
+            throw new ServiceException("Geocoder error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

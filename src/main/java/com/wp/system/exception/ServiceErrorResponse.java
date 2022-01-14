@@ -11,23 +11,12 @@ public class ServiceErrorResponse {
 
     private List<String> advices = new ArrayList<>();
 
-    private String systemCode;
-
     private StackTraceElement[] trace;
 
     public ServiceErrorResponse(ServiceException e) {
         this.trace = e.getStackTrace();
         this.error = e.getMessage();
-        this.systemCode = e.getCode();
         this.status = e.getHttpCode().value();
-    }
-
-    public String getSystemCode() {
-        return systemCode;
-    }
-
-    public void setSystemCode(String systemCode) {
-        this.systemCode = systemCode;
     }
 
     public void addAdvice(String advice) {

@@ -4,6 +4,7 @@ import com.wp.system.other.ValidationErrorMessages;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -18,6 +19,8 @@ public class EditUserRequest {
 
     @Schema(required = false, description = "Пароль, закодированный в Base64")
 //    @Size(min = 6, max = 32, message = ValidationErrorMessages.INVALID_PASSWORD_LENGTH)
+    @Pattern(regexp = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$")
+    @Length(min = 1)
     private String password;
 
     @Schema(required = false, description = "Валюта пользователя")

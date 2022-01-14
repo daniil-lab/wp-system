@@ -3,7 +3,6 @@ package com.wp.system.controller.wallet;
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.permission.PermissionDTO;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.system.SystemErrorCode;
 import com.wp.system.other.CurrencySingleton;
 import com.wp.system.other.WalletType;
 import com.wp.system.response.ServiceResponse;
@@ -41,7 +40,7 @@ public class WalletController extends DocumentedRestController {
     @GetMapping("/course")
     public ResponseEntity<ServiceResponse<List<WalletCourseResponse>>> getWalletCourses() {
         if(currencySingleton.isError())
-            throw new ServiceException(SystemErrorCode.INTERNAL_ERROR);
+            throw new ServiceException("Can`t get Currency Singleton", HttpStatus.INTERNAL_SERVER_ERROR);
 
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), currencySingleton.getCourseList().stream().map(wallet -> new WalletCourseResponse(wallet.getWallet(), wallet.getCourse())).toList()), HttpStatus.OK);
     }

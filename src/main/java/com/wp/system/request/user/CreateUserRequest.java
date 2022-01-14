@@ -8,6 +8,7 @@ import com.wp.system.other.user.UserType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,8 @@ public class CreateUserRequest {
     @Schema(required = true, description = "Пароль, закодированный в Base64")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
 //    @Size(min = 6, max = 32, message = ValidationErrorMessages.INVALID_PASSWORD_LENGTH)
+    @Pattern(regexp = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$")
+    @Length(min = 1)
     private String password;
 
     @Schema(required = true, description = "Валюта пользователя")

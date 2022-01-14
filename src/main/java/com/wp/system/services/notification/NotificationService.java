@@ -6,12 +6,12 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.notification.NotificationErrorCode;
 import com.wp.system.request.notification.SendNotificationToAllUserRequest;
 import com.wp.system.request.notification.SendNotificationToUserRequest;
 import com.wp.system.response.notification.SendNotificationResponse;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class NotificationService {
 
             return new SendNotificationResponse(user, request.getHeader(), request.getBody());
         } catch (FirebaseMessagingException e) {
-            throw new ServiceException(NotificationErrorCode.SEND_ERROR);
+            throw new ServiceException("Notification send error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -77,7 +77,7 @@ public class NotificationService {
 
             return new SendNotificationResponse(null, request.getHeader(), request.getBody());
         } catch (FirebaseMessagingException e) {
-            throw new ServiceException(NotificationErrorCode.SEND_ERROR);
+            throw new ServiceException("Notification not send", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

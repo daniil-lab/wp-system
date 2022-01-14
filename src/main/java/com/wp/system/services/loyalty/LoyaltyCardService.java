@@ -4,12 +4,12 @@ import com.wp.system.entity.loyalty.LoyaltyBlank;
 import com.wp.system.entity.loyalty.LoyaltyCard;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.loyalty.LoyaltyCardErrorCode;
 import com.wp.system.repository.loyalty.LoyaltyCardRepository;
 import com.wp.system.request.loyalty.CreateLoyaltyCardRequest;
 import com.wp.system.request.loyalty.UpdateLoyaltyCardRequest;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -46,7 +46,7 @@ public class LoyaltyCardService {
         Optional<LoyaltyCard> card = loyaltyCardRepository.findById(id);
 
         if(card.isEmpty())
-            throw new ServiceException(LoyaltyCardErrorCode.NOT_FOUND);
+            throw new ServiceException("Loyalty Card not found", HttpStatus.NOT_FOUND);
 
         return card.get();
     }

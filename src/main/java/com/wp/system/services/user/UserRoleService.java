@@ -4,7 +4,6 @@ import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.user.UserRolePermission;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.user.UserErrorCode;
 import com.wp.system.permissions.Permission;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRolePermissionRepository;
@@ -13,6 +12,7 @@ import com.wp.system.request.user.AddPermissionToRoleRequest;
 import com.wp.system.request.user.CreateUserRoleRequest;
 import com.wp.system.request.user.UpdateUserRoleRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -72,7 +72,7 @@ public class UserRoleService {
                 if (userRole.isEmpty())
                     role.setAutoApply(true);
                 else
-                    throw new ServiceException(UserErrorCode.AUTOAPPLY_ROLE_ALREADY_EXIST);
+                    throw new ServiceException("Auto apply role already exist", HttpStatus.BAD_REQUEST);
             } else {
                 role.setAutoApply(request.getAutoApply().get());
             }
@@ -90,7 +90,7 @@ public class UserRoleService {
         Optional<UserRole> userRole = this.userRoleRepository.findByAutoApply(true);
 
         if(userRole.isEmpty())
-            throw new ServiceException(UserErrorCode.AUTOAPPLY_ROLE_NOT_FOUND);
+            throw new ServiceException("Auto apply role not found", HttpStatus.NOT_FOUND);
 
         return userRole.get();
     }
@@ -101,7 +101,7 @@ public class UserRoleService {
             Optional<UserRole> existRole = this.userRoleRepository.findByAutoApply(true);
 
             if(existRole.isPresent())
-                throw new ServiceException(UserErrorCode.AUTOAPPLY_ROLE_ALREADY_EXIST);
+                throw new ServiceException("Auto apply role already exist", HttpStatus.BAD_REQUEST);
         }
 
         UserRole userRole = new UserRole(request.getName(), request.getAutoApply().get());
@@ -109,7 +109,7 @@ public class UserRoleService {
         Optional<UserRole> foundRole = this.userRoleRepository.findByName(request.getName());
 
         if(foundRole.isPresent())
-            throw new ServiceException(UserErrorCode.ROLE_ALREADY_EXIST);
+            throw new ServiceException("Role with given name already exist", HttpStatus.BAD_REQUEST);
 
         userRole.setAdmin(request.getIsAdmin().get());
 
@@ -122,7 +122,7 @@ public class UserRoleService {
         Optional<UserRole> userRole = this.userRoleRepository.findById(id);
 
         if(userRole.isEmpty())
-            throw new ServiceException(UserErrorCode.ROLE_NOT_FOUND);
+            throw new ServiceException("Role not found", HttpStatus.NOT_FOUND);
 
         return userRole.get();
     }
@@ -131,7 +131,7 @@ public class UserRoleService {
         Optional<UserRole> userRole = this.userRoleRepository.findByName(name);
 
         if(userRole.isEmpty())
-            throw new ServiceException(UserErrorCode.ROLE_NOT_FOUND);
+            throw new ServiceException("Role not found", HttpStatus.NOT_FOUND);
 
         return userRole.get();
     }

@@ -3,12 +3,12 @@ package com.wp.system.services.loyalty;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.loyalty.LoyaltyBlank;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.loyalty.LoyaltyBlankErrorCode;
 import com.wp.system.repository.loyalty.LoyaltyBlankRepository;
 import com.wp.system.request.loyalty.CreateLoyaltyBlankRequest;
 import com.wp.system.request.loyalty.UpdateLoyaltyBlankRequest;
 import com.wp.system.services.image.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -73,7 +73,7 @@ public class LoyaltyBlankService {
         Optional<LoyaltyBlank> blank = loyaltyBlankRepository.findById(id);
 
         if(blank.isEmpty())
-            throw new ServiceException(LoyaltyBlankErrorCode.NOT_FOUND);
+            throw new ServiceException("Loyalty Blank not found", HttpStatus.NOT_FOUND);
 
         return blank.get();
     }

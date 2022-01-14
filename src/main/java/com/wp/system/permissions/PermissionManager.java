@@ -1,14 +1,17 @@
 package com.wp.system.permissions;
 
-import com.wp.system.exception.logging.SystemErrorLoggingErrorCode;
+import com.wp.system.entity.subscription.SubscriptionVariant;
 import com.wp.system.permissions.bill.BillPermissions;
 import com.wp.system.permissions.bill.BillTransactionPermissions;
 import com.wp.system.permissions.category.CategoryPermissions;
 import com.wp.system.permissions.image.ImagePermissions;
+import com.wp.system.permissions.logging.SystemAdminLoggingPermissions;
 import com.wp.system.permissions.logging.SystemErrorLoggingPermissions;
 import com.wp.system.permissions.loyalty.LoyaltyBlankPermissions;
 import com.wp.system.permissions.loyalty.LoyaltyCardPermissions;
 import com.wp.system.permissions.notification.NotificationPermissions;
+import com.wp.system.permissions.subscription.SubscriptionPermissions;
+import com.wp.system.permissions.subscription.SubscriptionVariantPermissions;
 import com.wp.system.permissions.user.UserPermissions;
 import com.wp.system.permissions.user.UserRolePermissionPermissions;
 import com.wp.system.permissions.user.UserRolePermissions;
@@ -34,6 +37,9 @@ public class PermissionManager {
         permissionList.addAll(Arrays.stream(LoyaltyBlankPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(LoyaltyCardPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(SystemErrorLoggingPermissions.values()).toList());
+        permissionList.addAll(Arrays.stream(SystemAdminLoggingPermissions.values()).toList());
+        permissionList.addAll(Arrays.stream(SubscriptionPermissions.values()).toList());
+        permissionList.addAll(Arrays.stream(SubscriptionVariantPermissions.values()).toList());
     }
 
     public Permission getPermissionBySystemName(String systemName) {

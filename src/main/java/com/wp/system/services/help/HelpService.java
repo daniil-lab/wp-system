@@ -2,10 +2,10 @@ package com.wp.system.services.help;
 
 import com.wp.system.entity.help.HelpLead;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.help.HelpErrorCode;
 import com.wp.system.repository.help.HelpLeadRepository;
 import com.wp.system.request.help.CreateHelpLeadRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -40,7 +40,7 @@ public class HelpService {
         Optional<HelpLead> foundLead = this.helpLeadRepository.findById(id);
 
         if(foundLead.isEmpty())
-            throw new ServiceException(HelpErrorCode.NOT_FOUND);
+            throw new ServiceException("Help Lead not found", HttpStatus.NOT_FOUND);
 
         return foundLead.get();
     }

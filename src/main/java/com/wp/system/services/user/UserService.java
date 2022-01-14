@@ -4,17 +4,11 @@ import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
-import com.wp.system.entity.user.UserRolePermission;
-import com.wp.system.entity.user.UserSubscription;
+import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.system.SystemErrorCode;
-import com.wp.system.exception.user.UserErrorCode;
 import com.wp.system.other.CSVConverter;
 import com.wp.system.other.CurrencySingleton;
 import com.wp.system.other.CurrencySingletonCourse;
-import com.wp.system.other.bill.BillBalanceAction;
-import com.wp.system.other.email.local.LocalMailSender;
-import com.wp.system.permissions.Permission;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRolePermissionRepository;
@@ -23,17 +17,14 @@ import com.wp.system.request.user.*;
 import com.wp.system.services.bill.BillService;
 import com.wp.system.services.bill.BillTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -118,7 +109,7 @@ public class UserService {
 
             return csvFile;
         } catch (FileNotFoundException e) {
-            throw new ServiceException(SystemErrorCode.INTERNAL_ERROR);
+            throw new ServiceException("Error on ejecting data", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -126,7 +117,7 @@ public class UserService {
         User user = this.getUserById(request.getUserId());
 
         if(user.getDeviceTokens().contains(request.getToken()))
-            throw new ServiceException(UserErrorCode.DEVICE_TOKEN_ALREADY_EXIST);
+            throw new ServiceException("Device token already exist", HttpStatus.BAD_REQUEST);
 
         user.addDeviceToken(request.getToken());
 
@@ -189,7 +180,7 @@ public class UserService {
         Optional<User> foundUser = this.userRepository.findByUsername(request.getUsername());
 
         if(foundUser.isPresent())
-            throw new ServiceException(UserErrorCode.ALREADY_EXIST);
+            throw new ServiceException("User with given phone already exist", HttpStatus.BAD_REQUEST);
 
         UserRole role = null;
 
@@ -204,7 +195,7 @@ public class UserService {
         user.setWallet(request.getWalletType());
         user.setEmail(request.getEmail());
         user.setUserType(request.getType());
-        user.setSubscription(new UserSubscription());
+        user.setSubscription(new Subscription());
 
         userRepository.save(user);
 
@@ -215,7 +206,7 @@ public class UserService {
         Optional<User> foundUser = this.userRepository.findByUsername(username);
 
         if(foundUser.isEmpty())
-            throw new ServiceException(UserErrorCode.NOT_FOUND);
+            throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
 
         return foundUser.get();
     }
@@ -233,7 +224,7 @@ public class UserService {
         Optional<User> foundUser = this.userRepository.findById(id);
 
         if(foundUser.isEmpty())
-            throw new ServiceException(UserErrorCode.NOT_FOUND);
+            throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
 
         return foundUser.get();
     }

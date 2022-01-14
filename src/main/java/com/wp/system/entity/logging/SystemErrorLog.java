@@ -1,10 +1,11 @@
 package com.wp.system.entity.logging;
 
-import com.wp.system.exception.ErrorCode;
 import com.wp.system.exception.ServiceException;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -15,22 +16,68 @@ public class SystemErrorLog {
 
     private String name;
 
-    private String errorCode;
+    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private Instant createAt;
 
-    private String trace;
+    private ErrorLogSource source;
+
+    private String additional;
+
+    @Column(columnDefinition="TEXT")
+    private String lastTrace;
 
     public SystemErrorLog() {}
 
-    public SystemErrorLog(String name, String errorCode, String trace) {
-        this.name = name;
-        this.errorCode = errorCode;
-        this.trace = trace;
-    }
-
     public SystemErrorLog(ServiceException error) {
         this.name = error.getMessage();
-        this.errorCode = error.getCode();
-        this.trace = Arrays.toString(error.getStackTrace());
+        this.createAt = Instant.now();
+        this.lastTrace = error.getLastTrace();
+        this.additional = error.getDescription();
+    }
+
+    public SystemErrorLog(String name, ErrorLogSource source, String additional) {
+        this.name = name;
+        this.source = source;
+        this.additional = additional;
+        this.createAt = Instant.now();
+    }
+
+    public SystemErrorLog(String name, ErrorLogSource source) {
+        this.name = name;
+        this.source = source;
+        this.createAt = Instant.now();
+    }
+
+    public String getLastTrace() {
+        return lastTrace;
+    }
+
+    public void setLastTrace(String lastTrace) {
+        this.lastTrace = lastTrace;
+    }
+
+    public String getAdditional() {
+        return additional;
+    }
+
+    public void setAdditional(String additional) {
+        this.additional = additional;
+    }
+
+    public Instant getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Instant createAt) {
+        this.createAt = createAt;
+    }
+
+    public ErrorLogSource getSource() {
+        return source;
+    }
+
+    public void setSource(ErrorLogSource source) {
+        this.source = source;
     }
 
     public UUID getId() {
@@ -45,19 +92,4 @@ public class SystemErrorLog {
         this.name = name;
     }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getTrace() {
-        return trace;
-    }
-
-    public void setTrace(String trace) {
-        this.trace = trace;
-    }
 }

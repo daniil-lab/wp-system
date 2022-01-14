@@ -1,12 +1,8 @@
 package com.wp.system.other.email.local;
 
-import com.dumbster.smtp.SimpleSmtpServer;
 import com.wp.system.other.EmailCredData;
 import com.wp.system.other.EmailSender;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.Properties;
 
@@ -34,24 +30,10 @@ public class LocalMailSender implements EmailSender {
             mailProps.setProperty("mail.smtp.port", "25");
             mailProps.setProperty("mail.smtp.auth", String.valueOf(true));
 
-            Session session = Session.getInstance(mailProps, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("foo@bar.com", "123");
-                }
-            });
-
             System.out.println(from.getEmail());
             System.out.println(to.getEmail());
 
-            MimeMessage msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("developerdaniil@gmail.com"));
-            msg.setSubject(subject);
-            msg.setSentDate(new Date());
-            msg.setText(body);
-            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(to.getEmail()));
-
-            Transport.send(msg);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);

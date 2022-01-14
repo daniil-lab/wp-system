@@ -3,10 +3,9 @@ package com.wp.system.services.bill;
 import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.transaction.Transaction;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.bill.BillErrorCode;
-import com.wp.system.exception.bill.BillTransactionErrorCode;
 import com.wp.system.repository.bill.BillTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -34,7 +33,7 @@ public class BillTransactionService {
         Optional<BillTransaction> foundTransaction = billTransactionRepository.findById(transactionId);
 
         if(foundTransaction.isEmpty())
-            throw new ServiceException(BillTransactionErrorCode.NOT_FOUND);
+            throw new ServiceException("Bill Transaction not found", HttpStatus.NOT_FOUND);
 
         return foundTransaction.get();
     }
@@ -46,7 +45,7 @@ public class BillTransactionService {
                                                             UUID billId,
                                                             UUID categoryId) {
         if (userId == null && billId == null)
-            throw new ServiceException(BillErrorCode.NOT_FOUND_PARAMS);
+            throw new ServiceException("Pass to Request Params userId or billId", HttpStatus.BAD_REQUEST);
 
         List<BillTransaction> transactions = null;
 

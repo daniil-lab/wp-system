@@ -6,7 +6,6 @@ import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.bill.BillErrorCode;
 import com.wp.system.other.Geocoder;
 import com.wp.system.other.bill.BillBalanceFacade;
 import com.wp.system.other.bill.BillBalanceFacadeFactory;
@@ -20,6 +19,7 @@ import com.wp.system.request.bill.WithdrawBillRequest;
 import com.wp.system.services.category.CategoryService;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -88,7 +88,7 @@ public class BillService {
         Optional<Bill> bill = this.billRepository.findById(id);
 
         if(bill.isEmpty())
-            throw new ServiceException(BillErrorCode.NOT_FOUND);
+            throw new ServiceException("Bill not found.", HttpStatus.NOT_FOUND);
 
         return bill.get();
     }

@@ -14,6 +14,7 @@ public class AuthRequest {
 
     @Schema(required = true, description = "Пароль, закодированный в Base64")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    @Pattern(regexp = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$")
     private String password;
 
     public AuthRequest() {};

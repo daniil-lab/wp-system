@@ -1,6 +1,5 @@
 package com.wp.system.entity.logging;
 
-import com.wp.system.entity.admin.Admin;
 import com.wp.system.entity.user.User;
 
 import javax.persistence.*;
@@ -12,36 +11,36 @@ public class SystemAdminLog {
     @Id
     private UUID id = UUID.randomUUID();
 
-    private String name;
+    private String action;
 
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="admin_id")
-    private Admin admin;
+    private User admin;
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant date;
 
     public SystemAdminLog() {}
 
-    public SystemAdminLog(String name, String description, Admin admin, Instant date) {
-        this.name = name;
+    public SystemAdminLog(String action, String description, User admin) {
+        this.action = action;
         this.description = description;
         this.admin = admin;
-        this.date = date;
+        this.date = Instant.now();
     }
 
     public UUID getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getAction() {
+        return action;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public String getDescription() {
@@ -52,11 +51,11 @@ public class SystemAdminLog {
         this.description = description;
     }
 
-    public Admin getUser() {
+    public User getUser() {
         return admin;
     }
 
-    public void setUser(Admin user) {
+    public void setUser(User user) {
         this.admin = user;
     }
 

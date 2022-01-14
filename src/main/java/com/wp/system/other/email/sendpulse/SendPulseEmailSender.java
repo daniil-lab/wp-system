@@ -1,11 +1,11 @@
 package com.wp.system.other.email.sendpulse;
 
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.system.SystemErrorCode;
 import com.wp.system.other.EmailSender;
 import com.wp.system.other.EmailCredData;
 import com.wp.system.other.sendpulse.SendPulseData;
 import com.wp.system.other.sendpulse.SendPulseIntegration;
+import org.springframework.http.HttpStatus;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -81,11 +81,11 @@ public class SendPulseEmailSender extends SendPulseIntegration implements EmailS
             System.out.println(sendResponse.body());
 
             if(sendResponse.statusCode() != 200)
-                throw new ServiceException(SystemErrorCode.INTERNAL_ERROR);
+                throw new ServiceException("Error on send mail", HttpStatus.INTERNAL_SERVER_ERROR);
 
             return true;
         } catch (Exception e) {
-            throw new ServiceException(SystemErrorCode.INTERNAL_ERROR);
+            throw new ServiceException("Error on send mail", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

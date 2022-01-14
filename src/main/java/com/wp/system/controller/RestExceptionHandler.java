@@ -1,9 +1,11 @@
 package com.wp.system.controller;
 
+import com.wp.system.entity.logging.ErrorLogSource;
 import com.wp.system.exception.ServiceErrorResponse;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.auth.AuthErrorCode;
-import com.wp.system.exception.system.SystemErrorCode;
+import com.wp.system.request.logging.CreateErrorLogRequest;
+import com.wp.system.services.logging.SystemErrorLogger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -28,8 +30,12 @@ import java.util.List;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
+    @Autowired
+    private SystemErrorLogger systemErrorLogger;
+
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ServiceErrorResponse> handleServiceException(ServiceException e) {
+        systemErrorLogger.createErrorLog(e);
         return new ResponseEntity<>(new ServiceErrorResponse(e), e.getHttpCode());
     }
 
@@ -44,15 +50,25 @@ public class RestExceptionHandler {
             advices.add("%s - %s".formatted(fieldName, errorMessage));
         });
 
-        ServiceErrorResponse errorResponse = new ServiceErrorResponse(new ServiceException(SystemErrorCode.VALIDATION_FAILED));
+        ServiceException exception = new ServiceException("Request body validation failed", HttpStatus.BAD_REQUEST);
+
+        ServiceErrorResponse errorResponse = new ServiceErrorResponse(exception);
 
         advices.forEach(errorResponse::addAdvice);
+
+        systemErrorLogger.createErrorLog(exception);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ServiceErrorResponse> handleNotReadableException(HttpMessageNotReadableException e) {
-        return new ResponseEntity<>(new ServiceErrorResponse(new ServiceException(SystemErrorCode.CANT_READ)), HttpStatus.BAD_REQUEST);
+        ServiceException exception = new ServiceException("Can`t read Request body", HttpStatus.BAD_REQUEST);
+
+        systemErrorLogger.createErrorLog(exception);
+
+
+        return new ResponseEntity<>(new ServiceErrorResponse(exception), HttpStatus.BAD_REQUEST);
     }
 
 

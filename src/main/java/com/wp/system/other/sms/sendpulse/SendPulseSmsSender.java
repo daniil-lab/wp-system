@@ -3,12 +3,10 @@ package com.wp.system.other.sms.sendpulse;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.auth.AuthErrorCode;
-import com.wp.system.exception.sms.SmsErrorCode;
-import com.wp.system.exception.system.SystemErrorCode;
 import com.wp.system.other.sendpulse.SendPulseData;
 import com.wp.system.other.sendpulse.SendPulseIntegration;
 import com.wp.system.other.SmsSender;
+import org.springframework.http.HttpStatus;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -30,7 +28,7 @@ public class SendPulseSmsSender extends SendPulseIntegration implements SmsSende
     @Override
     public boolean send() {
         if(phone == null || body == null)
-            throw new ServiceException(SmsErrorCode.NOT_SEND);
+            throw new ServiceException("Body or phone not found", HttpStatus.INTERNAL_SERVER_ERROR);
 
         try {
             Map<String, Object> data = new HashMap<>();
@@ -50,11 +48,11 @@ public class SendPulseSmsSender extends SendPulseIntegration implements SmsSende
             HttpResponse<String> sendResponse = HttpClient.newBuilder().build().send(sendRequest, HttpResponse.BodyHandlers.ofString());
 
             if(sendResponse.statusCode() != 200)
-                throw new ServiceException(SmsErrorCode.NOT_SEND);
+                throw new ServiceException("Sms does`t send", HttpStatus.INTERNAL_SERVER_ERROR);
 
             return true;
         } catch (Exception e) {
-            throw new ServiceException(SmsErrorCode.NOT_SEND);
+            throw new ServiceException("Sms does`t send", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

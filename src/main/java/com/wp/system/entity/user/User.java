@@ -3,12 +3,14 @@ package com.wp.system.entity.user;
 import com.wp.system.entity.auth.PhoneAuthData;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.loyalty.LoyaltyCard;
+import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +53,10 @@ public class User {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "subscription_id")
-    private UserSubscription subscription;
+    private Subscription subscription;
+
+    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private Instant createAt;
 
 //    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
 //    @Fetch(FetchMode.SUBSELECT)
@@ -69,13 +74,22 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.createAt = Instant.now();
     }
 
-    public UserSubscription getSubscription() {
+    public Instant getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Instant createAt) {
+        this.createAt = createAt;
+    }
+
+    public Subscription getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(UserSubscription userSubscription) {
+    public void setSubscription(Subscription userSubscription) {
         this.subscription = userSubscription;
     }
 

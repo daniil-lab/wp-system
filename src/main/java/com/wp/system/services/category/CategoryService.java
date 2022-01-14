@@ -4,7 +4,6 @@ import com.wp.system.entity.category.Category;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.category.CategoryErrorCode;
 import com.wp.system.other.SystemImageTag;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.request.category.CreateCategoryRequest;
@@ -12,6 +11,7 @@ import com.wp.system.request.category.EditCategoryRequest;
 import com.wp.system.services.image.ImageService;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -31,9 +31,6 @@ public class CategoryService {
     private ImageService imageService;
 
     public List<Category> getUserCategories(UUID userId) {
-        if(userId == null)
-            throw new ServiceException(CategoryErrorCode.NO_USER_ID);
-
         return categoryRepository.getAllUserCategories(userId);
     }
 
@@ -42,7 +39,7 @@ public class CategoryService {
         SystemImage image = this.imageService.getImageById(request.getIcon());
 
         if(!image.getTag().equals(SystemImageTag.CATEGORY_ICON))
-            throw new ServiceException(CategoryErrorCode.INVALID_IMAGE_TAG);
+            throw new ServiceException("Invalid Image Tag", HttpStatus.BAD_REQUEST);
 
         Category category = new Category(request.getName(), request.getColor(), request.getDescription(), user, image);
 
@@ -67,7 +64,7 @@ public class CategoryService {
             SystemImage image = this.imageService.getImageById(request.getIcon());
 
             if(!image.getTag().equals(SystemImageTag.CATEGORY_ICON))
-                throw new ServiceException(CategoryErrorCode.INVALID_IMAGE_TAG);
+                throw new ServiceException("Invalid Image tag", HttpStatus.BAD_REQUEST);
 
             category.setIcon(image);
         }
@@ -90,7 +87,7 @@ public class CategoryService {
         Optional<Category> foundCategory = this.categoryRepository.findById(id);
 
         if(foundCategory.isEmpty())
-            throw new ServiceException(CategoryErrorCode.NOT_FOUND);
+            throw new ServiceException("Category not found", HttpStatus.BAD_REQUEST);
 
         return foundCategory.get();
     }

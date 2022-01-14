@@ -2,23 +2,26 @@ package com.wp.system.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class ServiceException extends RuntimeException {
-    private String code;
+import java.util.Arrays;
 
+public class ServiceException extends RuntimeException {
     private HttpStatus httpCode;
 
-    public ServiceException(ErrorCode data) {
-        super(data.getErrorName());
-        this.code = data.getErrorCode();
-        this.httpCode = data.getErrorHttpStatus();
+    private String description;
+
+    private String lastTrace;
+
+    public ServiceException(String errorName, HttpStatus httpStatus) {
+        super(errorName);
+        this.httpCode = httpStatus;
+        this.lastTrace = Arrays.toString(this.getStackTrace());
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public ServiceException(String errorName, HttpStatus httpStatus, String description) {
+        super(errorName);
+        this.httpCode = httpStatus;
+        this.description = description;
+        this.lastTrace = Arrays.toString(this.getStackTrace());
     }
 
     public HttpStatus getHttpCode() {
@@ -27,5 +30,21 @@ public class ServiceException extends RuntimeException {
 
     public void setHttpCode(HttpStatus httpCode) {
         this.httpCode = httpCode;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLastTrace() {
+        return lastTrace;
+    }
+
+    public void setLastTrace(String lastTrace) {
+        this.lastTrace = lastTrace;
     }
 }

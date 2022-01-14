@@ -3,7 +3,7 @@ package com.wp.system.config.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.exception.ServiceErrorResponse;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.auth.AuthErrorCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,6 +21,6 @@ public class AuthExceptionHandler implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json");
         response.setStatus(401);
-        response.getOutputStream().println(new ObjectMapper().writeValueAsString(new ServiceErrorResponse(new ServiceException(AuthErrorCode.NO_AUTH))));
+        response.getOutputStream().println(new ObjectMapper().writeValueAsString(new ServiceErrorResponse(new ServiceException("No auth", HttpStatus.UNAUTHORIZED))));
     }
 }

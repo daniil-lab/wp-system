@@ -1,19 +1,37 @@
 package com.wp.system.request.logging;
 
-public class CreateErrorLogRequest {
+import com.wp.system.entity.logging.ErrorLogSource;
 
+import javax.validation.constraints.NotNull;
+
+public class CreateErrorLogRequest {
+    @NotNull
     private String name;
 
-    private String code;
+    @NotNull
+    private ErrorLogSource source;
 
-    private String trace;
+    private String additional;
 
     public CreateErrorLogRequest() {}
 
-    public CreateErrorLogRequest(String name, String code, String trace) {
+    public CreateErrorLogRequest(String name, ErrorLogSource source) {
         this.name = name;
-        this.code = code;
-        this.trace = trace;
+        this.source = source;
+    }
+
+    public CreateErrorLogRequest(String name, ErrorLogSource source, String additional) {
+        this.name = name;
+        this.source = source;
+        this.additional = additional;
+    }
+
+    public ErrorLogSource getSource() {
+        return source;
+    }
+
+    public void setSource(ErrorLogSource source) {
+        this.source = source;
     }
 
     public String getName() {
@@ -24,19 +42,11 @@ public class CreateErrorLogRequest {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
+    public String getAdditional() {
+        return additional;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getTrace() {
-        return trace;
-    }
-
-    public void setTrace(String trace) {
-        this.trace = trace;
+    public void setAdditional(String additional) {
+        this.additional = additional;
     }
 }

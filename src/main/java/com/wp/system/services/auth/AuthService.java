@@ -5,8 +5,6 @@ import com.wp.system.entity.auth.PhoneAuthData;
 import com.wp.system.entity.auth.SmsSubmit;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.auth.AuthErrorCode;
-import com.wp.system.exception.user.UserErrorCode;
 import com.wp.system.other.*;
 import com.wp.system.other.sms.sendpulse.SendPulseSmsSender;
 import com.wp.system.repository.auth.PhoneAuthRequestRepository;
@@ -19,6 +17,7 @@ import com.wp.system.response.auth.PhoneAuthRequestResponse;
 import com.wp.system.response.auth.SmsSubmitResponse;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +82,7 @@ public class AuthService {
         smsSender.setContent("Ваш код для подтверждения: " + code);
 
         if(!smsSender.send())
-            throw new ServiceException(AuthErrorCode.SMS_NOT_SEND);
+            throw new ServiceException("SMS does`t send", HttpStatus.INTERNAL_SERVER_ERROR);
 
         return new SmsSubmitResponse(smsSubmit.getId());
     }
@@ -92,12 +91,12 @@ public class AuthService {
         Optional<SmsSubmit> foundSubmit = this.smsSubmitRepository.findById(request.getId());
 
         if(foundSubmit.isEmpty())
-            throw new ServiceException(AuthErrorCode.INVALID_SMS_SUBMIT_ID);
+            throw new ServiceException("Invalid SMSSubmit ID", HttpStatus.BAD_REQUEST);
 
         SmsSubmit smsSubmit = foundSubmit.get();
 
         if(smsSubmit.getCode() != request.getCode())
-            throw new ServiceException(AuthErrorCode.INVALID_SMS_CODE);
+            throw new ServiceException("Invalid SMS code", HttpStatus.BAD_REQUEST);
 
         smsSubmitRepository.delete(smsSubmit);
 
@@ -108,12 +107,12 @@ public class AuthService {
         Optional<SmsSubmit> foundSubmit = this.smsSubmitRepository.findById(request.getId());
 
         if(foundSubmit.isEmpty())
-            throw new ServiceException(AuthErrorCode.INVALID_SMS_SUBMIT_ID);
+            throw new ServiceException("Invalid SMSSubmit ID", HttpStatus.BAD_REQUEST);
 
         SmsSubmit smsSubmit = foundSubmit.get();
 
         if(smsSubmit.getCode() != request.getCode())
-            throw new ServiceException(AuthErrorCode.INVALID_SMS_CODE);
+            throw new ServiceException("Invalid SMS code", HttpStatus.BAD_REQUEST);
 
         smsSubmitRepository.delete(smsSubmit);
 
@@ -126,7 +125,7 @@ public class AuthService {
         Optional<User> foundUser = this.userRepository.findByEmail(request.getEmail());
 
         if(foundUser.isEmpty())
-            throw new ServiceException(UserErrorCode.NOT_FOUND);
+            throw new ServiceException("User with given EMAIL not found", HttpStatus.BAD_REQUEST);
 
         User user = foundUser.get();
 
@@ -135,7 +134,7 @@ public class AuthService {
         if(passwordEncoder.matches(new String(passwordBytes), user.getPassword()))
             return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
 
-        throw new ServiceException(AuthErrorCode.INVALID_DATA);
+        throw new ServiceException("Check given data. Auth failed.", HttpStatus.BAD_REQUEST);
     }
 
     public AuthDataResponse authUser(AuthRequest request) {
@@ -146,15 +145,6 @@ public class AuthService {
         if(passwordEncoder.matches(new String(passwordBytes), user.getPassword()))
             return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
 
-        throw new ServiceException(AuthErrorCode.INVALID_DATA);
-    }
-
-    public PhoneAuthData getPhoneAuthDataById(UUID id) {
-        Optional<PhoneAuthData> phoneAuthData = this.phoneAuthRequestRepository.findById(id);
-
-        if(phoneAuthData.isEmpty())
-            throw new ServiceException(AuthErrorCode.PHONE_AUTH_DATA_NOT_FOUND);
-
-        return phoneAuthData.get();
+        throw new ServiceException("Check given data. Auth failed.", HttpStatus.BAD_REQUEST);
     }
 }

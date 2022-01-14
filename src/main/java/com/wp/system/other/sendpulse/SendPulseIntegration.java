@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.exception.sendpulse.SendPulseErrorCode;
-import com.wp.system.exception.system.SystemErrorCode;
+import org.springframework.http.HttpStatus;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -53,7 +52,7 @@ public class SendPulseIntegration {
 
             return (String) responseData.get("access_token");
         } catch (Exception e) {
-            throw new ServiceException(SendPulseErrorCode.AUTH_ERROR);
+            throw new ServiceException("SendPulse integration auth error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
