@@ -2,6 +2,7 @@ package com.wp.system.dto.user;
 
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.subscription.Subscription;
+import com.wp.system.entity.user.UserEmail;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +20,7 @@ public class UserDTO {
     private UserRoleDTO role;
 
     @Schema(description = "Электронная почта пользователя")
-    private String email;
+    private UserEmail email;
 
     @Schema(description = "Тип пользователя")
     private UserType type;
@@ -90,11 +91,11 @@ public class UserDTO {
         this.type = type;
     }
 
-    public String getEmail() {
+    public UserEmail getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(UserEmail email) {
         this.email = email;
     }
 

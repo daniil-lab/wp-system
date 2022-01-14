@@ -25,10 +25,18 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 
 @SpringBootApplication
 @SecurityScheme(
@@ -58,6 +66,9 @@ public class SystemApplication implements CommandLineRunner {
 
 	@Autowired
 	private PermissionManager permissionManager;
+
+	@Autowired
+	private JavaMailSender mailSender;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SystemApplication.class, args);

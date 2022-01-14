@@ -25,7 +25,8 @@ public class User {
 
     private String password;
 
-    private String email;
+    @Embedded
+    private UserEmail email;
 
     private UserType userType;
 
@@ -165,11 +166,11 @@ public class User {
         return wallet;
     }
 
-    public String getEmail() {
+    public UserEmail getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(UserEmail email) {
         this.email = email;
     }
 

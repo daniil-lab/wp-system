@@ -1,8 +1,8 @@
 package com.wp.system.controller.system;
 
-import com.wp.system.entity.SystemData;
+import com.wp.system.entity.PublicData;
 import com.wp.system.response.ServiceResponse;
-import com.wp.system.services.system.SystemDataService;
+import com.wp.system.services.system.PublicDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "System Data API")
 @RequestMapping("/api/v1/system-data")
-public class SystemDataController {
+public class PublicDataController {
     @Autowired
-    private SystemDataService systemDataService;
+    private PublicDataService publicDataService;
 
-    @Operation(summary = "Получение объекта системных данных")
+    @Operation(summary = "Получение объекта публичных данных")
     @GetMapping("/")
-    public ResponseEntity<ServiceResponse<SystemData>> getSystemData() {
+    public ResponseEntity<ServiceResponse<PublicData>> getPublicData() {
         return new ResponseEntity<>(new ServiceResponse<>(
                 HttpStatus.OK.value(),
-                systemDataService.getSystemData(),
-                "System data returned"
+                publicDataService.getPublicData(),
+                "Public data returned"
         ), HttpStatus.OK);
     }
 }

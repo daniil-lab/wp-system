@@ -3,7 +3,7 @@ package com.wp.system.entity;
 import java.io.Serializable;
 import java.util.List;
 
-public class SystemData implements Serializable {
+public class PublicData implements Serializable {
     private String website;
 
     private String confPolicy;
@@ -20,7 +20,7 @@ public class SystemData implements Serializable {
 
     private List<String> emails;
 
-    public SystemData() {}
+    public PublicData() {}
 
     public String getWebsite() {
         return website;
