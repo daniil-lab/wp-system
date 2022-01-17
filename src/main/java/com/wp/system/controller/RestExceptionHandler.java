@@ -1,5 +1,6 @@
 package com.wp.system.controller;
 
+import com.sun.mail.smtp.SMTPAddressFailedException;
 import com.wp.system.entity.logging.ErrorLogSource;
 import com.wp.system.exception.ServiceErrorResponse;
 import com.wp.system.exception.ServiceException;
@@ -11,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mail.MailSendException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.mail.SendFailedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -32,6 +35,13 @@ public class RestExceptionHandler {
 
     @Autowired
     private SystemErrorLogger systemErrorLogger;
+
+//    @ExceptionHandler(MailSendException.class)
+//    public ResponseEntity<ServiceErrorResponse> handleSMPTAddressFailedException(MailSendException e) {
+//        ServiceException exception = new ServiceException("SMPT error", HttpStatus.INTERNAL_SERVER_ERROR);
+//        systemErrorLogger.createErrorLog(exception);
+//        return new ResponseEntity<>(new ServiceErrorResponse(exception), exception.getHttpCode());
+//    }
 
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ServiceErrorResponse> handleServiceException(ServiceException e) {

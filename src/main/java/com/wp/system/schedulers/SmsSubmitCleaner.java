@@ -16,7 +16,7 @@ public class SmsSubmitCleaner {
     private SmsSubmitRepository smsSubmitRepository;
 
     @Scheduled(fixedRate = 60000 * 60)
-    public void cleanData() {
+    public void clean() {
         Iterable<SmsSubmit> data = smsSubmitRepository.findAll();
 
         for(SmsSubmit smsSubmit : data) {

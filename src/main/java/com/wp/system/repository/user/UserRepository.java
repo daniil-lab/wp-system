@@ -12,5 +12,7 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends CrudRepository<User, UUID> {
     Optional<User> findByUsername(String username);
+
+    @Query(value = "SELECT u FROM User u JOIN u.email e WHERE e.address = ?1")
     Optional<User> findByEmail(String email);
 }

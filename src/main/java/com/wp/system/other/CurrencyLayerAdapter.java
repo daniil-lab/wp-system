@@ -2,7 +2,9 @@ package com.wp.system.other;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wp.system.exception.ServiceException;
 import org.apache.http.client.utils.URIBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriBuilder;
 
@@ -62,10 +64,8 @@ public class CurrencyLayerAdapter {
                     .build();
 
             HttpResponse<String> getResponse = HttpClient.newBuilder().build().send(getRequest, HttpResponse.BodyHandlers.ofString());
-
-            System.out.println(getResponse.body());
         } catch (Exception e) {
-            System.out.println(e);
+            throw new ServiceException("Error on get currency cource", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

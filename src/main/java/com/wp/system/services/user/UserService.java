@@ -1,6 +1,5 @@
 package com.wp.system.services.user;
 
-import com.wp.system.entity.EmailSubmitRequest;
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.user.User;
@@ -11,8 +10,6 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.other.CSVConverter;
 import com.wp.system.other.CurrencySingleton;
 import com.wp.system.other.CurrencySingletonCourse;
-import com.wp.system.other.email.EmailBlank;
-import com.wp.system.other.email.EmailUtil;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRolePermissionRepository;
@@ -20,6 +17,7 @@ import com.wp.system.repository.user.UserRoleRepository;
 import com.wp.system.request.user.*;
 import com.wp.system.services.bill.BillService;
 import com.wp.system.services.bill.BillTransactionService;
+import com.wp.system.services.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -27,9 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import reactor.util.function.Tuple2;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
@@ -71,6 +68,23 @@ public class UserService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private EmailService emailService;
+
+    public User activateUserEmail(UUID userId) {
+        User user = this.getUserById(userId);
+
+        UserEmail email = user.getEmail();
+
+        email.setActivated(true);
+
+        user.setEmail(email);
+
+        userRepository.save(user);
+
+        return user;
+    }
 
     public File exportCSVData(ExportDataRequest request) {
         User user = this.getUserById(request.getUserId());
@@ -195,6 +209,11 @@ public class UserService {
         if(foundUser.isPresent())
             throw new ServiceException("User with given phone already exist", HttpStatus.BAD_REQUEST);
 
+        Optional<User> emailValidationUser = this.userRepository.findByEmail(request.getEmail());
+
+        if(emailValidationUser.isPresent())
+            throw new ServiceException("User with given email already exist", HttpStatus.BAD_REQUEST);
+
         UserRole role = null;
 
         if(request.getRoleName() == null)
@@ -213,28 +232,18 @@ public class UserService {
         user.setUserType(request.getType());
         user.setSubscription(new Subscription());
 
-//        if(user.getEmail().getAddress() != null) {
-//            HttpServletRequest servletRequest =
-//                    ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-//                            .getRequest();
-//            EmailSubmitRequest submit = new EmailSubmitRequest(user.getId());
-//
-//            Tuple2<String, String> mailData = EmailBlank.submitEmail(servletRequest.getRequestURL() + submit.getUrl());
-//
-//            MimeMessage message = EmailUtil.createMail(
-//                    mailSender.createMimeMessage(),
-//                    user.getEmail().getAddress(),
-//                    mailData.getT1(),
-//                    mailData.getT2()
-//            );
-//
-//            if(message != null)
-//                mailSender.send(message);
-//        }
-
         userRepository.save(user);
 
         return user;
+    }
+
+    public User getUserByEmail(String email) {
+        Optional<User> foundUser = this.userRepository.findByEmail(email);
+
+        if(foundUser.isEmpty())
+            throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
+
+        return foundUser.get();
     }
 
     public User getUserByUsername(String username) {
@@ -251,6 +260,8 @@ public class UserService {
         List<User> users = new ArrayList<>();
 
         foundUsers.forEach(users::add);
+
+        System.out.println(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString());
 
         return users;
     }

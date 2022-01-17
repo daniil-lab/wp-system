@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.mail.Authenticator;
@@ -53,6 +54,7 @@ import java.util.Properties;
 )
 @EnableScheduling
 @ComponentScan(basePackages = "com.wp.system.*")
+@EnableAsync
 public class SystemApplication implements CommandLineRunner {
 
 	@Autowired

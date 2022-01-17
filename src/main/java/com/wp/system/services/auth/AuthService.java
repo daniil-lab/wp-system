@@ -122,12 +122,7 @@ public class AuthService {
     }
 
     public AuthDataResponse authUserByEmail(EmailAuthRequest request) {
-        Optional<User> foundUser = this.userRepository.findByEmail(request.getEmail());
-
-        if(foundUser.isEmpty())
-            throw new ServiceException("User with given EMAIL not found", HttpStatus.BAD_REQUEST);
-
-        User user = foundUser.get();
+        User user = userService.getUserByEmail(request.getEmail());
 
         byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
 
