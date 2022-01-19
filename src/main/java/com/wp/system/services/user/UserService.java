@@ -2,6 +2,7 @@ package com.wp.system.services.user;
 
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
+import com.wp.system.entity.category.BaseCategory;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserEmail;
 import com.wp.system.entity.user.UserRole;
@@ -14,9 +15,12 @@ import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRolePermissionRepository;
 import com.wp.system.repository.user.UserRoleRepository;
+import com.wp.system.request.category.CreateCategoryRequest;
 import com.wp.system.request.user.*;
 import com.wp.system.services.bill.BillService;
 import com.wp.system.services.bill.BillTransactionService;
+import com.wp.system.services.category.BaseCategoryService;
+import com.wp.system.services.category.CategoryService;
 import com.wp.system.services.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,6 +75,12 @@ public class UserService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private BaseCategoryService baseCategoryService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     public User activateUserEmail(UUID userId) {
         User user = this.getUserById(userId);
@@ -201,6 +211,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public User createUser(CreateUserRequest request) {
         byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
 
@@ -233,6 +244,14 @@ public class UserService {
         user.setSubscription(new Subscription());
 
         userRepository.save(user);
+
+        List<BaseCategory> baseCategories = baseCategoryService.getAllBaseCategories();
+
+        for (BaseCategory baseCategory : baseCategories)
+            categoryService.createCategory(new CreateCategoryRequest(
+                    baseCategory,
+                    user.getId()
+            ));
 
         return user;
     }

@@ -1,6 +1,5 @@
 package com.wp.system.request.category;
 
-import com.wp.system.entity.category.BaseCategory;
 import com.wp.system.other.CategoryColor;
 import com.wp.system.other.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-public class CreateCategoryRequest {
+public class CreateBaseCategoryRequest {
     @Schema(required = true, description = "Название категории")
     @Length(min = 4, max = 64, message = ValidationErrorMessages.INVALID_CATEGORY_NAME)
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
@@ -19,32 +18,20 @@ public class CreateCategoryRequest {
     private String description;
 
     @Schema(required = false, description = "Иконка категории")
+//    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private UUID icon;
 
     @Schema(required = true, description = "Цвет категории")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private CategoryColor color;
 
-    @Schema(required = true, description = "Пользователь, к которому будет относится категория")
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    private UUID userId;
+    public CreateBaseCategoryRequest() {}
 
-    public CreateCategoryRequest() {}
-
-    public CreateCategoryRequest(String name, String description, UUID UUID, CategoryColor categoryColor, java.util.UUID userId) {
+    public CreateBaseCategoryRequest(String name, String description, UUID UUID, CategoryColor categoryColor) {
         this.name = name;
         this.color = categoryColor;
         this.description = description;
         this.icon = UUID;
-        this.userId = userId;
-    }
-
-    public CreateCategoryRequest(BaseCategory category, UUID userId) {
-        this.name = category.getName();
-        this.color = category.getColor();
-        this.description = category.getDescription();
-        this.icon = category.getIcon() != null ? category.getIcon().getId() : null;
-        this.userId = userId;
     }
 
     public UUID getIcon() {
@@ -79,11 +66,4 @@ public class CreateCategoryRequest {
         this.description = description;
     }
 
-    public java.util.UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(java.util.UUID userId) {
-        this.userId = userId;
-    }
 }

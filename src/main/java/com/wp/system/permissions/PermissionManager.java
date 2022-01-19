@@ -3,6 +3,7 @@ package com.wp.system.permissions;
 import com.wp.system.entity.subscription.SubscriptionVariant;
 import com.wp.system.permissions.bill.BillPermissions;
 import com.wp.system.permissions.bill.BillTransactionPermissions;
+import com.wp.system.permissions.category.BaseCategoryPermissions;
 import com.wp.system.permissions.category.CategoryPermissions;
 import com.wp.system.permissions.email.EmailPermissions;
 import com.wp.system.permissions.image.ImagePermissions;
@@ -42,6 +43,7 @@ public class PermissionManager {
         permissionList.addAll(Arrays.stream(SubscriptionPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(SubscriptionVariantPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(EmailPermissions.values()).toList());
+        permissionList.addAll(Arrays.stream(BaseCategoryPermissions.values()).toList());
     }
 
     public Permission getPermissionBySystemName(String systemName) {

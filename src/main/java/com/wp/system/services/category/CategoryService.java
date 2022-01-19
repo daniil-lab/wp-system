@@ -36,10 +36,15 @@ public class CategoryService {
 
     public Category createCategory(CreateCategoryRequest request) {
         User user = this.userService.getUserById(request.getUserId());
-        SystemImage image = this.imageService.getImageById(request.getIcon());
 
-        if(!image.getTag().equals(SystemImageTag.CATEGORY_ICON))
-            throw new ServiceException("Invalid Image Tag", HttpStatus.BAD_REQUEST);
+        SystemImage image = null;
+
+        if(request.getIcon() != null) {
+            image = this.imageService.getImageById(request.getIcon());
+
+            if(!image.getTag().equals(SystemImageTag.CATEGORY_ICON))
+                throw new ServiceException("Invalid Image Tag", HttpStatus.BAD_REQUEST);
+        }
 
         Category category = new Category(request.getName(), request.getColor(), request.getDescription(), user, image);
 
@@ -67,6 +72,12 @@ public class CategoryService {
                 throw new ServiceException("Invalid Image tag", HttpStatus.BAD_REQUEST);
 
             category.setIcon(image);
+        }
+
+        if(request.getUserId() != null && !category.getUser().getId().equals(request.getUserId())) {
+            User user = userService.getUserById(request.getUserId());
+
+            category.setUser(user);
         }
 
         categoryRepository.save(category);

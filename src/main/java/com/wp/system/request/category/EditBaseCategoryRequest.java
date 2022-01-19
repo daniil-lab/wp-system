@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
-public class EditCategoryRequest {
+public class EditBaseCategoryRequest {
     @Schema(required = false, description = "Название категории")
     @Length(min = 4, max = 64, message = ValidationErrorMessages.INVALID_CATEGORY_NAME)
     private String name;
@@ -22,16 +22,9 @@ public class EditCategoryRequest {
     @Schema(required = false, description = "Цвет категории")
     private CategoryColor color;
 
-    @Schema(required = false, description = "Пользователь, к которому будет относится категория")
-    private UUID userId;
+    public EditBaseCategoryRequest() {}
 
-    @Schema(required = false, description = "Лимит категории")
-    @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
-    private int categoryLimit;
-
-    public EditCategoryRequest() {}
-
-    public EditCategoryRequest(String name, String description, CategoryColor color, UUID UUID) {
+    public EditBaseCategoryRequest(String name, String description, CategoryColor color, UUID UUID) {
         this.name = name;
         this.description = description;
         this.color = color;
@@ -40,14 +33,6 @@ public class EditCategoryRequest {
 
     public UUID getIcon() {
         return icon;
-    }
-
-    public int getCategoryLimit() {
-        return categoryLimit;
-    }
-
-    public void setCategoryLimit(int categoryLimit) {
-        this.categoryLimit = categoryLimit;
     }
 
     public void setIcon(UUID icon) {
@@ -76,13 +61,5 @@ public class EditCategoryRequest {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 }
