@@ -15,12 +15,45 @@ public class UserRoleDTO {
     @Schema(description = "Автоприменение")
     private boolean autoApply;
 
+    private boolean roleAfterBuy;
+
+    private boolean roleAfterBuyExpiration;
+
+    private boolean isAdmin;
+
     public UserRoleDTO() {};
 
     public UserRoleDTO(UserRole role) {
         this.id = role.getId();
         this.name = role.getName();
         this.autoApply = role.isAutoApply();
+        this.roleAfterBuy = role.isRoleAfterBuy();
+        this.roleAfterBuyExpiration = role.isRoleAfterBuyExpiration();
+        this.isAdmin = role.isAdmin();
+    }
+
+    public boolean isRoleAfterBuy() {
+        return roleAfterBuy;
+    }
+
+    public void setRoleAfterBuy(boolean roleAfterBuy) {
+        this.roleAfterBuy = roleAfterBuy;
+    }
+
+    public boolean isRoleAfterBuyExpiration() {
+        return roleAfterBuyExpiration;
+    }
+
+    public void setRoleAfterBuyExpiration(boolean roleAfterBuyExpiration) {
+        this.roleAfterBuyExpiration = roleAfterBuyExpiration;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public UUID getId() {
