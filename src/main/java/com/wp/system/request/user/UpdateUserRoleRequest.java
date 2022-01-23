@@ -17,8 +17,10 @@ public class UpdateUserRoleRequest {
     @Schema(required = true, description = "Является ли данная роль ролью администратора.")
     private Optional<Boolean> isAdmin;
 
+    @Schema(required = true)
     private Optional<Boolean> roleAfterBuy;
 
+    @Schema(required = true)
     private Optional<Boolean> roleAfterBuyExpiration;
 
     public UpdateUserRoleRequest() {};
