@@ -74,18 +74,38 @@ public class UserRoleService {
                 else
                     throw new ServiceException("Auto apply role already exist", HttpStatus.BAD_REQUEST);
             } else {
-                role.setAutoApply(request.getAutoApply().get());
+                role.setAutoApply(false);
+            }
+        }
+
+        if (request.getRoleAfterBuy().isPresent() && role.isRoleAfterBuy() != request.getRoleAfterBuy().get()) {
+            if (request.getRoleAfterBuy().get()) {
+                Optional<UserRole> userRole = this.userRoleRepository.findByRoleAfterBuy(true);
+
+                if (userRole.isEmpty())
+                    role.setRoleAfterBuy(true);
+                else
+                    throw new ServiceException("After buy role already exist", HttpStatus.BAD_REQUEST);
+            } else {
+                role.setRoleAfterBuy(false);
+            }
+        }
+
+        if (request.getRoleAfterBuyExpiration().isPresent() && role.isRoleAfterBuyExpiration() != request.getRoleAfterBuyExpiration().get()) {
+            if (request.getRoleAfterBuyExpiration().get()) {
+                Optional<UserRole> userRole = this.userRoleRepository.findByRoleAfterBuyExpiration(true);
+
+                if (userRole.isEmpty())
+                    role.setRoleAfterBuyExpiration(true);
+                else
+                    throw new ServiceException("After buy expiration role already exist", HttpStatus.BAD_REQUEST);
+            } else {
+                role.setRoleAfterBuyExpiration(false);
             }
         }
 
         if (request.getIsAdmin().isPresent() && role.isAutoApply() != request.getAutoApply().get())
             role.setAdmin(request.getIsAdmin().get());
-
-        if (request.getRoleAfterBuy().isPresent() && role.isRoleAfterBuy() != request.getRoleAfterBuy().get())
-            role.setRoleAfterBuy(request.getRoleAfterBuy().get());
-
-        if (request.getRoleAfterBuyExpiration().isPresent() && role.isRoleAfterBuyExpiration() != request.getRoleAfterBuyExpiration().get())
-            role.setRoleAfterBuyExpiration(request.getRoleAfterBuyExpiration().get());
 
         userRoleRepository.save(role);
 
@@ -131,17 +151,13 @@ public class UserRoleService {
         if(foundRole.isPresent())
             throw new ServiceException("Role with given name already exist", HttpStatus.BAD_REQUEST);
 
-        if(request.getIsAdmin().isPresent())
-            userRole.setAdmin(request.getIsAdmin().get());
+        userRole.setAdmin(request.getIsAdmin().get());
 
-        if(request.getAutoApply().isPresent())
-            userRole.setAutoApply(request.getAutoApply().get());
+        userRole.setAutoApply(request.getAutoApply().get());
 
-        if(request.getRoleAfterBuy().isPresent())
-            userRole.setRoleAfterBuy(request.getRoleAfterBuy().get());
+        userRole.setRoleAfterBuy(request.getRoleAfterBuy().get());
 
-        if(request.getRoleAfterBuyExpiration().isPresent())
-            userRole.setRoleAfterBuyExpiration(request.getRoleAfterBuyExpiration().get());
+        userRole.setRoleAfterBuyExpiration(request.getRoleAfterBuyExpiration().get());
 
         userRoleRepository.save(userRole);
 
