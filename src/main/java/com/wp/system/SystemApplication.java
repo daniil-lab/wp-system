@@ -89,6 +89,8 @@ public class SystemApplication implements CommandLineRunner {
 			request.setAutoApply(Optional.of(false));
 			request.setName("forTesting");
 			request.setIsAdmin(Optional.of(true));
+			request.setRoleAfterBuy(Optional.of(false));
+			request.setRoleAfterBuyExpiration(Optional.of(false));
 
 			role = userRoleService.createUserRole(request);
 		}
