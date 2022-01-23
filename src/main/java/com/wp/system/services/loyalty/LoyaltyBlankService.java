@@ -35,7 +35,7 @@ public class LoyaltyBlankService {
         if(request.getName() != null && !request.getName().equals(blank.getName()))
             blank.setName(request.getName());
 
-        if(request.getImageId() != null && !request.getImageId().equals(blank.getImage().getId())) {
+        if(request.getImageId() != null) {
             SystemImage image = this.imageService.getImageById(request.getImageId());
 
             blank.setImage(image);

@@ -59,6 +59,7 @@ public class UserRoleService {
         return role;
     }
 
+    @Transactional
     public UserRole updateUserRole(UpdateUserRoleRequest request, UUID roleId) {
         UserRole role = this.getUserRoleById(roleId);
 
