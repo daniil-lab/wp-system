@@ -103,11 +103,25 @@ public class UserRoleService {
 
     public UserRole createUserRole(CreateUserRoleRequest request) {
 
-        if(request.getAutoApply().get()) {
+        if(request.getAutoApply().isPresent() && request.getAutoApply().get()) {
             Optional<UserRole> existRole = this.userRoleRepository.findByAutoApply(true);
 
             if(existRole.isPresent())
                 throw new ServiceException("Auto apply role already exist", HttpStatus.BAD_REQUEST);
+        }
+
+        if(request.getRoleAfterBuy().isPresent() && request.getRoleAfterBuy().get()) {
+            Optional<UserRole> existRole = this.userRoleRepository.findByRoleAfterBuy(true);
+
+            if(existRole.isPresent())
+                throw new ServiceException("After buy role already exist", HttpStatus.BAD_REQUEST);
+        }
+
+        if(request.getRoleAfterBuyExpiration().isPresent() && request.getRoleAfterBuyExpiration().get()) {
+            Optional<UserRole> existRole = this.userRoleRepository.findByRoleAfterBuyExpiration(true);
+
+            if(existRole.isPresent())
+                throw new ServiceException("After buy expiration role already exist", HttpStatus.BAD_REQUEST);
         }
 
         UserRole userRole = new UserRole(request.getName(), request.getAutoApply().get());
@@ -117,9 +131,17 @@ public class UserRoleService {
         if(foundRole.isPresent())
             throw new ServiceException("Role with given name already exist", HttpStatus.BAD_REQUEST);
 
-        userRole.setAdmin(request.getIsAdmin().get());
-        userRole.setRoleAfterBuy(request.getRoleAfterBuy().get());
-        userRole.setRoleAfterBuyExpiration(request.getRoleAfterBuyExpiration().get());
+        if(request.getIsAdmin().isPresent())
+            userRole.setAdmin(request.getIsAdmin().get());
+
+        if(request.getAutoApply().isPresent())
+            userRole.setAutoApply(request.getAutoApply().get());
+
+        if(request.getRoleAfterBuy().isPresent())
+            userRole.setRoleAfterBuy(request.getRoleAfterBuy().get());
+
+        if(request.getRoleAfterBuyExpiration().isPresent())
+            userRole.setRoleAfterBuyExpiration(request.getRoleAfterBuyExpiration().get());
 
         userRoleRepository.save(userRole);
 

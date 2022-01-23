@@ -13,4 +13,8 @@ public interface UserRoleRepository extends CrudRepository<UserRole, UUID> {
     Optional<UserRole> findByName(String name);
 
     Optional<UserRole> findByAutoApply(boolean apply);
+
+    Optional<UserRole> findByRoleAfterBuy(boolean buy);
+
+    Optional<UserRole> findByRoleAfterBuyExpiration(boolean buy);
 }
