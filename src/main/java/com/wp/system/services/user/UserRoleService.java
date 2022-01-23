@@ -81,6 +81,12 @@ public class UserRoleService {
         if (request.getIsAdmin().isPresent() && role.isAutoApply() != request.getAutoApply().get())
             role.setAdmin(request.getIsAdmin().get());
 
+        if (request.getRoleAfterBuy().isPresent() && role.isRoleAfterBuy() != request.getRoleAfterBuy().get())
+            role.setRoleAfterBuy(request.getRoleAfterBuy().get());
+
+        if (request.getRoleAfterBuyExpiration().isPresent() && role.isRoleAfterBuyExpiration() != request.getRoleAfterBuyExpiration().get())
+            role.setRoleAfterBuyExpiration(request.getRoleAfterBuyExpiration().get());
+
         userRoleRepository.save(role);
 
         return role;
@@ -112,6 +118,8 @@ public class UserRoleService {
             throw new ServiceException("Role with given name already exist", HttpStatus.BAD_REQUEST);
 
         userRole.setAdmin(request.getIsAdmin().get());
+        userRole.setRoleAfterBuy(request.getRoleAfterBuy().get());
+        userRole.setRoleAfterBuyExpiration(request.getRoleAfterBuyExpiration().get());
 
         userRoleRepository.save(userRole);
 

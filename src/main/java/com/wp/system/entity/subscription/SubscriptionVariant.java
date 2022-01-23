@@ -1,9 +1,7 @@
 package com.wp.system.entity.subscription;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -15,7 +13,7 @@ public class SubscriptionVariant {
 
     private String description;
 
-    private int expiration;
+    private long expiration;
 
     private double price;
 
@@ -65,11 +63,11 @@ public class SubscriptionVariant {
         this.price = price;
     }
 
-    public int getExpiration() {
+    public long getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(int expiration) {
+    public void setExpiration(long expiration) {
         this.expiration = expiration;
     }
 }

@@ -11,7 +11,7 @@ public class SubscriptionVariantDTO {
 
     private String description;
 
-    private int expiration;
+    private long expiration;
 
     private double price;
 
@@ -52,11 +52,11 @@ public class SubscriptionVariantDTO {
         this.description = description;
     }
 
-    public int getExpiration() {
+    public long getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(int expiration) {
+    public void setExpiration(long expiration) {
         this.expiration = expiration;
     }
 

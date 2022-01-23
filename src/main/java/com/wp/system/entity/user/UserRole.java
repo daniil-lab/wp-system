@@ -24,11 +24,31 @@ public class UserRole {
 
     private boolean isAdmin;
 
+    private boolean roleAfterBuy;
+
+    private boolean roleAfterBuyExpiration;
+
     public UserRole() {};
 
     public UserRole(String name, boolean autoApply) {
         this.name = name;
         this.autoApply = autoApply;
+    }
+
+    public boolean isRoleAfterBuy() {
+        return roleAfterBuy;
+    }
+
+    public void setRoleAfterBuy(boolean roleAfterBuy) {
+        this.roleAfterBuy = roleAfterBuy;
+    }
+
+    public boolean isRoleAfterBuyExpiration() {
+        return roleAfterBuyExpiration;
+    }
+
+    public void setRoleAfterBuyExpiration(boolean roleAfterBuyExpiration) {
+        this.roleAfterBuyExpiration = roleAfterBuyExpiration;
     }
 
     public boolean isAdmin() {

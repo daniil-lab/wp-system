@@ -1,8 +1,8 @@
 package com.wp.system.entity.help;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -20,6 +20,12 @@ public class HelpLead {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant createAt;
 
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    private long number;
+
+    private HelpLeadStatus status;
+
     public HelpLead() {};
 
     public HelpLead(String senderPhone, String senderEmail, String content) {
@@ -27,6 +33,23 @@ public class HelpLead {
         this.senderEmail = senderEmail;
         this.content = content;
         this.createAt = Instant.now();
+        this.status = HelpLeadStatus.NEW;
+    }
+
+    public long getNumber() {
+        return number;
+    }
+
+    public void setNumber(long number) {
+        this.number = number;
+    }
+
+    public HelpLeadStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HelpLeadStatus status) {
+        this.status = status;
     }
 
     public Instant getCreateAt() {

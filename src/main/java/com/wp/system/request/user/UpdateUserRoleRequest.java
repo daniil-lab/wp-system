@@ -17,11 +17,31 @@ public class UpdateUserRoleRequest {
     @Schema(required = true, description = "Является ли данная роль ролью администратора.")
     private Optional<Boolean> isAdmin;
 
+    private Optional<Boolean> roleAfterBuy;
+
+    private Optional<Boolean> roleAfterBuyExpiration;
+
     public UpdateUserRoleRequest() {};
 
     public UpdateUserRoleRequest(String name, Optional<Boolean> autoApply) {
         this.name = name;
         this.autoApply = autoApply;
+    }
+
+    public Optional<Boolean> getRoleAfterBuy() {
+        return roleAfterBuy;
+    }
+
+    public void setRoleAfterBuy(Optional<Boolean> roleAfterBuy) {
+        this.roleAfterBuy = roleAfterBuy;
+    }
+
+    public Optional<Boolean> getRoleAfterBuyExpiration() {
+        return roleAfterBuyExpiration;
+    }
+
+    public void setRoleAfterBuyExpiration(Optional<Boolean> roleAfterBuyExpiration) {
+        this.roleAfterBuyExpiration = roleAfterBuyExpiration;
     }
 
     public Optional<Boolean> getIsAdmin() {
