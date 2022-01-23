@@ -104,7 +104,7 @@ public class UserRoleService {
             }
         }
 
-        if (request.getIsAdmin().isPresent() && role.isAutoApply() != request.getAutoApply().get())
+        if (request.getIsAdmin().isPresent() && role.isAdmin() != request.getIsAdmin().get())
             role.setAdmin(request.getIsAdmin().get());
 
         userRoleRepository.save(role);
