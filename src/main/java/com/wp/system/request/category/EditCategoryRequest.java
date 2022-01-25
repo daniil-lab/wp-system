@@ -42,7 +42,7 @@ public class EditCategoryRequest {
         return icon;
     }
 
-    public int getCategoryLimit() {
+    public Integer getCategoryLimit() {
         return categoryLimit;
     }
 

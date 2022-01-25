@@ -80,6 +80,9 @@ public class CategoryService {
             category.setUser(user);
         }
 
+        if(request.getCategoryLimit() != null && category.getCategoryLimit() != request.getCategoryLimit())
+            category.setCategoryLimit(request.getCategoryLimit());
+
         categoryRepository.save(category);
 
         return category;
