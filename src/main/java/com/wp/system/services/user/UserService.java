@@ -326,8 +326,8 @@ public class UserService {
 
                 if(!formattedValue.equals("0")) {
                     this.billService.updateBillBalance(bill.getId(),
-                        Integer.parseInt(formattedValue.split(",")[0]),
-                        Integer.parseInt(formattedValue.split(",")[1]));
+                        Integer.parseInt(formattedValue.split("\\.")[0]),
+                        Integer.parseInt(formattedValue.split("\\.")[1]));
                 }
             }
 

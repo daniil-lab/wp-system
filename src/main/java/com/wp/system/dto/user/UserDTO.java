@@ -37,6 +37,8 @@ public class UserDTO {
     @Schema(description = "Пин-код пользователя")
     private String pinCode;
 
+    private boolean notificationsEnable;
+
     public UserDTO() {};
 
     public UserDTO(User user) {
@@ -49,6 +51,15 @@ public class UserDTO {
         this.touchID = user.isTouchId();
         this.faceID = user.isFaceId();
         this.pinCode = user.getPinCode();
+        this.notificationsEnable = user.isNotificationsEnable();
+    }
+
+    public boolean isNotificationsEnable() {
+        return notificationsEnable;
+    }
+
+    public void setNotificationsEnable(boolean notificationsEnable) {
+        this.notificationsEnable = notificationsEnable;
     }
 
     public String getPinCode() {
