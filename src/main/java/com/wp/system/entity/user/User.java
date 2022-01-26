@@ -1,6 +1,7 @@
 package com.wp.system.entity.user;
 
 import com.wp.system.entity.auth.PhoneAuthData;
+import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.loyalty.LoyaltyCard;
 import com.wp.system.entity.subscription.Subscription;
@@ -11,9 +12,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "_user")
@@ -59,9 +58,9 @@ public class User {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant createAt;
 
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-//    @Fetch(FetchMode.SUBSELECT)
-//    private List<Bill> bills;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<Bill> bills = new HashSet<>();
 
     @ElementCollection
     private List<String> deviceTokens = new ArrayList<>();
@@ -76,6 +75,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.createAt = Instant.now();
+    }
+
+    public Set<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(Set<Bill> bills) {
+        this.bills = bills;
     }
 
     public Instant getCreateAt() {
