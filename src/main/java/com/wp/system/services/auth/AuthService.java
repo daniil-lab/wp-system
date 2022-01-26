@@ -69,8 +69,14 @@ public class AuthService {
 //        }
 //
 //        emailSender.sendEmail();
-        Random random = new Random();
-        int code = Integer.parseInt("%04d".formatted(random.nextInt(9999)));
+        Random rand = new Random();
+
+        StringBuilder codeString = new StringBuilder();
+        for (int j = 0; j < 4; j++) {
+            codeString.append(rand.nextInt(8) + 1);
+        }
+
+        int code = Integer.parseInt(codeString.toString());
 
         SmsSubmit smsSubmit = new SmsSubmit(code, request.getPhone());
 

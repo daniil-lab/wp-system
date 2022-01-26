@@ -28,8 +28,15 @@ public class EmailSubmitRequest {
     public EmailSubmitRequest() {}
 
     public EmailSubmitRequest(UUID userId) {
+        Random rand = new Random();
+
+        StringBuilder codeString = new StringBuilder();
+        for (int j = 0; j < 4; j++) {
+            codeString.append(rand.nextInt(8) + 1);
+        }
+
         this.userId = userId;
-        this.code = Integer.parseInt("%04d".formatted(new Random().nextInt(9999)));
+        this.code = Integer.parseInt(codeString.toString());
         this.createAt = Instant.now();
         this.expiration = Instant.now().plus(1, ChronoUnit.DAYS);
     }
