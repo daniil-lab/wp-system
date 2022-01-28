@@ -48,6 +48,8 @@ public class CategoryService {
 
         Category category = new Category(request.getName(), request.getColor(), request.getDescription(), user, image);
 
+        category.setCategoryLimit(request.getCategoryLimit());
+
         categoryRepository.save(category);
 
         return category;
@@ -65,7 +67,7 @@ public class CategoryService {
         if(request.getColor() != null && !category.getColor().equals(request.getColor()))
             category.setColor(request.getColor());
 
-        if(request.getIcon() != null && !request.getIcon().equals(category.getIcon().getId())) {
+        if(request.getIcon() != null) {
             SystemImage image = this.imageService.getImageById(request.getIcon());
 
             if(!image.getTag().equals(SystemImageTag.CATEGORY_ICON))

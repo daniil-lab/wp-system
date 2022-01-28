@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
 public class CreateCategoryRequest {
@@ -29,6 +30,10 @@ public class CreateCategoryRequest {
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private UUID userId;
 
+    @Schema(required = false, description = "Лимит категории")
+    @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
+    private int categoryLimit;
+
     public CreateCategoryRequest() {}
 
     public CreateCategoryRequest(String name, String description, UUID UUID, CategoryColor categoryColor, java.util.UUID userId) {
@@ -45,6 +50,14 @@ public class CreateCategoryRequest {
         this.description = category.getDescription();
         this.icon = category.getIcon() != null ? category.getIcon().getId() : null;
         this.userId = userId;
+    }
+
+    public int getCategoryLimit() {
+        return categoryLimit;
+    }
+
+    public void setCategoryLimit(int categoryLimit) {
+        this.categoryLimit = categoryLimit;
     }
 
     public UUID getIcon() {

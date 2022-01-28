@@ -28,6 +28,7 @@ import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,8 +96,7 @@ public class ImageService {
 
     public SystemImage uploadImage(UploadImageRequest request) {
         try {
-            String fileName = request.getFile().getOriginalFilename().split("\\.")[0]
-                    + "-" + UUID.randomUUID() + "." + request.getFile().getOriginalFilename().split("\\.")[1];
+            String fileName = Instant.now().toString() + "-" + UUID.randomUUID() + "." + request.getFile().getOriginalFilename().split("\\.")[1];
 
             String uploadDir = "images/";
 
