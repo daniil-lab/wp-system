@@ -2,13 +2,15 @@ version: "3.9"  # optional since v1.27.0
 services:
   nginx:
     container_name: nginx
-    image: nginx:1.13
+    image: nginx
     networks:
       - backend
     ports:
       - "80:80"
       - "443:443"
     volumes:
+      - ./www:/var/www
+      - ./logs/nginx:/var/log/nginx
       - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - web
