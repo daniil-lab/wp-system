@@ -145,6 +145,14 @@ public class UserController extends DocumentedRestController {
 
     @SecurityRequirement(name = "Bearer")
     @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
+    @Operation(summary = "Поиск пользователей")
+    @GetMapping("/find")
+    public ResponseEntity<ServiceResponse<List<UserDTO>>> findUsers(@RequestParam @Valid FindUsersRequest request) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.findUser(request).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
     @Operation(summary = "Получение всех пользователей")
     @GetMapping("/")
     public ResponseEntity<ServiceResponse<List<UserDTO>>> getAllUsers() {

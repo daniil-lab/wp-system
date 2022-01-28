@@ -55,8 +55,6 @@ public class BillTransactionService {
             transactions = this.getAllUserTransactions(userId);
         else if(billId != null)
             transactions = this.getAllTransactionsByBillId(billId);
-        else if (categoryId != null)
-            transactions = this.getAllCategoryTransactions(categoryId);
 
         if(transactions == null)
             return new ArrayList<>();
@@ -64,6 +62,30 @@ public class BillTransactionService {
         for (BillTransaction transaction : transactions) {
             if(transaction.getCreateAt() == null)
                 continue;
+
+            if(categoryId != null) {
+                if(transaction.getCategory() == null)
+                    continue;
+
+                if(!transaction.getCategory().getId().equals(categoryId))
+                    continue;
+            }
+
+            if(billId != null) {
+                if(transaction.getBill() == null)
+                    continue;
+
+                if(!transaction.getBill().getId().equals(billId))
+                    continue;
+            }
+
+            if(userId != null) {
+                if(transaction.getBill().getUser() == null)
+                    continue;
+
+                if(!transaction.getBill().getUser().getId().equals(userId))
+                    continue;
+            }
 
             Instant transactionDate = Instant.parse(transaction.getCreateAt());
 

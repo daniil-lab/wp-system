@@ -40,6 +40,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -272,6 +273,14 @@ public class UserService {
             throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
 
         return foundUser.get();
+    }
+
+    public List<User> findUser(FindUsersRequest request) {
+        List<User> users = getAllUsers();
+
+        return users.stream().filter((user) -> {
+            return user.getUsername().contains(request.getPhone());
+        }).collect(Collectors.toList());
     }
 
     public List<User> getAllUsers() {
