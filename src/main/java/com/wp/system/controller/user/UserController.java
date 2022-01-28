@@ -6,6 +6,7 @@ import com.wp.system.entity.user.User;
 import com.wp.system.permissions.user.UserPermissions;
 import com.wp.system.request.user.*;
 import com.wp.system.response.ServiceResponse;
+import com.wp.system.response.user.UserPageResponse;
 import com.wp.system.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -163,10 +164,10 @@ public class UserController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
     @Operation(summary = "Получение пользователей постранично")
     @GetMapping("/page")
-    public ResponseEntity<ServiceResponse<List<UserDTO>>> getUsersByPage(
+    public ResponseEntity<ServiceResponse<UserPageResponse>> getUsersByPage(
             @RequestParam String page,
             @RequestParam String pageSize
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getUsersByPage(Integer.parseInt(page), Integer.parseInt(pageSize.replace("/", ""))).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getUsersByPage(Integer.parseInt(page), Integer.parseInt(pageSize.replace("/", ""))), "Users returned"), HttpStatus.OK);
     }
 }
