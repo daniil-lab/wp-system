@@ -164,9 +164,9 @@ public class UserController extends DocumentedRestController {
     @Operation(summary = "Получение пользователей постранично")
     @GetMapping("/page")
     public ResponseEntity<ServiceResponse<List<UserDTO>>> getUsersByPage(
-            @RequestParam int page,
-            @RequestParam int pageSize
+            @RequestParam String page,
+            @RequestParam String pageSize
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getUsersByPage(page, pageSize).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getUsersByPage(Integer.parseInt(page), Integer.parseInt(pageSize)).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
     }
 }
