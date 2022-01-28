@@ -167,6 +167,6 @@ public class UserController extends DocumentedRestController {
             @RequestParam String page,
             @RequestParam String pageSize
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getUsersByPage(Integer.parseInt(page), Integer.parseInt(pageSize)).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getUsersByPage(Integer.parseInt(page), Integer.parseInt(pageSize.replace("/", ""))).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
     }
 }
