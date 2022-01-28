@@ -18,6 +18,7 @@ import com.wp.system.repository.user.UserRolePermissionRepository;
 import com.wp.system.repository.user.UserRoleRepository;
 import com.wp.system.request.category.CreateCategoryRequest;
 import com.wp.system.request.user.*;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.response.user.UserPageResponse;
 import com.wp.system.services.bill.BillService;
 import com.wp.system.services.bill.BillTransactionService;
@@ -280,8 +281,8 @@ public class UserService {
         return foundUser.get();
     }
 
-    public UserPageResponse getUsersByPage(int page, int pageSize) {
-        return new UserPageResponse(userRepository.findAll(PageRequest.of(page, pageSize)).stream().map(UserDTO::new).collect(Collectors.toList()), getAllUsers().size());
+    public PagingResponse<UserDTO> getUsersByPage(int page, int pageSize) {
+        return new PagingResponse<>(userRepository.findAll(PageRequest.of(page, pageSize)).stream().map(UserDTO::new).collect(Collectors.toList()), getAllUsers().size());
     }
 
     public List<User> findUser(String phone) {

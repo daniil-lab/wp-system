@@ -5,6 +5,7 @@ import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.user.User;
 import com.wp.system.permissions.user.UserPermissions;
 import com.wp.system.request.user.*;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.response.user.UserPageResponse;
 import com.wp.system.services.user.UserService;
@@ -164,7 +165,7 @@ public class UserController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
     @Operation(summary = "Получение пользователей постранично")
     @GetMapping("/page")
-    public ResponseEntity<ServiceResponse<UserPageResponse>> getUsersByPage(
+    public ResponseEntity<ServiceResponse<PagingResponse<UserDTO>>> getUsersByPage(
             @RequestParam String page,
             @RequestParam String pageSize
     ) {
