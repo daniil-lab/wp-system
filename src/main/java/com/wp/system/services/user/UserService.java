@@ -275,11 +275,11 @@ public class UserService {
         return foundUser.get();
     }
 
-    public List<User> findUser(FindUsersRequest request) {
+    public List<User> findUser(String phone) {
         List<User> users = getAllUsers();
 
         return users.stream().filter((user) -> {
-            return user.getUsername().contains(request.getPhone());
+            return user.getUsername().contains(phone);
         }).collect(Collectors.toList());
     }
 
