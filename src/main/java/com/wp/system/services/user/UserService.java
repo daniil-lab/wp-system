@@ -23,6 +23,9 @@ import com.wp.system.services.category.BaseCategoryService;
 import com.wp.system.services.category.CategoryService;
 import com.wp.system.services.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -275,12 +278,12 @@ public class UserService {
         return foundUser.get();
     }
 
+    public Page<User> getUsersByPage(int page, int pageSize) {
+        return userRepository.findAll(PageRequest.of(page, pageSize));
+    }
+
     public List<User> findUser(String phone) {
         List<User> users = getAllUsers();
-
-//        users.forEach((item) -> {
-//            System.out.println(item.getUsername());
-//        });
 
         return users.stream().filter((user) -> {
             return user.getUsername().contains(phone);

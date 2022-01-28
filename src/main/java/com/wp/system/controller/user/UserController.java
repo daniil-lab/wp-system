@@ -158,4 +158,15 @@ public class UserController extends DocumentedRestController {
     public ResponseEntity<ServiceResponse<List<UserDTO>>> getAllUsers() {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getAllUsers().stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
     }
+
+    @SecurityRequirement(name = "Bearer")
+    @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
+    @Operation(summary = "Получение пользователей постранично")
+    @GetMapping("/page")
+    public ResponseEntity<ServiceResponse<List<UserDTO>>> getUsersByPage(
+            @RequestParam int page,
+            @RequestParam int pageSize
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getUsersByPage(page, pageSize).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
+    }
 }
