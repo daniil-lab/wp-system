@@ -7,7 +7,7 @@ public class PagingResponse<T> {
 
     private int total;
 
-    public PagingResponse<T>() {}
+    public PagingResponse() {}
 
     public PagingResponse(List<T> page, int total) {
         this.page = page;
