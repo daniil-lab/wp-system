@@ -278,6 +278,10 @@ public class UserService {
     public List<User> findUser(String phone) {
         List<User> users = getAllUsers();
 
+//        users.forEach((item) -> {
+//            System.out.println(item.getUsername());
+//        });
+
         return users.stream().filter((user) -> {
             return user.getUsername().contains(phone);
         }).collect(Collectors.toList());

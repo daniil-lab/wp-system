@@ -14,7 +14,7 @@ public class SendNotificationResponse {
     public SendNotificationResponse() {};
 
     public SendNotificationResponse(User user, String header, String body) {
-        this.user = new UserDTO(user);
+        this.user = user != null ? new UserDTO(user) : null;
         this.header = header;
         this.body = body;
     }
