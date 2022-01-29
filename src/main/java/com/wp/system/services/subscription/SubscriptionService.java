@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +44,8 @@ public class SubscriptionService {
     public Subscription extendSubscription(ExtendSubscriptionRequest request, UUID id) {
         Subscription subscription = getSubscriptionById(id);
 
-        subscription.setStartDate(subscription.getStartDate().plus(request.getDays(), ChronoUnit.DAYS));
+        subscription.setStartDate(Instant.now());
+        subscription.setEndDate(subscription.getStartDate().plus(request.getDays(), ChronoUnit.DAYS));
         subscription.setActive(true);
 
         subscriptionRepository.save(subscription);
