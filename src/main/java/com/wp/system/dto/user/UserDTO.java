@@ -37,6 +37,8 @@ public class UserDTO {
     @Schema(description = "Пин-код пользователя")
     private String pinCode;
 
+    private int plannedIncome;
+
     private boolean notificationsEnable;
 
     public UserDTO() {};
@@ -52,6 +54,15 @@ public class UserDTO {
         this.faceID = user.isFaceId();
         this.pinCode = user.getPinCode();
         this.notificationsEnable = user.isNotificationsEnable();
+        this.plannedIncome = user.getPlannedIncome();
+    }
+
+    public int getPlannedIncome() {
+        return this.plannedIncome;
+    }
+
+    public void setPlannedIncome(int plannedIncome) {
+        this.plannedIncome = plannedIncome;
     }
 
     public boolean isNotificationsEnable() {
