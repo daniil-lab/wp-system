@@ -6,6 +6,7 @@ import com.wp.system.dto.subscription.SubscriptionDTO;
 import com.wp.system.dto.subscription.SubscriptionVariantDTO;
 import com.wp.system.other.SystemImageTag;
 import com.wp.system.request.image.UploadImageRequest;
+import com.wp.system.request.subscription.ExtendSubscriptionRequest;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.image.ImageService;
 import com.wp.system.services.subscription.SubscriptionService;
@@ -54,6 +55,29 @@ public class SubscriptionController extends DocumentedRestController {
             @PathVariable
                     UUID userId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.getSubscriptionByUserId(userId)), "Subscription returned"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_UPDATE', 'SUBSCRIPTION_FULL')")
+    @Operation(summary = "Сброс подписки пользователя")
+    @SecurityRequirement(name = "Bearer")
+    @PatchMapping(value = "/reset/{subscriptionId}")
+    public ResponseEntity<ServiceResponse<SubscriptionDTO>> resetSubscription(
+            @PathVariable
+                    UUID subscriptionId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.resetSubscription(subscriptionId)), "Subscription returned"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_UPDATE', 'SUBSCRIPTION_FULL')")
+    @Operation(summary = "Продление подписки пользователя")
+    @SecurityRequirement(name = "Bearer")
+    @PatchMapping(value = "/extend/{subscriptionId}")
+    public ResponseEntity<ServiceResponse<SubscriptionDTO>> extendSubscription(
+            @RequestBody
+            @Valid
+                    ExtendSubscriptionRequest request,
+            @PathVariable
+                    UUID subscriptionId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.extendSubscription(request, subscriptionId)), "Subscription returned"), HttpStatus.OK);
     }
 
 
