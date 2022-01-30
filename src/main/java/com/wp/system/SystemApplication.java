@@ -83,6 +83,7 @@ public class SystemApplication implements CommandLineRunner {
 		} catch (ServiceException e) {
 			CreateUserRoleRequest request = new CreateUserRoleRequest();
 
+			request.setRoleForBlocked(Optional.of(false));
 			request.setAutoApply(Optional.of(false));
 			request.setName("forTesting");
 			request.setIsAdmin(Optional.of(true));
