@@ -19,6 +19,8 @@ public class UserRoleDTO {
 
     private boolean roleAfterBuyExpiration;
 
+    private boolean roleForBlocked;
+
     private boolean isAdmin;
 
     public UserRoleDTO() {};
@@ -30,6 +32,7 @@ public class UserRoleDTO {
         this.roleAfterBuy = role.isRoleAfterBuy();
         this.roleAfterBuyExpiration = role.isRoleAfterBuyExpiration();
         this.isAdmin = role.isAdmin();
+        this.roleForBlocked = role.isRoleForBlocked();
     }
 
     public boolean isRoleAfterBuy() {
