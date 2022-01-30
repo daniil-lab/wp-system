@@ -17,6 +17,9 @@ public interface BillTransactionRepository extends JpaRepository<BillTransaction
     @Query("SELECT t FROM BillTransaction t JOIN t.bill b JOIN b.user u WHERE u.id = ?1")
     List<BillTransaction> getAllUserTransactions(UUID userId, Pageable pageable);
 
+    @Query("SELECT t FROM BillTransaction t JOIN t.bill b JOIN b.user u WHERE u.id = ?1")
+    List<BillTransaction> getAllUserTransactions(UUID userId);
+
     @Query(nativeQuery = true, value = "SELECT * FROM bill_transaction WHERE user_id = ?1 AND create_at BETWEEN ?2 AND ?3")
     List<BillTransaction> getAllUserTransactionsByPeriod(UUID userId, Timestamp startTime, Timestamp endTime, Pageable pageable);
 
@@ -25,6 +28,9 @@ public interface BillTransactionRepository extends JpaRepository<BillTransaction
 
     @Query("SELECT t FROM BillTransaction t JOIN t.bill b WHERE b.id = ?1")
     List<BillTransaction> getAllBillTransactions(UUID billId, Pageable pageable);
+
+    @Query("SELECT t FROM BillTransaction t JOIN t.bill b WHERE b.id = ?1")
+    List<BillTransaction> getAllBillTransactions(UUID billId);
 
     @Query("SELECT t FROM BillTransaction t JOIN t.category c WHERE c.id = ?1")
     List<BillTransaction> getAllCategoryTransactions(UUID categoryId, Pageable pageable);

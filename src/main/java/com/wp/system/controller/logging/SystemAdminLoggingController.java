@@ -38,6 +38,18 @@ public class SystemAdminLoggingController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
+    @Operation(summary = "Получение всех админ логов постранично")
+    @GetMapping("/page")
+    public ResponseEntity<ServiceResponse<PagingResponse<SystemAdminLogDTO>>> getAdminLogsPaged(
+            @RequestParam
+                    int page,
+            @RequestParam
+                    int pageSize
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.adminLogger.getPagedAdminLogs(page, pageSize), "Admin logs returned"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
     @Operation(summary = "Получение админ лога по ID")
     @GetMapping("/{logId}")
     public ResponseEntity<ServiceResponse<SystemAdminLogDTO>> getAdminLogById(@PathVariable UUID logId) {

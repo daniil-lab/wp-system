@@ -112,14 +112,14 @@ public class BillTransactionService {
         List<BillTransaction> transactions = this.billTransactionRepository.getAllUserTransactions(userId, PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(transactions.stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
-                this.billTransactionRepository.findAll().size());
+                this.billTransactionRepository.getAllUserTransactions(userId).size());
     }
 
     public PagingResponse<BillTransactionDTO> getAllTransactionsByBillId(UUID billId, int page, int pageSize) {
         List<BillTransaction> transactions = this.billTransactionRepository.getAllBillTransactions(billId, PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(transactions.stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
-                this.billTransactionRepository.findAll().size());
+                this.billTransactionRepository.getAllBillTransactions(billId).size());
     }
 
 }

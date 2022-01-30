@@ -31,7 +31,7 @@ public class SystemAdminLogger {
     }
 
     public PagingResponse<SystemAdminLogDTO> getPagedAdminLogs(int page, int pageSize) {
-        return new PagingResponse<>(systemAdminLogRepository.findAll(PageRequest.of(pageSize, page)).stream().map(SystemAdminLogDTO::new).toList(),
+        return new PagingResponse<>(systemAdminLogRepository.findAll(PageRequest.of(page, pageSize)).stream().map(SystemAdminLogDTO::new).toList(),
                 getAllAdminLogs().size());
     }
 
