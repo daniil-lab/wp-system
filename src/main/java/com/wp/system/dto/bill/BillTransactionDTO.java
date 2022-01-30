@@ -51,7 +51,7 @@ public class BillTransactionDTO {
         this.longitude = transaction.getLongitude();
         this.latitude = transaction.getLatitude();
         this.category = transaction.getCategory() == null ? null : new CategoryDTO(transaction.getCategory());
-        this.createAt = transaction.getCreateAt();
+        this.createAt = transaction.getCreateAt() == null ? null : transaction.getCreateAt().toString();
         this.geocodedPlace = transaction.getGeocodedPlace();
     }
 
