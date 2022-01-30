@@ -72,11 +72,11 @@ public class BillTransactionService {
 
         Predicate[] predicates = new Predicate[3];
 
-        predicates[0] = cb.between(root.get("create_at"), Timestamp.from(start), Timestamp.from(end));
+        predicates[0] = cb.between(root.get("createAt"), Timestamp.from(start), Timestamp.from(end));
 
         if(userId != null)
-            predicates[1] = cb.equal(root.get("user_id"), userId);
-        else predicates[1] = cb.equal(root.get("bill_id"), billId);
+            predicates[1] = cb.equal(root.get("userId"), userId);
+        else predicates[1] = cb.equal(root.get("billId"), billId);
 
         List<BillTransaction> transactions = entityManager
                 .createQuery(cr.select(root).where(predicates))
