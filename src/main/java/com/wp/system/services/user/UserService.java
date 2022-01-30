@@ -358,7 +358,7 @@ public class UserService {
         if(request.getNotificationsEnable() != null && request.getNotificationsEnable() != user.isNotificationsEnable())
             user.setNotificationsEnable(request.getNotificationsEnable());
 
-        if(request.getEmail() != null && !user.getEmail().getAddress().equals(request.getEmail())) {
+        if(request.getEmail() != null && (user.getEmail().getAddress() == null || !user.getEmail().getAddress().equals(request.getEmail()))) {
             UserEmail email = user.getEmail();
             email.setAddress(request.getEmail());
             email.setActivated(false);
