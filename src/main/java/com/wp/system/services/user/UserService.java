@@ -34,6 +34,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -268,16 +269,21 @@ public class UserService {
                     user.getId()
             ));
 
-        UserAuthDetails credentials = (UserAuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(credentials.isAdmin())
-            systemAdminLogger.createAdminLog(
-                    new CreateAdminLogRequest(
-                            credentials.getId(),
-                            "Создание пользователя",
-                            "Админом был изменен пользователь с ID " + user.getId() +
-                                    ". Номере телефона: " + user.getUsername()
-                    )
-            );
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
+            UserAuthDetails credentials = (UserAuthDetails) context.getAuthentication().getPrincipal();
+
+            if(credentials.isAdmin())
+                systemAdminLogger.createAdminLog(
+                        new CreateAdminLogRequest(
+                                credentials.getId(),
+                                "Создание пользователя",
+                                "Админом был изменен пользователь с ID " + user.getId() +
+                                        ". Номере телефона: " + user.getUsername()
+                        )
+                );
+        }
 
         return user;
     }
@@ -394,16 +400,21 @@ public class UserService {
 
         userRepository.save(user);
 
-        UserAuthDetails credentials = (UserAuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(credentials.isAdmin())
-            systemAdminLogger.createAdminLog(
-                    new CreateAdminLogRequest(
-                            credentials.getId(),
-                            "Изменение пользователя",
-                            "Админом был изменен пользователь с ID " + user.getId() +
-                                    ". Номере телефона: " + user.getUsername()
-                    )
-            );
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
+            UserAuthDetails credentials = (UserAuthDetails) context.getAuthentication().getPrincipal();
+
+            if(credentials.isAdmin())
+                systemAdminLogger.createAdminLog(
+                        new CreateAdminLogRequest(
+                                credentials.getId(),
+                                "Создание пользователя",
+                                "Админом был изменен пользователь с ID " + user.getId() +
+                                        ". Номере телефона: " + user.getUsername()
+                        )
+                );
+        }
 
         return user;
     }
@@ -414,16 +425,21 @@ public class UserService {
 
         userRepository.delete(user);
 
-        UserAuthDetails credentials = (UserAuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(credentials.isAdmin())
-            systemAdminLogger.createAdminLog(
-                    new CreateAdminLogRequest(
-                            credentials.getId(),
-                            "Удаление пользователя",
-                            "Админом был удален пользователь с ID " + user.getId() +
-                                    ". Номере телефона: " + user.getUsername()
-                    )
-            );
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
+            UserAuthDetails credentials = (UserAuthDetails) context.getAuthentication().getPrincipal();
+
+            if(credentials.isAdmin())
+                systemAdminLogger.createAdminLog(
+                        new CreateAdminLogRequest(
+                                credentials.getId(),
+                                "Создание пользователя",
+                                "Админом был изменен пользователь с ID " + user.getId() +
+                                        ". Номере телефона: " + user.getUsername()
+                        )
+                );
+        }
 
         return user;
     }
