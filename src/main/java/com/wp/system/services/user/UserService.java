@@ -1,5 +1,7 @@
 package com.wp.system.services.user;
 
+import com.wp.system.config.security.AuthCredentials;
+import com.wp.system.config.security.UserAuthDetails;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
@@ -17,6 +19,7 @@ import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRolePermissionRepository;
 import com.wp.system.repository.user.UserRoleRepository;
 import com.wp.system.request.category.CreateCategoryRequest;
+import com.wp.system.request.logging.CreateAdminLogRequest;
 import com.wp.system.request.user.*;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.services.bill.BillService;
@@ -24,12 +27,14 @@ import com.wp.system.services.bill.BillTransactionService;
 import com.wp.system.services.category.BaseCategoryService;
 import com.wp.system.services.category.CategoryService;
 import com.wp.system.services.email.EmailService;
+import com.wp.system.services.logging.SystemAdminLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -87,6 +92,9 @@ public class UserService {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private SystemAdminLogger systemAdminLogger;
 
     public User activateUserEmail(UUID userId) {
         User user = this.getUserById(userId);
@@ -249,6 +257,7 @@ public class UserService {
         user.setUserType(request.getType());
         user.setSubscription(new Subscription());
 
+
         userRepository.save(user);
 
         List<BaseCategory> baseCategories = baseCategoryService.getAllBaseCategories();
@@ -258,6 +267,17 @@ public class UserService {
                     baseCategory,
                     user.getId()
             ));
+
+        UserAuthDetails credentials = (UserAuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(credentials.isAdmin())
+            systemAdminLogger.createAdminLog(
+                    new CreateAdminLogRequest(
+                            credentials.getId(),
+                            "Создание пользователя",
+                            "Админом был изменен пользователь с ID " + user.getId() +
+                                    ". Номере телефона: " + user.getUsername()
+                    )
+            );
 
         return user;
     }
@@ -374,6 +394,17 @@ public class UserService {
 
         userRepository.save(user);
 
+        UserAuthDetails credentials = (UserAuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(credentials.isAdmin())
+            systemAdminLogger.createAdminLog(
+                    new CreateAdminLogRequest(
+                            credentials.getId(),
+                            "Изменение пользователя",
+                            "Админом был изменен пользователь с ID " + user.getId() +
+                                    ". Номере телефона: " + user.getUsername()
+                    )
+            );
+
         return user;
     }
 
@@ -382,6 +413,17 @@ public class UserService {
         User user = this.getUserById(id);
 
         userRepository.delete(user);
+
+        UserAuthDetails credentials = (UserAuthDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(credentials.isAdmin())
+            systemAdminLogger.createAdminLog(
+                    new CreateAdminLogRequest(
+                            credentials.getId(),
+                            "Удаление пользователя",
+                            "Админом был удален пользователь с ID " + user.getId() +
+                                    ". Номере телефона: " + user.getUsername()
+                    )
+            );
 
         return user;
     }

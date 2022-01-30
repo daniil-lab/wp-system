@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public class UserAuthDetails implements UserDetails {
     private String username;
@@ -14,6 +15,8 @@ public class UserAuthDetails implements UserDetails {
     private String password;
 
     private UserRole role;
+
+    private UUID id;
 
     private boolean admin;
 
@@ -23,8 +26,17 @@ public class UserAuthDetails implements UserDetails {
         c.password = user.getPassword();
         c.role = user.getRole();
         c.admin = user.getRole().isAdmin();
+        c.id = user.getId();
 
         return c;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     @Override
