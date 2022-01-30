@@ -37,7 +37,7 @@ public class BillTransaction {
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name="category_id")
+    @JoinColumn(name="user_id")
     private User user;
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
