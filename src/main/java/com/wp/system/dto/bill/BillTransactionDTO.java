@@ -40,6 +40,8 @@ public class BillTransactionDTO {
     @Schema(description = "Дата транзакции")
     private String createAt;
 
+    private BillDTO bill;
+
     public BillTransactionDTO() {}
 
     public BillTransactionDTO(BillTransaction transaction) {
@@ -53,6 +55,15 @@ public class BillTransactionDTO {
         this.category = transaction.getCategory() == null ? null : new CategoryDTO(transaction.getCategory());
         this.createAt = transaction.getCreateAt() == null ? null : transaction.getCreateAt().toString();
         this.geocodedPlace = transaction.getGeocodedPlace();
+        this.bill = transaction.getBill() == null ? null : new BillDTO(transaction.getBill());
+    }
+
+    public BillDTO getBill() {
+        return bill;
+    }
+
+    public void setBill(BillDTO bill) {
+        this.bill = bill;
     }
 
     public String getCreateAt() {

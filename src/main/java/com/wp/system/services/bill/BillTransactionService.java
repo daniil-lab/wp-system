@@ -88,19 +88,16 @@ public class BillTransactionService {
                 .createQuery(cr.select(root).where(predicates))
                 .getResultList();
 
-        return new PagingResponse<>(transactions.stream().map(BillTransactionDTO::new).filter((item) -> {
+        return new PagingResponse<>(transactions.stream().filter((item) -> {
             if(categoryId != null) {
                 if(item.getCategory() == null)
                     return false;
 
-                if(item.getCategory().getId().equals(categoryId))
-                    return true;
-                else
-                    return false;
+                return item.getCategory().getId().equals(categoryId);
             }
 
             return true;
-        }).collect(Collectors.toList()),
+        }).map(BillTransactionDTO::new).collect(Collectors.toList()),
             transactionsFull.size());
     }
 
