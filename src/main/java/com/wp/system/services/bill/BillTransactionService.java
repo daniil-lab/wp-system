@@ -70,7 +70,7 @@ public class BillTransactionService {
         CriteriaQuery<BillTransaction> cr = cb.createQuery(BillTransaction.class);
         Root<BillTransaction> root = cr.from(BillTransaction.class);
 
-        Predicate[] predicates = new Predicate[3];
+        Predicate[] predicates = new Predicate[2];
 
         predicates[0] = cb.between(root.get("createAt"), Timestamp.from(start), Timestamp.from(end));
 
