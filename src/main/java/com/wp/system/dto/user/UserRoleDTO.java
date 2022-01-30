@@ -35,6 +35,14 @@ public class UserRoleDTO {
         this.roleForBlocked = role.isRoleForBlocked();
     }
 
+    public boolean isRoleForBlocked() {
+        return roleForBlocked;
+    }
+
+    public void setRoleForBlocked(boolean roleForBlocked) {
+        this.roleForBlocked = roleForBlocked;
+    }
+
     public boolean isRoleAfterBuy() {
         return roleAfterBuy;
     }
