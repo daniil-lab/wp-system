@@ -1,10 +1,13 @@
 package com.wp.system.services.help;
 
+import com.wp.system.dto.help.HelpLeadDTO;
 import com.wp.system.entity.help.HelpLead;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.help.HelpLeadRepository;
 import com.wp.system.request.help.CreateHelpLeadRequest;
+import com.wp.system.response.PagingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class HelpService {
     @Autowired
     private HelpLeadRepository helpLeadRepository;
+
+    public PagingResponse<HelpLeadDTO> getHelpLeadsByPages(int page, int pageSize) {
+        return new PagingResponse<>(helpLeadRepository.findAll(PageRequest.of(page, pageSize)).stream().map(HelpLeadDTO::new).collect(Collectors.toList()),
+            getAllHelpLeads().size());
+    }
 
     public HelpLead createHelpLead(CreateHelpLeadRequest request) {
         HelpLead lead = new HelpLead(request.getPhone(), request.getEmail(), request.getContent());

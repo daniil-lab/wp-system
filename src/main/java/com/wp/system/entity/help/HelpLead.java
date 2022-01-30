@@ -15,6 +15,7 @@ public class HelpLead {
 
     private String senderEmail;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
