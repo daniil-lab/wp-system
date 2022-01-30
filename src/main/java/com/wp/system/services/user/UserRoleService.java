@@ -92,6 +92,19 @@ public class UserRoleService {
             }
         }
 
+        if (request.getRoleForBlocked().isPresent() && role.isRoleForBlocked() != request.getRoleForBlocked().get()) {
+            if (request.getRoleForBlocked().get()) {
+                Optional<UserRole> userRole = this.userRoleRepository.findByRoleForBlocked(true);
+
+                if (userRole.isEmpty())
+                    role.setRoleForBlocked(true);
+                else
+                    throw new ServiceException("Blocked role already exist", HttpStatus.BAD_REQUEST);
+            } else {
+                role.setRoleForBlocked(false);
+            }
+        }
+
         if (request.getRoleAfterBuyExpiration().isPresent() && role.isRoleAfterBuyExpiration() != request.getRoleAfterBuyExpiration().get()) {
             if (request.getRoleAfterBuyExpiration().get()) {
                 Optional<UserRole> userRole = this.userRoleRepository.findByRoleAfterBuyExpiration(true);
@@ -136,6 +149,13 @@ public class UserRoleService {
 
             if(existRole.isPresent())
                 throw new ServiceException("After buy role already exist", HttpStatus.BAD_REQUEST);
+        }
+
+        if(request.getRoleForBlocked().isPresent() && request.getRoleForBlocked().get()) {
+            Optional<UserRole> existRole = this.userRoleRepository.findByRoleForBlocked(true);
+
+            if(existRole.isPresent())
+                throw new ServiceException("Blocked role already exist", HttpStatus.BAD_REQUEST);
         }
 
         if(request.getRoleAfterBuyExpiration().isPresent() && request.getRoleAfterBuyExpiration().get()) {

@@ -17,4 +17,6 @@ public interface UserRoleRepository extends CrudRepository<UserRole, UUID> {
     Optional<UserRole> findByRoleAfterBuy(boolean buy);
 
     Optional<UserRole> findByRoleAfterBuyExpiration(boolean buy);
+
+    Optional<UserRole> findByRoleForBlocked(boolean val);
 }

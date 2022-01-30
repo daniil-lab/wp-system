@@ -28,11 +28,21 @@ public class UserRole {
 
     private boolean roleAfterBuyExpiration;
 
+    private boolean roleForBlocked;
+
     public UserRole() {};
 
     public UserRole(String name, boolean autoApply) {
         this.name = name;
         this.autoApply = autoApply;
+    }
+
+    public boolean isRoleForBlocked() {
+        return roleForBlocked;
+    }
+
+    public void setRoleForBlocked(boolean roleForBlocked) {
+        this.roleForBlocked = roleForBlocked;
     }
 
     public boolean isRoleAfterBuy() {

@@ -21,6 +21,10 @@ public class CreateUserRoleRequest {
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private Optional<Boolean> isAdmin;
 
+    @Schema(required = true, description = "Является ли данная роль ролью для заблокированных.")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private Optional<Boolean> roleForBlocked;
+
     @Schema(required = true)
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private Optional<Boolean> roleAfterBuy;
@@ -34,6 +38,14 @@ public class CreateUserRoleRequest {
     public CreateUserRoleRequest(String name, Optional<Boolean> autoApply) {
         this.name = name;
         this.autoApply = autoApply;
+    }
+
+    public Optional<Boolean> getRoleForBlocked() {
+        return roleForBlocked;
+    }
+
+    public void setRoleForBlocked(Optional<Boolean> roleForBlocked) {
+        this.roleForBlocked = roleForBlocked;
     }
 
     public Optional<Boolean> getRoleAfterBuy() {
