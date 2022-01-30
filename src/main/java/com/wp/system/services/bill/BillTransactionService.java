@@ -72,7 +72,7 @@ public class BillTransactionService {
 
         Predicate[] predicates = new Predicate[2];
 
-        predicates[0] = cb.between(root.get("createAt"), Timestamp.from(start), Timestamp.from(end));
+        predicates[0] = cb.between(root.get("createAt"), start, end);
 
         if(userId != null)
             predicates[1] = cb.equal(root.join("user").get("id"), userId);
