@@ -1,11 +1,13 @@
 package com.wp.system.services.logging;
 
+import com.wp.system.dto.logging.SystemErrorLogDTO;
 import com.wp.system.entity.logging.ErrorLogSource;
 import com.wp.system.entity.logging.SystemErrorLog;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.other.SystemDateConverter;
 import com.wp.system.repository.logging.SystemErrorLogRepository;
 import com.wp.system.request.logging.CreateErrorLogRequest;
+import com.wp.system.response.PagingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -75,12 +77,8 @@ public class SystemErrorLogger {
         return log;
     }
 
-    public List<SystemErrorLog> getErrorLogsByPeriod(String startDate, String endDate) {
-        return systemErrorLogRepository.getLogsByPeriod(Timestamp.from(SystemDateConverter.getInstantByString(startDate)
-        ), Timestamp.from(SystemDateConverter.getInstantByString(endDate)));
-    }
-
-    public List<SystemErrorLog> getErrorLogsByPages(int pageSize, int page) {
-        return systemErrorLogRepository.findAll(PageRequest.of(page, pageSize)).stream().toList();
+    public PagingResponse<SystemErrorLogDTO> getErrorLogsByPages(int pageSize, int page) {
+        return new PagingResponse<>(systemErrorLogRepository.findAll(PageRequest.of(page, pageSize)).stream().map(SystemErrorLogDTO::new).toList(),
+                getAllErrorLogs().size());
     }
 }

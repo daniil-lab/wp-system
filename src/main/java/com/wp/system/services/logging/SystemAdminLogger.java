@@ -1,9 +1,11 @@
 package com.wp.system.services.logging;
 
+import com.wp.system.dto.logging.SystemAdminLogDTO;
 import com.wp.system.entity.logging.SystemAdminLog;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.logging.SystemAdminLogRepository;
 import com.wp.system.request.logging.CreateAdminLogRequest;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -28,8 +30,9 @@ public class SystemAdminLogger {
         return systemAdminLogRepository.findAll().stream().toList();
     }
 
-    public List<SystemAdminLog> getPagedAdminLogs(int pageSize, int page) {
-        return systemAdminLogRepository.findAll(PageRequest.of(pageSize, page)).stream().toList();
+    public PagingResponse<SystemAdminLogDTO> getPagedAdminLogs(int page, int pageSize) {
+        return new PagingResponse<>(systemAdminLogRepository.findAll(PageRequest.of(pageSize, page)).stream().map(SystemAdminLogDTO::new).toList(),
+                getAllAdminLogs().size());
     }
 
     public SystemAdminLog getAdminLogById(UUID id) {

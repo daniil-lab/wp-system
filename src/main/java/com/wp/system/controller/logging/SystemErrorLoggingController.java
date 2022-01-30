@@ -5,6 +5,7 @@ import com.wp.system.dto.user.UserRoleDTO;
 import com.wp.system.request.logging.CreateErrorLogRequest;
 import com.wp.system.request.user.CreateUserRoleRequest;
 import com.wp.system.request.user.UpdateUserRoleRequest;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.logging.SystemErrorLogger;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,13 +48,13 @@ public class SystemErrorLoggingController {
     @PreAuthorize("hasAnyAuthority('ERROR_LOG_GET', 'ERROR_LOG_FULL')")
     @Operation(summary = "Получение логов ошибок по страницам")
     @GetMapping("/page")
-    public ResponseEntity<ServiceResponse<List<SystemErrorLogDTO>>> getErrorLogsByPages(
+    public ResponseEntity<ServiceResponse<PagingResponse<SystemErrorLogDTO>>> getErrorLogsByPages(
             @RequestParam
                 int pageSize,
             @RequestParam
                 int page
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.errorLogger.getErrorLogsByPages(pageSize, page).stream().map(SystemErrorLogDTO::new).collect(Collectors.toList()), "Error logs returned"), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.errorLogger.getErrorLogsByPages(pageSize, page), "Error logs returned"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ERROR_LOG_DELETE', 'ERROR_LOG_FULL')")

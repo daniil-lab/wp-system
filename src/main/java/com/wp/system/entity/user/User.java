@@ -2,6 +2,7 @@ package com.wp.system.entity.user;
 
 import com.wp.system.entity.auth.PhoneAuthData;
 import com.wp.system.entity.bill.Bill;
+import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.loyalty.LoyaltyCard;
 import com.wp.system.entity.subscription.Subscription;
@@ -62,6 +63,10 @@ public class User {
     @Fetch(FetchMode.SUBSELECT)
     private Set<Bill> bills = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<BillTransaction> transactions = new HashSet<>();
+
     @ElementCollection
     private List<String> deviceTokens = new ArrayList<>();
 
@@ -83,6 +88,14 @@ public class User {
 
     public void setBills(Set<Bill> bills) {
         this.bills = bills;
+    }
+
+    public Set<BillTransaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<BillTransaction> transactions) {
+        this.transactions = transactions;
     }
 
     public Instant getCreateAt() {

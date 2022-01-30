@@ -1,6 +1,7 @@
 package com.wp.system.entity.bill;
 
 import com.wp.system.entity.category.Category;
+import com.wp.system.entity.user.User;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.bill.BillBalanceAction;
 
@@ -35,25 +36,39 @@ public class BillTransaction {
     @JoinColumn(name="category_id")
     private Category category;
 
-    private String createAt;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name="category_id")
+    private User user;
+
+    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private Instant createAt;
 
     public BillTransaction() {};
 
-    public BillTransaction(BillBalanceAction action, int amount, int cents, String description, Bill bill, Category category, WalletType currency) {
+    public BillTransaction(BillBalanceAction action, int amount, int cents, String description, Bill bill, Category category, WalletType currency, User user) {
         this.action = action;
         this.sum = Double.parseDouble(amount+"."+cents);
         this.description = description;
         this.currency = currency;
         this.bill = bill;
         this.category = category;
-        this.createAt = Instant.now().toString();
+        this.createAt = Instant.now();
+        this.user = user;
     }
 
-    public String getCreateAt() {
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Instant getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(String createAt) {
+    public void setCreateAt(Instant createAt) {
         this.createAt = createAt;
     }
 

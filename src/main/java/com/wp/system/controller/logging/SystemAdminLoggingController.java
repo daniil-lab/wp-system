@@ -3,6 +3,7 @@ package com.wp.system.controller.logging;
 import com.wp.system.dto.logging.SystemAdminLogDTO;
 import com.wp.system.dto.logging.SystemErrorLogDTO;
 import com.wp.system.request.logging.CreateErrorLogRequest;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.logging.SystemAdminLogger;
 import com.wp.system.services.logging.SystemErrorLogger;
@@ -46,13 +47,13 @@ public class SystemAdminLoggingController {
     @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
     @Operation(summary = "Получение админ логов по страницам")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<ServiceResponse<List<SystemAdminLogDTO>>> getAdminLogsByPages(
+    public ResponseEntity<ServiceResponse<PagingResponse<SystemAdminLogDTO>>> getAdminLogsByPages(
             @RequestParam
                 int pageSize,
             @RequestParam
                 int page
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.adminLogger.getPagedAdminLogs(pageSize, page).stream().map(SystemAdminLogDTO::new).collect(Collectors.toList()), "Admin logs returned"), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.adminLogger.getPagedAdminLogs(pageSize, page), "Admin logs returned"), HttpStatus.OK);
     }
 
 //    @PreAuthorize("hasAnyAuthority('ERROR_LOG_DELETE', 'ADMIN_LOG_FULL')")

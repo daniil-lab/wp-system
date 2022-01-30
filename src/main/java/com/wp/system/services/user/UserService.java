@@ -19,7 +19,6 @@ import com.wp.system.repository.user.UserRoleRepository;
 import com.wp.system.request.category.CreateCategoryRequest;
 import com.wp.system.request.user.*;
 import com.wp.system.response.PagingResponse;
-import com.wp.system.response.user.UserPageResponse;
 import com.wp.system.services.bill.BillService;
 import com.wp.system.services.bill.BillTransactionService;
 import com.wp.system.services.category.BaseCategoryService;
@@ -106,53 +105,53 @@ public class UserService {
     public File exportCSVData(ExportDataRequest request) {
         User user = this.getUserById(request.getUserId());
 
-        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
-                request.getStart(),
-                request.getEnd(),
-                -1,
-                user.getId(),
-                null,
-                null
-        );
-
-        File csvFile = new File("data" + Instant.now() + user.getId() + ".csv");
-
-        List<String[]> dataLines = new ArrayList<>();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss").withZone(ZoneId.systemDefault());
-
-        dataLines.add(new String[] {
-                "Дата",
-                "Место",
-                "Действие",
-                "Сумма",
-                "Валюта",
-                "Счет"
-        });
-
-        for(BillTransaction transaction : transactions)
-            dataLines.add(new String[] {
-                    formatter.format(Instant.parse(transaction.getCreateAt())),
-                    (transaction.getGeocodedPlace() != null ?
-                            transaction.getGeocodedPlace() : "Отсутствует"),
-                    transaction.getAction().getPaymentType(),
-                    transaction.getSum().toString(),
-                    transaction.getCurrency().getWalletName(),
-                    transaction.getBill().getName()
-            });
+//        PagingResponse<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
+//                request.getStart(),
+//                request.getEnd(),
+//                -1,
+//                user.getId(),
+//                null,
+//                null
+//        );
+//
+//        File csvFile = new File("data" + Instant.now() + user.getId() + ".csv");
+//
+//        List<String[]> dataLines = new ArrayList<>();
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss").withZone(ZoneId.systemDefault());
+//
+//        dataLines.add(new String[] {
+//                "Дата",
+//                "Место",
+//                "Действие",
+//                "Сумма",
+//                "Валюта",
+//                "Счет"
+//        });
+//
+//        for(BillTransaction transaction : transactions)
+//            dataLines.add(new String[] {
+//                    formatter.format(Instant.parse(transaction.getCreateAt())),
+//                    (transaction.getGeocodedPlace() != null ?
+//                            transaction.getGeocodedPlace() : "Отсутствует"),
+//                    transaction.getAction().getPaymentType(),
+//                    transaction.getSum().toString(),
+//                    transaction.getCurrency().getWalletName(),
+//                    transaction.getBill().getName()
+//            });
 
         try {
-            PrintWriter writer = new PrintWriter(csvFile);
+//            PrintWriter writer = new PrintWriter(csvFile);
+//
+//            for (String[] data : dataLines) {
+//                String result = CSVConverter.convertToCSV(data);
+//                writer.write(result);
+//            }
+//
+//            writer.close();
 
-            for (String[] data : dataLines) {
-                String result = CSVConverter.convertToCSV(data);
-                writer.write(result);
-            }
-
-            writer.close();
-
-            return csvFile;
-        } catch (FileNotFoundException e) {
+            return null;
+        } catch (Exception e) {
             throw new ServiceException("Error on ejecting data", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -183,17 +182,17 @@ public class UserService {
     public User cleanUserData(CleanUserRequest request) {
         User user = this.getUserById(request.getUserId());
 
-        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
-                request.getStart(),
-                request.getEnd(),
-                -1,
-                request.getUserId(),
-                null,
-                null
-        );
-
-        for (BillTransaction transaction : transactions)
-            this.billTransactionService.removeTransaction(transaction.getId());
+//        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
+//                request.getStart(),
+//                request.getEnd(),
+//                -1,
+//                request.getUserId(),
+//                null,
+//                null
+//        );
+//
+//        for (BillTransaction transaction : transactions)
+//            this.billTransactionService.removeTransaction(transaction.getId());
 
         return user;
     }

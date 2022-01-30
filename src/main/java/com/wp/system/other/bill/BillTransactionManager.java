@@ -30,7 +30,8 @@ public class BillTransactionManager {
                 description,
                 bill,
                 category,
-                user.getWallet());
+                user.getWallet(),
+                user);
 
         this.billTransactionRepository.save(transaction);
 

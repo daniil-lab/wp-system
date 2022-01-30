@@ -2,6 +2,7 @@ package com.wp.system.controller.bill;
 
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.bill.BillTransactionDTO;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.bill.BillTransactionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,40 +30,42 @@ public class BillTransactionController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Получение всех транзакций за определенный пероид")
     @GetMapping("/period")
-    public ResponseEntity<ServiceResponse<List<BillTransactionDTO>>> getBillTransactionByDate(@RequestParam Instant start,
-                                                                                              @RequestParam Instant end,
-                                                                                              @RequestParam Integer count,
-                                                                                              @RequestParam(required = false) UUID userId,
-                                                                                              @RequestParam(required = false) UUID billId,
-                                                                                              @RequestParam(required = false) UUID categoryId) {
+    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getBillTransactionByDate(@RequestParam Instant start,
+                                                                                             @RequestParam Instant end,
+                                                                                             @RequestParam Integer page,
+                                                                                             @RequestParam Integer pageSize,
+                                                                                             @RequestParam(required = false) UUID userId,
+                                                                                             @RequestParam(required = false) UUID billId,
+                                                                                             @RequestParam(required = false) UUID categoryId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllTransactionsByPeriod(
                 start,
                 end,
-                count,
+                page,
+                pageSize,
                 userId,
                 billId,
                 categoryId
-        ).stream().map(BillTransactionDTO::new).collect(Collectors.toList()), "Bill Transactions returned"), HttpStatus.OK);
+        ), "Bill Transactions returned"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Получение всех транзакций счета")
     @GetMapping("/bill/{billId}")
-    public ResponseEntity<ServiceResponse<List<BillTransactionDTO>>> getAllBillTransactions(@PathVariable UUID billId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllTransactionsByBillId(billId).stream().map(BillTransactionDTO::new).collect(Collectors.toList()), "Bill Transactions returned"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getAllBillTransactions(@PathVariable UUID billId, @RequestParam int page, @RequestParam int pageSize) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllTransactionsByBillId(billId, page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_FULL')")
     @Operation(summary = "Получение всех транзакций пользователя")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<ServiceResponse<List<BillTransactionDTO>>> getAllUserTransactions(@PathVariable UUID userId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllUserTransactions(userId).stream().map(BillTransactionDTO::new).collect(Collectors.toList()), "Bill Transactions returned"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getAllUserTransactions(@PathVariable UUID userId, @RequestParam int page, @RequestParam int pageSize) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllUserTransactions(userId, page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Получение всех транзакций категории")
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<ServiceResponse<List<BillTransactionDTO>>> getAllCategoryTransactions(@PathVariable UUID categoryId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllCategoryTransactions(categoryId).stream().map(BillTransactionDTO::new).collect(Collectors.toList()), "Bill Transactions returned"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getAllCategoryTransactions(@PathVariable UUID categoryId, @RequestParam int page, @RequestParam int pageSize) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllCategoryTransactions(categoryId, page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
     }
 }
