@@ -272,17 +272,17 @@ public class UserService {
         SecurityContext context = SecurityContextHolder.getContext();
 
         if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
-            UserAuthDetails credentials = (UserAuthDetails) context.getAuthentication().getPrincipal();
-
-            if(credentials.isAdmin())
-                systemAdminLogger.createAdminLog(
-                        new CreateAdminLogRequest(
-                                credentials.getId(),
-                                "Создание пользователя",
-                                "Админом был изменен пользователь с ID " + user.getId() +
-                                        ". Номере телефона: " + user.getUsername()
-                        )
-                );
+            if(context.getAuthentication().getPrincipal() instanceof UserAuthDetails credentials) {
+                if(credentials.isAdmin())
+                    systemAdminLogger.createAdminLog(
+                            new CreateAdminLogRequest(
+                                    credentials.getId(),
+                                    "Создание пользователя",
+                                    "Админом был изменен пользователь с ID " + user.getId() +
+                                            ". Номере телефона: " + user.getUsername()
+                            )
+                    );
+            }
         }
 
         return user;
@@ -408,17 +408,17 @@ public class UserService {
         SecurityContext context = SecurityContextHolder.getContext();
 
         if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
-            UserAuthDetails credentials = (UserAuthDetails) context.getAuthentication().getPrincipal();
-
-            if(credentials.isAdmin())
-                systemAdminLogger.createAdminLog(
-                        new CreateAdminLogRequest(
-                                credentials.getId(),
-                                "Создание пользователя",
-                                "Админом был изменен пользователь с ID " + user.getId() +
-                                        ". Номере телефона: " + user.getUsername()
-                        )
-                );
+            if(context.getAuthentication().getPrincipal() instanceof UserAuthDetails credentials) {
+                if(credentials.isAdmin())
+                    systemAdminLogger.createAdminLog(
+                            new CreateAdminLogRequest(
+                                    credentials.getId(),
+                                    "Создание пользователя",
+                                    "Админом был изменен пользователь с ID " + user.getId() +
+                                            ". Номере телефона: " + user.getUsername()
+                            )
+                    );
+            }
         }
 
         return user;
@@ -433,17 +433,17 @@ public class UserService {
         SecurityContext context = SecurityContextHolder.getContext();
 
         if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
-            UserAuthDetails credentials = (UserAuthDetails) context.getAuthentication().getPrincipal();
-
-            if(credentials.isAdmin())
-                systemAdminLogger.createAdminLog(
-                        new CreateAdminLogRequest(
-                                credentials.getId(),
-                                "Создание пользователя",
-                                "Админом был изменен пользователь с ID " + user.getId() +
-                                        ". Номере телефона: " + user.getUsername()
-                        )
-                );
+            if(context.getAuthentication().getPrincipal() instanceof UserAuthDetails credentials) {
+                if(credentials.isAdmin())
+                    systemAdminLogger.createAdminLog(
+                            new CreateAdminLogRequest(
+                                    credentials.getId(),
+                                    "Создание пользователя",
+                                    "Админом был изменен пользователь с ID " + user.getId() +
+                                            ". Номере телефона: " + user.getUsername()
+                            )
+                    );
+            }
         }
 
         return user;
