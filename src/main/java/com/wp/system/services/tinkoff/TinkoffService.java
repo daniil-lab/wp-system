@@ -17,6 +17,11 @@ public class TinkoffService {
     @Autowired
     private TinkoffIntegrationRepository tinkoffIntegrationRepository;
 
+
+    public void authHook(String state, String code) {
+        System.out.println(state);
+        System.out.println(code);
+    }
 //    public TinkoffAuthValidateResponse validateAuthRequest() {
 //
 //    }
