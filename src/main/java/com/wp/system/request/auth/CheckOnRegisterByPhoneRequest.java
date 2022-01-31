@@ -1,14 +1,14 @@
-package com.wp.system.response.auth;
+package com.wp.system.request.auth;
 
 import javax.validation.constraints.NotNull;
 
-public class CheckOnRegisterRequest {
+public class CheckOnRegisterByPhoneRequest {
     @NotNull
     private String phone;
 
-    public CheckOnRegisterRequest() {}
+    public CheckOnRegisterByPhoneRequest() {}
 
-    public CheckOnRegisterRequest(String phone) {
+    public CheckOnRegisterByPhoneRequest(String phone) {
         this.phone = phone;
     }
 

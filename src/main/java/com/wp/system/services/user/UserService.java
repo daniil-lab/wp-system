@@ -385,6 +385,11 @@ public class UserService {
             user.setNotificationsEnable(request.getNotificationsEnable());
 
         if(request.getEmail() != null && (user.getEmail().getAddress() == null || !user.getEmail().getAddress().equals(request.getEmail()))) {
+            Optional<User> emailValidationUser = this.userRepository.findByEmail(request.getEmail());
+
+            if(emailValidationUser.isPresent())
+                throw new ServiceException("User with given email already exist", HttpStatus.BAD_REQUEST);
+
             UserEmail email = user.getEmail();
             email.setAddress(request.getEmail());
             email.setActivated(false);

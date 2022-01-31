@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@Tag(name = "Subscription API")
+@Tag(name = "Tinkoff API")
 @RequestMapping("/api/v1/tinkoff")
 @SecurityRequirement(name = "Bearer")
 public class TinkoffController {

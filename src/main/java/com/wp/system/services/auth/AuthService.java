@@ -1,7 +1,6 @@
 package com.wp.system.services.auth;
 
 import com.wp.system.config.jwt.JwtProvider;
-import com.wp.system.entity.auth.PhoneAuthData;
 import com.wp.system.entity.auth.SmsSubmit;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
@@ -12,8 +11,7 @@ import com.wp.system.repository.auth.SmsSubmitRepository;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.request.auth.*;
 import com.wp.system.response.auth.AuthDataResponse;
-import com.wp.system.response.auth.CheckOnRegisterRequest;
-import com.wp.system.response.auth.PhoneAuthRequestResponse;
+import com.wp.system.request.auth.CheckOnRegisterByPhoneRequest;
 import com.wp.system.response.auth.SmsSubmitResponse;
 import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +46,14 @@ public class AuthService {
     @Autowired
     private SmsSubmitRepository smsSubmitRepository;
 
-    public Boolean checkOnRegister(CheckOnRegisterRequest request) {
+    public Boolean checkOnRegister(CheckOnRegisterByPhoneRequest request) {
         this.userService.getUserByUsername(request.getPhone());
+
+        return true;
+    }
+
+    public Boolean checkOnRegisterEmail(CheckOnRegisterByEmailRequest request) {
+        this.userService.getUserByEmail(request.getEmail());
 
         return true;
     }

@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public class CreateUserRequest {
     @Schema(required = true, description = "Номер телефона")
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+//    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     @Pattern(regexp = "^((\\+7)+([0-9]){10})$", message = ValidationErrorMessages.PHONE_VALIDATION_FAILED)
     private String username;
 
