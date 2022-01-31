@@ -1,6 +1,8 @@
 package com.wp.system.controller.tinkoff;
 
+import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.tinkoff.TinkoffService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,9 @@ public class TinkoffController {
     private TinkoffService tinkoffService;
 
     @GetMapping("/auth-hook")
-    public ResponseEntity authHook(
+    @Operation(summary = "Получение данных подписки по ID")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<Boolean>> authHook(
             @RequestParam
                     String state,
             @RequestParam
@@ -29,6 +33,6 @@ public class TinkoffController {
     ) {
         tinkoffService.authHook(state, code);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), true, ""), HttpStatus.OK);
     }
 }
