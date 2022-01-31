@@ -22,7 +22,7 @@ public class TinkoffController {
     @Autowired
     private TinkoffService tinkoffService;
 
-    @GetMapping("/auth-hook")
+    @GetMapping(value = "/auth-hook")
     @Operation(summary = "Получение данных подписки по ID")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<Boolean>> authHook(
