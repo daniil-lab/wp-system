@@ -1,5 +1,6 @@
 package com.wp.system.entity.user;
 
+import com.wp.system.entity.activity.Activity;
 import com.wp.system.entity.auth.PhoneAuthData;
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
@@ -46,8 +47,11 @@ public class User {
     @JoinColumn(name = "role_id")
     private UserRole role;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "admin")
     private Set<SystemAdminLog> logs;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Activity> activities;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private List<PhoneAuthData> phoneAuthRequests;

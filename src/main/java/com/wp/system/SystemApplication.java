@@ -98,7 +98,7 @@ public class SystemApplication implements CommandLineRunner {
 		} catch (ServiceException e) {
 			CreateUserRequest request = new CreateUserRequest();
 
-			request.setPassword(new String(Base64.getEncoder().encode("test".getBytes())));
+			request.setPassword(new String(Base64.getEncoder().encode("tessst".getBytes())));
 			request.setUsername("+77777777777");
 			request.setWalletType(WalletType.RUB);
 			request.setType(UserType.SYSTEM);

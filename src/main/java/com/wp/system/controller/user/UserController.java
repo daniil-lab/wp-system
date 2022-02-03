@@ -3,6 +3,7 @@ package com.wp.system.controller.user;
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.user.User;
+import com.wp.system.other.user.UserType;
 import com.wp.system.permissions.user.UserPermissions;
 import com.wp.system.request.user.*;
 import com.wp.system.response.PagingResponse;
@@ -109,7 +110,7 @@ public class UserController extends DocumentedRestController {
     }
 
     @SecurityRequirement(name = "Bearer")
-    @PreAuthorize("hasAnyAuthority('USER_DELETE', 'USER_FULL')")
+//    @PreAuthorize("hasAnyAuthority('USER_DELETE', 'USER_FULL')")
     @Operation(summary = "Удаление пользователя")
     @DeleteMapping("/{userId}")
     public ResponseEntity<ServiceResponse<UserDTO>> removeUser(@PathVariable UUID userId) {
@@ -149,8 +150,12 @@ public class UserController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
     @Operation(summary = "Поиск пользователей")
     @GetMapping("/find")
-    public ResponseEntity<ServiceResponse<List<UserDTO>>> findUsers(@RequestParam String phone) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.findUser(phone).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<List<UserDTO>>> findUsers(
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) UserType type
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.findUser(phone, email, type).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer")

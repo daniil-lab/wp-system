@@ -2,6 +2,7 @@ package com.wp.system.services.user;
 
 import com.wp.system.config.security.AuthCredentials;
 import com.wp.system.config.security.UserAuthDetails;
+import com.wp.system.dto.bill.BillTransactionDTO;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
@@ -14,6 +15,8 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.other.CSVConverter;
 import com.wp.system.other.CurrencySingleton;
 import com.wp.system.other.CurrencySingletonCourse;
+import com.wp.system.other.PasswordValidator;
+import com.wp.system.other.user.UserType;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRolePermissionRepository;
@@ -28,6 +31,7 @@ import com.wp.system.services.category.BaseCategoryService;
 import com.wp.system.services.category.CategoryService;
 import com.wp.system.services.email.EmailService;
 import com.wp.system.services.logging.SystemAdminLogger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +46,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
@@ -97,6 +107,12 @@ public class UserService {
     @Autowired
     private SystemAdminLogger systemAdminLogger;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public User activateUserEmail(UUID userId) {
         User user = this.getUserById(userId);
 
@@ -114,50 +130,51 @@ public class UserService {
     public File exportCSVData(ExportDataRequest request) {
         User user = this.getUserById(request.getUserId());
 
-//        PagingResponse<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
-//                request.getStart(),
-//                request.getEnd(),
-//                -1,
-//                user.getId(),
-//                null,
-//                null
-//        );
-//
-//        File csvFile = new File("data" + Instant.now() + user.getId() + ".csv");
-//
-//        List<String[]> dataLines = new ArrayList<>();
-//
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss").withZone(ZoneId.systemDefault());
-//
-//        dataLines.add(new String[] {
-//                "Дата",
-//                "Место",
-//                "Действие",
-//                "Сумма",
-//                "Валюта",
-//                "Счет"
-//        });
-//
-//        for(BillTransaction transaction : transactions)
-//            dataLines.add(new String[] {
-//                    formatter.format(Instant.parse(transaction.getCreateAt())),
-//                    (transaction.getGeocodedPlace() != null ?
-//                            transaction.getGeocodedPlace() : "Отсутствует"),
-//                    transaction.getAction().getPaymentType(),
-//                    transaction.getSum().toString(),
-//                    transaction.getCurrency().getWalletName(),
-//                    transaction.getBill().getName()
-//            });
+        PagingResponse<BillTransactionDTO> transactions = this.billTransactionService.getAllTransactionsByPeriod(
+                request.getStart(),
+                request.getEnd(),
+                0,
+                0,
+                user.getId(),
+                null,
+                null
+        );
+
+        File csvFile = new File("data" + Instant.now() + user.getId() + ".csv");
+
+        List<String[]> dataLines = new ArrayList<>();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss").withZone(ZoneId.systemDefault());
+
+        dataLines.add(new String[] {
+                "Дата",
+                "Место",
+                "Действие",
+                "Сумма",
+                "Валюта",
+                "Счет"
+        });
+
+        for(BillTransactionDTO transaction : transactions.getPage())
+            dataLines.add(new String[] {
+                    formatter.format(Instant.parse(transaction.getCreateAt())),
+                    (transaction.getGeocodedPlace() != null ?
+                            transaction.getGeocodedPlace() : "Отсутствует"),
+                    transaction.getAction().getPaymentType(),
+                    transaction.getSum().toString(),
+                    transaction.getCurrency().getWalletName(),
+                    transaction.getBill().getName()
+            });
 
         try {
-//            PrintWriter writer = new PrintWriter(csvFile);
-//
-//            for (String[] data : dataLines) {
-//                String result = CSVConverter.convertToCSV(data);
-//                writer.write(result);
-//            }
-//
-//            writer.close();
+            PrintWriter writer = new PrintWriter(csvFile);
+
+            for (String[] data : dataLines) {
+                String result = CSVConverter.convertToCSV(data);
+                writer.write(result);
+            }
+
+            writer.close();
 
             return null;
         } catch (Exception e) {
@@ -228,8 +245,6 @@ public class UserService {
 
     @Transactional
     public User createUser(CreateUserRequest request) {
-        byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
-
         Optional<User> foundUser = this.userRepository.findByUsername(request.getUsername());
 
         if(foundUser.isPresent())
@@ -247,7 +262,7 @@ public class UserService {
         else
             role = this.userRoleService.getUserRoleByName(request.getRoleName());
 
-        User user = new User(request.getUsername(), passwordEncoder.encode(new String(passwordBytes)));
+        User user = new User(request.getUsername(), passwordEncoder.encode(PasswordValidator.decodeAndValidatePassword(request.getPassword())));
 
         UserEmail email = new UserEmail();
         email.setAddress(request.getEmail());
@@ -310,14 +325,6 @@ public class UserService {
         return new PagingResponse<>(userRepository.findAll(PageRequest.of(page, pageSize)).stream().map(UserDTO::new).collect(Collectors.toList()), getAllUsers().size());
     }
 
-    public List<User> findUser(String phone) {
-        List<User> users = getAllUsers();
-
-        return users.stream().filter((user) -> {
-            return user.getUsername().contains(phone);
-        }).collect(Collectors.toList());
-    }
-
     public List<User> getAllUsers() {
         Iterable<User> foundUsers = this.userRepository.findAll();
         List<User> users = new ArrayList<>();
@@ -338,6 +345,36 @@ public class UserService {
         return foundUser.get();
     }
 
+    public List<User> findUser(
+            String phone,
+            String email,
+            UserType type
+    ) {
+        if(phone == null && email == null && type == null)
+            throw new ServiceException("Pass one or more param to request", HttpStatus.BAD_REQUEST);
+
+        CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();;
+        CriteriaQuery<User> cr = cb.createQuery(User.class);
+        Root<User> root = cr.from(User.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if(phone != null)
+            predicates.add(cb.like(root.get("username"), "%" + phone + "%"));
+
+        if(email != null)
+            predicates.add(cb.like(root.get("email").get("address"), "%" + email + "%"));
+
+        if(type != null)
+            predicates.add(cb.equal(root.get("userType"), type));
+
+        Predicate[] predicateArr = predicates.toArray(new Predicate[0]);
+
+        return entityManager.createQuery(
+                cr.select(root).where(predicateArr)
+        ).getResultList();
+    }
+
     @Transactional
     public User updateUser(EditUserRequest request, UUID userId) {
         User user = this.getUserById(userId);
@@ -345,9 +382,8 @@ public class UserService {
         if(request.getUsername() != null && !request.getUsername().equals(user.getUsername()))
             user.setUsername(request.getUsername());
 
-        if(request.getPassword() != null &&!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
-            user.setPassword(passwordEncoder.encode(new String(passwordBytes)));
+        if(request.getPassword() != null &&!passwordEncoder.matches(PasswordValidator.decodePassword(request.getPassword()), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(PasswordValidator.decodeAndValidatePassword(request.getPassword())));
         }
 
         if(request.getRoleName() != null) {

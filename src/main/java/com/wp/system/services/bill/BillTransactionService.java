@@ -88,7 +88,7 @@ public class BillTransactionService {
                 .createQuery(cr.select(root).where(predicates))
                 .getResultList();
 
-        return new PagingResponse<>(transactions.stream().filter((item) -> {
+        return new PagingResponse<>((page != 0 && pageSize != 0 ? transactions : transactionsFull).stream().filter((item) -> {
             if(categoryId != null) {
                 if(item.getCategory() == null)
                     return false;

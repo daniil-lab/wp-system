@@ -17,6 +17,9 @@ public class SubscriptionDTO {
     public SubscriptionDTO() {}
 
     public SubscriptionDTO(Subscription subscription) {
+        if(subscription == null)
+            return;
+
         this.id = subscription.getId();
         this.isActive = subscription.isActive();
         this.startDate = subscription.getStartDate();

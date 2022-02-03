@@ -30,7 +30,7 @@ public class SystemAdminLoggingController {
     @Autowired
     private SystemAdminLogger adminLogger;
 
-    @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
     @Operation(summary = "Получение всех админ логов")
     @GetMapping("/")
     public ResponseEntity<ServiceResponse<List<SystemAdminLogDTO>>> getAllAdminLogs() {

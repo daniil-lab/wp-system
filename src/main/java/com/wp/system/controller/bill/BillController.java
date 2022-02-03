@@ -66,21 +66,21 @@ public class BillController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billService.withdrawBill(request, billId)), "Bill updated"), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('BILL', 'BILL_FULL')")
+    @PreAuthorize("hasAnyAuthority('BILL_GET', 'BILL_FULL')")
     @Operation(summary = "Удаление счета")
     @DeleteMapping("/{billId}")
     public ResponseEntity<ServiceResponse<BillDTO>> removeBill(@PathVariable UUID billId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillDTO(this.billService.removeBill(billId)), "Bill removed"), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('BILL', 'BILL_FULL')")
+    @PreAuthorize("hasAnyAuthority('BILL_GET', 'BILL_FULL')")
     @Operation(summary = "Получение счета по ID")
     @GetMapping("/{billId}")
     public ResponseEntity<ServiceResponse<BillDTO>> getBillById(@PathVariable UUID billId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillDTO(this.billService.getBillById(billId)), "Bill returned"), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('BILL', 'BILL_FULL')")
+    @PreAuthorize("hasAnyAuthority('BILL_GET', 'BILL_FULL')")
     @Operation(summary = "Получение всех счетов пользователя")
     @GetMapping("/")
     public ResponseEntity<ServiceResponse<List<BillDTO>>> getUserBills(@RequestParam UUID userId) {

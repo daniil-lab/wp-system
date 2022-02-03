@@ -7,6 +7,7 @@ import com.wp.system.dto.subscription.SubscriptionVariantDTO;
 import com.wp.system.other.SystemImageTag;
 import com.wp.system.request.image.UploadImageRequest;
 import com.wp.system.request.subscription.ExtendSubscriptionRequest;
+import com.wp.system.request.subscription.UseVariantOnUserRequest;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.image.ImageService;
 import com.wp.system.services.subscription.SubscriptionService;
@@ -65,6 +66,17 @@ public class SubscriptionController extends DocumentedRestController {
             @PathVariable
                     UUID subscriptionId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.resetSubscription(subscriptionId)), "Subscription returned"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_UPDATE', 'SUBSCRIPTION_FULL')")
+    @Operation(summary = "Применение варианта подписки на пользователя")
+    @SecurityRequirement(name = "Bearer")
+    @PatchMapping(value = "/use")
+    public ResponseEntity<ServiceResponse<SubscriptionDTO>> useVariantOnUser(
+            @RequestBody
+            @Valid
+                    UseVariantOnUserRequest request) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.useVariantOnUser(request)), "Subscription returned"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_UPDATE', 'SUBSCRIPTION_FULL')")

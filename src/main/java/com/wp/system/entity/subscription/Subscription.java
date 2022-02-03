@@ -2,9 +2,7 @@ package com.wp.system.entity.subscription;
 
 import com.wp.system.entity.user.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -21,7 +19,19 @@ public class Subscription {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant endDate;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "variant_id")
+    private SubscriptionVariant variant;
+
     public Subscription() {}
+
+    public SubscriptionVariant getVariant() {
+        return variant;
+    }
+
+    public void setVariant(SubscriptionVariant variant) {
+        this.variant = variant;
+    }
 
     public UUID getId() {
         return id;

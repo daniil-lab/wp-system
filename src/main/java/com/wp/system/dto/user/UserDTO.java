@@ -44,6 +44,9 @@ public class UserDTO {
     public UserDTO() {};
 
     public UserDTO(User user) {
+        if(user == null)
+            return;
+
         this.username = user.getUsername();
         this.role = new UserRoleDTO(user.getRole());
         this.id = user.getId();

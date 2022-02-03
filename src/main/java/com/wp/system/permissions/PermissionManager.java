@@ -1,6 +1,7 @@
 package com.wp.system.permissions;
 
 import com.wp.system.entity.subscription.SubscriptionVariant;
+import com.wp.system.permissions.activity.ActivityPermissions;
 import com.wp.system.permissions.bill.BillPermissions;
 import com.wp.system.permissions.bill.BillTransactionPermissions;
 import com.wp.system.permissions.category.BaseCategoryPermissions;
@@ -46,6 +47,7 @@ public class PermissionManager {
         permissionList.addAll(Arrays.stream(EmailPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(BaseCategoryPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(HelpLeadPermissions.values()).toList());
+        permissionList.addAll(Arrays.stream(ActivityPermissions.values()).toList());
     }
 
     public Permission getPermissionBySystemName(String systemName) {
