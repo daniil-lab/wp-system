@@ -1,6 +1,7 @@
 package com.wp.system.dto.subscription;
 
 import com.wp.system.entity.subscription.Subscription;
+import com.wp.system.entity.subscription.SubscriptionVariant;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -14,6 +15,8 @@ public class SubscriptionDTO {
 
     private Instant endDate;
 
+    private SubscriptionVariantDTO variant;
+
     public SubscriptionDTO() {}
 
     public SubscriptionDTO(Subscription subscription) {
@@ -24,6 +27,15 @@ public class SubscriptionDTO {
         this.isActive = subscription.isActive();
         this.startDate = subscription.getStartDate();
         this.endDate = subscription.getEndDate();
+        this.variant = new SubscriptionVariantDTO(subscription.getVariant());
+    }
+
+    public SubscriptionVariantDTO getVariant() {
+        return variant;
+    }
+
+    public void setVariant(SubscriptionVariantDTO variant) {
+        this.variant = variant;
     }
 
     public UUID getId() {

@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -153,9 +154,10 @@ public class UserController extends DocumentedRestController {
     public ResponseEntity<ServiceResponse<List<UserDTO>>> findUsers(
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) UserType type
+            @RequestParam(required = false) UserType type,
+            @RequestParam(required = false) Instant createAt
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.findUser(phone, email, type).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.findUser(phone, email, type, createAt).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer")

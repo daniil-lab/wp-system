@@ -20,6 +20,9 @@ public class SubscriptionVariantDTO {
     public SubscriptionVariantDTO() {}
 
     public SubscriptionVariantDTO(SubscriptionVariant variant) {
+        if(variant == null)
+            return;
+
         this.id = variant.getId();
         this.name = variant.getName();
         this.description = variant.getDescription();

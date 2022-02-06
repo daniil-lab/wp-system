@@ -348,12 +348,13 @@ public class UserService {
     public List<User> findUser(
             String phone,
             String email,
-            UserType type
+            UserType type,
+            Instant createAt
     ) {
         if(phone == null && email == null && type == null)
             throw new ServiceException("Pass one or more param to request", HttpStatus.BAD_REQUEST);
 
-        CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();;
+        CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();
         CriteriaQuery<User> cr = cb.createQuery(User.class);
         Root<User> root = cr.from(User.class);
 
@@ -367,6 +368,9 @@ public class UserService {
 
         if(type != null)
             predicates.add(cb.equal(root.get("userType"), type));
+
+        if(createAt != null)
+            predicates.add(cb.greaterThan(root.get("createAt"), createAt));
 
         Predicate[] predicateArr = predicates.toArray(new Predicate[0]);
 
