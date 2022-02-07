@@ -15,6 +15,7 @@ public class TinkoffAuthIntegration {
         HttpHeaders httpHeaders = new HttpHeaders();
 
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        httpHeaders.setBasicAuth("walletbox", "Nz2mtwBnQKdPXPMI9BmRueoReJJwry");
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("grant_type","authorization_code");
