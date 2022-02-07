@@ -2,6 +2,7 @@ package com.wp.system.services.tinkoff;
 
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.other.tinkoff.TinkoffAuthIntegration;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
 import com.wp.system.response.tinkoff.TinkoffAuthValidateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,7 @@ public class TinkoffService {
 
 
     public void authHook(String state, String code) {
-        System.out.println(state);
-        System.out.println(code);
+        TinkoffAuthIntegration.completeAuth(code);
     }
 //    public TinkoffAuthValidateResponse validateAuthRequest() {
 //
