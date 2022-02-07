@@ -32,7 +32,6 @@ public class TinkoffController {
                     String code
     ) {
         tinkoffService.authHook(state, code);
-
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), true, ""), HttpStatus.OK);
     }
 }
