@@ -23,7 +23,42 @@ public class Advertising {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<AdvertisingFile> files = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<AdvertisingView> views = new HashSet<>();
+
     public Advertising() {}
+
+    public void addFile(AdvertisingFile file) {
+        this.files.add(file);
+    }
+
+    public void removeFile(AdvertisingFile file) {
+        this.files.remove(file);
+    }
+
+    public void addView(AdvertisingView view) {
+        this.views.add(view);
+    }
+
+    public void removeView(AdvertisingView view) {
+        this.views.remove(view);
+    }
+
+    public Set<AdvertisingFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<AdvertisingFile> files) {
+        this.files = files;
+    }
+
+    public Set<AdvertisingView> getViews() {
+        return views;
+    }
+
+    public void setViews(Set<AdvertisingView> views) {
+        this.views = views;
+    }
 
     public UUID getId() {
         return id;

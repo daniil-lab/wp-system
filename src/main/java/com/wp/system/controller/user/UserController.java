@@ -155,9 +155,10 @@ public class UserController extends DocumentedRestController {
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) UserType type,
-            @RequestParam(required = false) Instant createAt
+            @RequestParam(required = false) Instant startDate,
+            @RequestParam(required = false) Instant endDate
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.findUser(phone, email, type, createAt).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.findUser(phone, email, type, startDate, endDate).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer")

@@ -85,8 +85,8 @@ public class ImageService {
 
         try {
             Files.deleteIfExists(path);
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            throw new ServiceException("Error on remove file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         systemImageRepository.delete(image);

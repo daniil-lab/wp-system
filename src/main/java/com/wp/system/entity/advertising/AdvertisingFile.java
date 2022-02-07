@@ -14,6 +14,10 @@ public class AdvertisingFile {
 
     public AdvertisingFile() {}
 
+    public AdvertisingFile(String path) {
+        this.path = path;
+    }
+
     public UUID getId() {
         return id;
     }

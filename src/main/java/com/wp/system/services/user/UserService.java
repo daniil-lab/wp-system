@@ -349,9 +349,10 @@ public class UserService {
             String phone,
             String email,
             UserType type,
-            Instant createAt
+            Instant startDate,
+            Instant endDate
     ) {
-        if(phone == null && email == null && type == null)
+        if(phone == null && email == null && type == null && startDate == null && endDate == null)
             throw new ServiceException("Pass one or more param to request", HttpStatus.BAD_REQUEST);
 
         CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();
@@ -369,8 +370,11 @@ public class UserService {
         if(type != null)
             predicates.add(cb.equal(root.get("userType"), type));
 
-        if(createAt != null)
-            predicates.add(cb.greaterThan(root.get("createAt"), createAt));
+        if(startDate != null)
+            predicates.add(cb.greaterThan(root.get("createAt"), startDate));
+
+        if(endDate != null)
+            predicates.add(cb.lessThan(root.get("createAt"), endDate));
 
         Predicate[] predicateArr = predicates.toArray(new Predicate[0]);
 
