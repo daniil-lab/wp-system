@@ -7,6 +7,7 @@ import com.wp.system.other.WalletType;
 import com.wp.system.other.user.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class UserDTO {
@@ -41,6 +42,8 @@ public class UserDTO {
 
     private boolean notificationsEnable;
 
+    private Instant createAt;
+
     public UserDTO() {};
 
     public UserDTO(User user) {
@@ -58,6 +61,15 @@ public class UserDTO {
         this.pinCode = user.getPinCode();
         this.notificationsEnable = user.isNotificationsEnable();
         this.plannedIncome = user.getPlannedIncome();
+        this.createAt = user.getCreateAt();
+    }
+
+    public Instant getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Instant createAt) {
+        this.createAt = createAt;
     }
 
     public int getPlannedIncome() {
