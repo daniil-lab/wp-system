@@ -24,7 +24,7 @@ public class TinkoffAuthIntegration {
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, httpHeaders);
 
         ResponseEntity<TinkoffTokenResponse> response = restTemplate.exchange(
-                "https://id.tinkoff.ru/auth/token",
+                "https://id.tinkoff.ru/auth/token/",
                 HttpMethod.POST,
                 entity,
                 TinkoffTokenResponse.class
