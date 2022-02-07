@@ -19,20 +19,20 @@ public class TinkoffAuthIntegration {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("grant_type","authorization_code");
-        map.add("redirect_uri","http://46.30.41.45/api/v1/tinkoff/auth-hook/&code=" + code);
+        map.add("redirect_uri","http://46.30.41.45/api/v1/tinkoff/auth-hook/");
+        map.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, httpHeaders);
 
-        ResponseEntity<TinkoffTokenResponse> response = restTemplate.exchange(
+        ResponseEntity<String> response = restTemplate.postForEntity(
                 "https://id.tinkoff.ru/auth/token",
-                HttpMethod.POST,
                 entity,
-                TinkoffTokenResponse.class
+                String.class
         );
 
         System.out.println(response.getStatusCode());
-        System.out.println(response.getBody().getAccess_token());
+        System.out.println(response.getBody());
 
-        return response.getBody();
+        return null;
     }
 }
