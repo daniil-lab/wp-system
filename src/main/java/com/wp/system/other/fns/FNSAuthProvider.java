@@ -1,5 +1,6 @@
 package com.wp.system.other.fns;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.wp.system.exception.ServiceException;
 import org.springframework.http.HttpStatus;
 
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FNSAuthProvider {
     private String token;
@@ -66,12 +69,14 @@ public class FNSAuthProvider {
             in.close();
 
             // You can play with response which is available as string now:
-            String finalvalue= response.toString();
+            String finalValue = response.toString();
 
-            System.out.println(finalvalue);
-            // or you can parse/substring the required tag from response as below based your response code
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            XmlMapper xmlMapper = new XmlMapper();
+            Map<String, Object> data = xmlMapper.readValue(finalValue, Map.class);;
+
+            data.forEach((item, item2) -> {
+                System.out.println(item + "-" + item2);
+            });
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
