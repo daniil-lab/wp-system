@@ -18,13 +18,13 @@ public class FNSTicketInformation extends FNSIntegration {
                 "\t\t\t<ns0:Message>\n" +
                 "\t\t\t\t<tns:GetTicketRequest xmlns:tns=\"urn://x-artefacts-gnivc-ru/ais3/kkt/KktTicketService/types/1.0\">\n" +
                 "\t<tns:GetTicketInfo>\n" +
-                "\t<tns:Sum>2400</tns:Sum>\n" +
-                "\t\t<tns:Date>2019-04-09T16:38:00</tns:Date>\n" +
-                "\t\t<tns:Fn>9287440300090728</tns:Fn>\n" +
-                "\t\t<tns:TypeOperation>1</tns:TypeOperation>\n" +
-                "\t\t<tns:FiscalDocumentId>77133</tns:FiscalDocumentId>\n" +
-                "\t\t<tns:FiscalSign>1482926127</tns:FiscalSign>\n" +
-                "\t\t<tns:RawData>true</tns:RawData>\n" +
+                "\t<tns:Sum>" + sum + "</tns:Sum>\n" +
+                "\t\t<tns:Date>" + date + "</tns:Date>\n" +
+                "\t\t<tns:Fn>" + fn + "</tns:Fn>\n" +
+                "\t\t<tns:TypeOperation>" + operationType + "</tns:TypeOperation>\n" +
+                "\t\t<tns:FiscalDocumentId>" + fiscalDocumentId + "</tns:FiscalDocumentId>\n" +
+                "\t\t<tns:FiscalSign>" + fiscalSign + "</tns:FiscalSign>\n" +
+                "\t\t<tns:RawData>" + rawData + "</tns:RawData>\n" +
                 "\t\t</tns:GetTicketInfo>\n" +
                 "\t</tns:GetTicketRequest>\n" +
                 "\t\t\t</ns0:Message>\n" +
