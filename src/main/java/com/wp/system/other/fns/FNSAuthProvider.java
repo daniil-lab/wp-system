@@ -3,10 +3,15 @@ package com.wp.system.other.fns;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.wp.system.exception.ServiceException;
 import org.springframework.http.HttpStatus;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
-import javax.swing.text.Document;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,6 +19,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class FNSAuthProvider {
@@ -53,23 +59,36 @@ public class FNSAuthProvider {
             wr.flush();
             wr.close();
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
 
-            String inputLine;
+            Document doc = dbf.newDocumentBuilder().parse(con.getInputStream());
 
-            StringBuilder response = new StringBuilder();
+            XPath xPath = XPathFactory.newInstance().newXPath();
 
-            while((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
+            xPath.setNamespaceContext(new NamespaceContext() {
+                @Override
+                public String getNamespaceURI(String prefix) {
+                    if(prefix.equals("ns"))
+                        return "urn://x-artefacts-gnivc-ru/ais3/kkt/AuthService/types/1.0";
 
-            in.close();
+                    return null;
+                }
 
-            // You can play with response which is available as string now:
-            String finalValue = response.toString();
+                @Override
+                public String getPrefix(String namespaceURI) {
+                    return null;
+                }
 
-            System.out.println(finalValue);
+                @Override
+                public Iterator<String> getPrefixes(String namespaceURI) {
+                    return null;
+                }
+            });
+
+            Node token = (Node) xPath.evaluate("/soap:Envelope/soap:Body/GetMessageResponse/Message/AuthResponse/ns2:Result/ns2:Token", doc, XPathConstants.NODE);
+
+            System.out.println(token.getNodeValue());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
