@@ -77,7 +77,7 @@ public class FNSAuthProvider {
 
             AuthResponse authResponse = mapper.readValue(finalValue, AuthResponse.class);
 
-            System.out.println(authResponse.getResult());
+            System.out.println(authResponse.getToken());
 
         } catch (Exception e) {
             e.printStackTrace();
