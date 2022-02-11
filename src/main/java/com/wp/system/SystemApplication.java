@@ -6,6 +6,7 @@ import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.user.UserRolePermission;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.other.WalletType;
+import com.wp.system.other.fns.FNSAuthProvider;
 import com.wp.system.other.user.UserType;
 import com.wp.system.permissions.Permission;
 import com.wp.system.permissions.PermissionManager;
@@ -77,6 +78,10 @@ public class SystemApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		FNSAuthProvider provider = new FNSAuthProvider("MZXCnMtsrWdEkobAYyDhj4bTnQfXj5RFsVDqKNpNOqlWcjuJVaGjtIRuZQzKfDn25y0UXyutQB7hpPsimgkzQH9VU8YGpFGJBVlEtn1aJi3yxBpTkN2zaRxAw74hoXad");
+
+		provider.auth();
+
 		User user = null;
 		UserRole role = null;
 
