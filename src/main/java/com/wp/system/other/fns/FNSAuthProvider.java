@@ -78,7 +78,7 @@ public class FNSAuthProvider {
             Document document = Jsoup.parse(finalValue, "", Parser.xmlParser());
             document.outputSettings().prettyPrint(false);
             Elements retorno = document.getElementsByTag("ns2:Token");
-            System.out.println(retorno.toString());
+            System.out.println(retorno.get(0).val());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
