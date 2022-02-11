@@ -29,20 +29,9 @@ public class FNSAuthProvider {
         this.token = token;
     }
 
-    public void auth() {
+    public String auth() {
         try {
-            String url = "https://openapi.nalog.ru:8090/open-api/AuthService/0.1";
-
-            URL obj = new URL(url);
-
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-            con.setRequestMethod("POST");
-
-            con.setRequestProperty("Content-Type","text/xml; charset=utf-8");
-            con.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns=\"urn://x-artefacts-gnivc-ru/inplat/servin/OpenApiMessageConsumerService/types/1.0\">\n" +
+            String response = FNSRequestSender.send("open-api/AuthService/0.1", "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns=\"urn://x-artefacts-gnivc-ru/inplat/servin/OpenApiMessageConsumerService/types/1.0\">\n" +
                     "   <soapenv:Header/>\n" +
                     "   <soapenv:Body>\n" +
                     "      <ns:GetMessageRequest>\n" +
@@ -55,32 +44,13 @@ public class FNSAuthProvider {
                     "         </ns:Message>\n" +
                     "      </ns:GetMessageRequest>\n" +
                     "   </soapenv:Body>\n" +
-                    "</soapenv:Envelope>");
-            wr.flush();
-            wr.close();
+                    "</soapenv:Envelope>", "POST", null);
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
-
-            String inputLine;
-
-            StringBuilder response = new StringBuilder();
-
-            while((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-
-            in.close();
-
-            String finalValue = response.toString();
-
-            Document document = Jsoup.parse(finalValue, "", Parser.xmlParser());
+            Document document = Jsoup.parse(response, "", Parser.xmlParser());
             document.outputSettings().prettyPrint(false);
             Elements retorno = document.getElementsByTag("ns2:Token");
-            System.out.println(retorno.get(0).val());
-            System.out.println(retorno.get(0).ownText());
-            System.out.println(retorno.get(0).toString());
-            System.out.println(retorno.get(0).text());
+
+            return retorno.get(0).text();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
