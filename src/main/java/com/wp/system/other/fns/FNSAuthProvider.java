@@ -4,6 +4,9 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.wp.system.exception.ServiceException;
 import org.springframework.http.HttpStatus;
 
+import javax.swing.text.Document;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -49,34 +52,24 @@ public class FNSAuthProvider {
                     "</soapenv:Envelope>");
             wr.flush();
             wr.close();
-            String responseStatus = "";
-            BufferedReader in = null;
-            try {
-                responseStatus = con.getResponseMessage();
-                in = new BufferedReader(new InputStreamReader(
-                        con.getInputStream()));
-            } catch (Exception e) {
-                in = new BufferedReader(new InputStreamReader(
-                        con.getErrorStream()));
-            }
 
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
 
             String inputLine;
-            StringBuffer response = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
+
+            StringBuilder response = new StringBuilder();
+
+            while((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
+
             in.close();
 
             // You can play with response which is available as string now:
             String finalValue = response.toString();
 
-            XmlMapper xmlMapper = new XmlMapper();
-            Map<String, Object> data = xmlMapper.readValue(finalValue, Map.class);;
-
-            data.forEach((item, item2) -> {
-                System.out.println(item + "-" + item2);
-            });
+            System.out.println(finalValue);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
