@@ -89,6 +89,7 @@ public class FNSAuthProvider {
             Node token = (Node) xPath.evaluate("/soap:Envelope/soap:Body/GetMessageResponse/Message/AuthResponse/ns2:Result/ns2:Token", doc, XPathConstants.NODE);
 
             System.out.println(token.getNodeValue());
+            System.out.println(token.getNodeName());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
