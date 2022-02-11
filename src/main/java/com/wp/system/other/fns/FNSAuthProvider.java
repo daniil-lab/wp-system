@@ -72,13 +72,15 @@ public class FNSAuthProvider {
 
             in.close();
 
-            // You can play with response which is available as string now:
             String finalValue = response.toString();
 
             Document document = Jsoup.parse(finalValue, "", Parser.xmlParser());
             document.outputSettings().prettyPrint(false);
             Elements retorno = document.getElementsByTag("ns2:Token");
             System.out.println(retorno.get(0).val());
+            System.out.println(retorno.get(0).ownText());
+            System.out.println(retorno.get(0).toString());
+            System.out.println(retorno.get(0).text());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
