@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.other.fns.response.AuthResponse;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 import org.springframework.http.HttpStatus;
 
-import javax.swing.text.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
@@ -15,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,14 +75,10 @@ public class FNSAuthProvider {
             // You can play with response which is available as string now:
             String finalValue = response.toString();
 
-            XmlMapper mapper = new XmlMapper();
-
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-            AuthResponse authResponse = mapper.readValue(finalValue, AuthResponse.class);
-
-            System.out.println(authResponse.getToken());
-
+            Document document = Jsoup.parse(finalValue, "", Parser.xmlParser());
+            document.outputSettings().prettyPrint(false);
+            Elements retorno = document.getElementsByTag("ns2:Token");
+            System.out.println(retorno.toString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
