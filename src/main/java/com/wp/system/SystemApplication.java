@@ -34,6 +34,8 @@ import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 @SpringBootApplication
