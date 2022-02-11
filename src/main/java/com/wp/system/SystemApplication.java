@@ -78,6 +78,10 @@ public class SystemApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		FNSAuthProvider provider = new FNSAuthProvider("MZXCnMtsrWdEkobAYyDhj4bTnQfXj5RFsVDqKNpNOqlWcjuJVaGjtIRuZQzKfDn25y0UXyutQB7hpPsimgkzQH9VU8YGpFGJBVlEtn1aJi3yxBpTkN2zaRxAw74hoXad");
+
+		provider.auth();
+
 		User user = null;
 		UserRole role = null;
 

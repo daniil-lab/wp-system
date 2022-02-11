@@ -20,16 +20,15 @@ public final class FNSRequestSender {
 
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-            con.setRequestMethod(method);
-            con.setDoOutput(true);
-
             if(tempToken != null) {
                 con.setRequestProperty("FNS-OpenApi-Token", tempToken);
                 con.setRequestProperty("FNS-OpenApi-UserToken", Base64.getEncoder().encodeToString("+7-926-527-77-54".getBytes()));
             }
 
-            con.setRequestProperty("Content-Type","text/xml; charset=utf-8");
+            con.setRequestMethod(method);
             con.setDoOutput(true);
+            con.setRequestProperty("Content-Type","text/xml; charset=utf-8");
+
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 
             wr.writeBytes(content);
@@ -37,8 +36,15 @@ public final class FNSRequestSender {
             wr.flush();
             wr.close();
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
+            BufferedReader in = null;
+
+            try {
+                in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+            } catch (Exception e) {
+                in = new BufferedReader(new InputStreamReader(
+                        con.getErrorStream()));
+            }
 
             String inputLine;
 
@@ -55,7 +61,7 @@ public final class FNSRequestSender {
             return finalValue;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ServiceException("Error on get FNS auth", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ServiceException("Error on send FNS request", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
