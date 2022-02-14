@@ -272,7 +272,7 @@ public class UserService {
         user.setEmail(email);
         user.setUserType(request.getType());
         user.setSubscription(new Subscription());
-
+        user.setRegisterCred(request.getRegisterCred());
 
         userRepository.save(user);
 

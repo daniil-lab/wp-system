@@ -6,6 +6,7 @@ import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.other.*;
 import com.wp.system.other.sms.sendpulse.SendPulseSmsSender;
+import com.wp.system.other.user.UserType;
 import com.wp.system.repository.auth.PhoneAuthRequestRepository;
 import com.wp.system.repository.auth.SmsSubmitRepository;
 import com.wp.system.repository.user.UserRepository;
@@ -45,6 +46,21 @@ public class AuthService {
 
     @Autowired
     private SmsSubmitRepository smsSubmitRepository;
+
+    public AuthDataResponse authByCred(RegisterCredAuthRequest request) {
+        User user = userService.getUserByEmail(request.getEmail());
+
+        if(user.getUserType() == UserType.SYSTEM)
+            throw new ServiceException("Error on user type", HttpStatus.BAD_REQUEST);
+
+        if(user.getRegisterCred() == null)
+            throw new ServiceException("Error on get register cred", HttpStatus.BAD_REQUEST);
+
+        if(user.getRegisterCred().equals(request.getRegisterCred()))
+            return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
+
+        throw new ServiceException("Invalid data", HttpStatus.BAD_REQUEST);
+    }
 
     public Boolean checkOnRegister(CheckOnRegisterByPhoneRequest request) {
         this.userService.getUserByUsername(request.getPhone());

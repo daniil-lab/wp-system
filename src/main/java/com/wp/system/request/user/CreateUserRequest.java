@@ -47,10 +47,20 @@ public class CreateUserRequest {
             "Если таковой не будет, и поле будет отсутствовать, то выдаст ошибку.")
     private String roleName;
 
+    private String registerCred;
+
     public CreateUserRequest() {};
 
     public UserType getType() {
         return type;
+    }
+
+    public String getRegisterCred() {
+        return registerCred;
+    }
+
+    public void setRegisterCred(String registerCred) {
+        this.registerCred = registerCred;
     }
 
     public void setType(UserType type) {

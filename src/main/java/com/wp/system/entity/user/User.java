@@ -75,6 +75,9 @@ public class User {
     @Fetch(FetchMode.SUBSELECT)
     private Set<BillTransaction> transactions = new HashSet<>();
 
+    @Column(columnDefinition =  = "TEXT")
+    private String registerCred;
+
     @ElementCollection
     private List<String> deviceTokens = new ArrayList<>();
 
@@ -88,6 +91,14 @@ public class User {
         this.username = username;
         this.password = password;
         this.createAt = Instant.now();
+    }
+
+    public String getRegisterCred() {
+        return registerCred;
+    }
+
+    public void setRegisterCred(String registerCred) {
+        this.registerCred = registerCred;
     }
 
     public Set<Bill> getBills() {

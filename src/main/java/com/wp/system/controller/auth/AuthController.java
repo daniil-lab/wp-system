@@ -42,6 +42,15 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authUser(request), "Success auth"), HttpStatus.OK);
     }
 
+    @Operation(summary = "Авторизация кастомного пользователя")
+    @PostMapping("/cred")
+    public ResponseEntity<ServiceResponse<AuthDataResponse>> authByCred(
+            @Valid
+            @RequestBody
+                    RegisterCredAuthRequest request) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authByCred(request), "Success auth"), HttpStatus.OK);
+    }
+
     @Operation(summary = "Авторизация пользователя по E-MAIL")
     @PostMapping("/email")
     public ResponseEntity<ServiceResponse<AuthDataResponse>> authUserByEmail(
