@@ -75,7 +75,7 @@ public class User {
     @Fetch(FetchMode.SUBSELECT)
     private Set<BillTransaction> transactions = new HashSet<>();
 
-    @Column(columnDefinition =  = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String registerCred;
 
     @ElementCollection
