@@ -46,7 +46,7 @@ public class FNSController {
     }
 
     @Operation(summary = "Получение информации по сообщению")
-    @GetMapping("/ticket-info")
+    @GetMapping("/message")
     public ResponseEntity<ServiceResponse<String>> getTicketInfo(@RequestParam String messageId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(),
                 fnsService.getMessageById(messageId), "Message info returned"), HttpStatus.OK);
