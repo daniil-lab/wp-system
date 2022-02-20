@@ -4,7 +4,7 @@ RUN apt-get update
 
 RUN apt-get install git
 
-RUN git clone https://daniil-lab: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@github.com/daniil-lab/wp-system.git wp
+RUN git clone https://daniil-lab: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@github.com/daniil-lab/wp-system.git wp
 
 WORKDIR wp
 
