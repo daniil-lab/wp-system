@@ -44,7 +44,7 @@ public class FNSAuthProvider {
                     "         </ns:Message>\n" +
                     "      </ns:GetMessageRequest>\n" +
                     "   </soapenv:Body>\n" +
-                    "</soapenv:Envelope>", "POST", null);
+                    "</soapenv:Envelope>", "POST", null, "urn:GetMessageRequest");
 
             Document document = Jsoup.parse(response, "", Parser.xmlParser());
             document.outputSettings().prettyPrint(false);
