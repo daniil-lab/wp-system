@@ -28,7 +28,7 @@ public class FNSController {
 
     @Operation(summary = "Получение информации по чеку")
     @GetMapping("/ticket-info")
-    public ResponseEntity<ServiceResponse<String>> getTicketInfo(@RequestParam Integer sum,
+    public ResponseEntity<ServiceResponse<String>> getTicketInfo(@RequestParam Double sum,
                                                                  @RequestParam String date,
                                                                  @RequestParam String fn,
                                                                  @RequestParam Integer operationType,
@@ -43,5 +43,12 @@ public class FNSController {
                         fiscalDocumentId,
                         fiscalSign,
                         rawData), "Ticket info returned"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Получение информации по сообщению")
+    @GetMapping("/ticket-info")
+    public ResponseEntity<ServiceResponse<String>> getTicketInfo(@RequestParam String messageId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(),
+                fnsService.getMessageById(messageId), "Message info returned"), HttpStatus.OK);
     }
 }

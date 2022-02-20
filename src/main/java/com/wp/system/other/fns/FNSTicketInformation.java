@@ -5,7 +5,7 @@ public class FNSTicketInformation extends FNSIntegration {
         super(tempToken);
     }
 
-    public String getTicketInformation(int sum,
+    public String getTicketInformation(Double sum,
                                      String date,
                                      String fn,
                                      int operationType,
@@ -30,7 +30,7 @@ public class FNSTicketInformation extends FNSIntegration {
                 "\t\t\t</ns0:Message>\n" +
                 "\t\t</ns0:SendMessageRequest>\n" +
                 "\t</soap-env:Body>\n" +
-                "</soap-env:Envelope>", "POST", this.tempToken);
+                "</soap-env:Envelope>", "POST", this.tempToken, "urn:SendMessageRequest");
 
         return response;
     }

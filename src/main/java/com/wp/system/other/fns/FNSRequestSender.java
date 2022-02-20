@@ -12,7 +12,7 @@ import java.util.Base64;
 
 public final class FNSRequestSender {
 
-    public static String send(String path, String content, String method, String tempToken) {
+    public static String send(String path, String content, String method, String tempToken, String action) {
         try {
             String url = "https://openapi.nalog.ru:8090/" + path;
 
@@ -23,6 +23,7 @@ public final class FNSRequestSender {
             if(tempToken != null) {
                 con.setRequestProperty("FNS-OpenApi-Token", tempToken);
                 con.setRequestProperty("FNS-OpenApi-UserToken", Base64.getEncoder().encodeToString("+7-926-527-77-54".getBytes()));
+                con.setRequestProperty("SOAPAction", action);
             }
 
             con.setRequestMethod(method);
