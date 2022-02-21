@@ -12,24 +12,24 @@ public class FNSTicketInformation extends FNSIntegration {
                                      String fiscalDocumentId,
                                      String fiscalSign,
                                      boolean rawData) {
-        String response = FNSRequestSender.send("open-api/ais3/KktService/0.1", "<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
+        String response = FNSRequestSender.send("open-api/ais3/KktService/0.1", "<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                 "<soap-env:Body>" +
-                "<ns0:SendMessageRequest xmlns:ns0=\"urn://x-artefacts-gnivc-ru/inplat/servin/OpenApiAsyncMessageConsumerService/types/1.0\">\n" +
-                "\t\t\t<ns0:Message>\n" +
-                "\t\t\t\t<tns:GetTicketRequest xmlns:tns=\"urn://x-artefacts-gnivc-ru/ais3/kkt/KktTicketService/types/1.0\">\n" +
-                "\t<tns:GetTicketInfo>\n" +
-                "\t\t<tns:Sum>" + "267,90" + "</tns:Sum>\n" +
-                "\t\t<tns:Date>" + "07.02.2018T10:08" + "</tns:Date>\n" +
-                "\t\t<tns:Fn>" + "8710000100682017" + "</tns:Fn>\n" +
-                "\t\t<tns:TypeOperation>" + "1" + "</tns:TypeOperation>\n" +
-                "\t\t<tns:FiscalDocumentId>" + "0000176902" + "</tns:FiscalDocumentId>\n" +
-                "\t\t<tns:FiscalSign>" + "1266035174" + "</tns:FiscalSign>\n" +
-                "\t\t<tns:RawData>" + rawData + "</tns:RawData>\n" +
-                "\t\t</tns:GetTicketInfo>\n" +
-                "\t</tns:GetTicketRequest>\n" +
-                "\t\t\t</ns0:Message>\n" +
-                "\t\t</ns0:SendMessageRequest>\n" +
-                "\t</soap-env:Body>\n" +
+                "<ns0:SendMessageRequest xmlns:ns0=\"urn://x-artefacts-gnivc-ru/inplat/servin/OpenApiAsyncMessageConsumerService/types/1.0\">" +
+                "<ns0:Message>" +
+                "<tns:GetTicketRequest xmlns:tns=\"urn://x-artefacts-gnivc-ru/ais3/kkt/KktTicketService/types/1.0\">" +
+                "<tns:GetTicketInfo>" +
+                "<tns:Sum>" + "267,90" + "</tns:Sum>" +
+                "<tns:Date>" + "07.02.2018T10:08" + "</tns:Date>" +
+                "<tns:Fn>" + "8710000100682017" + "</tns:Fn>" +
+                "<tns:TypeOperation>" + "1" + "</tns:TypeOperation>" +
+                "<tns:FiscalDocumentId>" + "0000176902" + "</tns:FiscalDocumentId>" +
+                "<tns:FiscalSign>" + "1266035174" + "</tns:FiscalSign>" +
+                "<tns:RawData>" + rawData + "</tns:RawData>" +
+                "</tns:GetTicketInfo>" +
+                "</tns:GetTicketRequest>" +
+                "</ns0:Message>" +
+                "</ns0:SendMessageRequest>" +
+                "</soap-env:Body>" +
                 "</soap-env:Envelope>", "POST", this.tempToken, "urn:SendMessageRequest");
 
         System.out.println("<soap-env:Envelope xmlns:soap-env=\\\"http://schemas.xmlsoap.org/soap/envelope/\\\">\\n\" +\n" +
