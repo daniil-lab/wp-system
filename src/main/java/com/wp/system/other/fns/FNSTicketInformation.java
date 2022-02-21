@@ -9,8 +9,8 @@ public class FNSTicketInformation extends FNSIntegration {
                                      String date,
                                      String fn,
                                      int operationType,
-                                     int fiscalDocumentId,
-                                     int fiscalSign,
+                                     String fiscalDocumentId,
+                                     String fiscalSign,
                                      boolean rawData) {
         String response = FNSRequestSender.send("open-api/ais3/KktService/0.1", "<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
                 "\t<soap-env:Body>\n" +

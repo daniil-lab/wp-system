@@ -12,8 +12,8 @@ public class FNSService {
                                        String date,
                                        String fn,
                                        int operationType,
-                                       int fiscalDocumentId,
-                                       int fiscalSign,
+                                       String fiscalDocumentId,
+                                       String fiscalSign,
                                        boolean rawData) {
         return new FNSTicketInformation(new FNSAuthProvider(
                 "MZXCnMtsrWdEkobAYyDhj4bTnQfXj5RFsVDqKNpNOqlWcjuJVaGjtIRuZQzKfDn25y0UXyutQB7hpPsimgkzQH9VU8YGpFGJBVlEtn1aJi3yxBpTkN2zaRxAw74hoXad"

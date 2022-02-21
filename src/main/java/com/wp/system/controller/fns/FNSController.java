@@ -32,8 +32,8 @@ public class FNSController {
                                                                  @RequestParam String date,
                                                                  @RequestParam String fn,
                                                                  @RequestParam Integer operationType,
-                                                                 @RequestParam Integer fiscalDocumentId,
-                                                                 @RequestParam Integer fiscalSign,
+                                                                 @RequestParam String fiscalDocumentId,
+                                                                 @RequestParam String fiscalSign,
                                                                  @RequestParam Boolean rawData) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(),
                 fnsService.getTicketInformation(sum,
