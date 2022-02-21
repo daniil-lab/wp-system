@@ -245,15 +245,19 @@ public class UserService {
 
     @Transactional
     public User createUser(CreateUserRequest request) {
-        Optional<User> foundUser = this.userRepository.findByUsername(request.getUsername());
+        if(request.getUsername() != null) {
+            Optional<User> foundUser = this.userRepository.findByUsername(request.getUsername());
 
-        if(foundUser.isPresent())
-            throw new ServiceException("User with given phone already exist", HttpStatus.BAD_REQUEST);
+            if(foundUser.isPresent())
+                throw new ServiceException("User with given phone already exist", HttpStatus.BAD_REQUEST);
+        }
 
-        Optional<User> emailValidationUser = this.userRepository.findByEmail(request.getEmail());
+        if(request.getEmail() != null) {
+            Optional<User> emailValidationUser = this.userRepository.findByEmail(request.getEmail());
 
-        if(emailValidationUser.isPresent())
-            throw new ServiceException("User with given email already exist", HttpStatus.BAD_REQUEST);
+            if(emailValidationUser.isPresent())
+                throw new ServiceException("User with given email already exist", HttpStatus.BAD_REQUEST);
+        }
 
         UserRole role = null;
 

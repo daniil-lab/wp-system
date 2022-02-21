@@ -18,7 +18,7 @@ public class FNSTicketInformation extends FNSIntegration {
                 "\t\t\t<ns0:Message>\n" +
                 "\t\t\t\t<tns:GetTicketRequest xmlns:tns=\"urn://x-artefacts-gnivc-ru/ais3/kkt/KktTicketService/types/1.0\">\n" +
                 "\t<tns:GetTicketInfo>\n" +
-                "\t<tns:Sum>" + sum + "</tns:Sum>\n" +
+                "\t<tns:Sum>" + sum.toString() + "</tns:Sum>\n" +
                 "\t\t<tns:Date>" + date + "</tns:Date>\n" +
                 "\t\t<tns:Fn>" + fn + "</tns:Fn>\n" +
                 "\t\t<tns:TypeOperation>" + operationType + "</tns:TypeOperation>\n" +
