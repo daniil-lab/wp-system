@@ -18,7 +18,7 @@ public class FNSTicketInformation extends FNSIntegration {
                 "\t\t\t<ns0:Message>\n" +
                 "\t\t\t\t<tns:GetTicketRequest xmlns:tns=\"urn://x-artefacts-gnivc-ru/ais3/kkt/KktTicketService/types/1.0\">\n" +
                 "\t<tns:GetTicketInfo>\n" +
-                "\t\t<tns:Sum>" + sum.toString() + "</tns:Sum>\n" +
+                "\t\t<tns:Sum>" + Math.round(sum) + "</tns:Sum>\n" +
                 "\t\t<tns:Date>" + date + "</tns:Date>\n" +
                 "\t\t<tns:Fn>" + fn + "</tns:Fn>\n" +
                 "\t\t<tns:TypeOperation>" + operationType + "</tns:TypeOperation>\n" +
@@ -33,7 +33,7 @@ public class FNSTicketInformation extends FNSIntegration {
                 "</soap-env:Envelope>", "POST", this.tempToken, "urn:SendMessageRequest");
 
         System.out.println("<soap-env:Envelope xmlns:soap-env=\\\"http://schemas.xmlsoap.org/soap/envelope/\\\">\\n\" +\n" +
-                "                \"\\t<soap-env:Body>\\n\" +\n" +
+                "\"\\t<soap-env:Body>\\n\" +\n" +
                 "                \"\\t\\t<ns0:SendMessageRequest xmlns:ns0=\\\"urn://x-artefacts-gnivc-ru/inplat/servin/OpenApiAsyncMessageConsumerService/types/1.0\\\">\\n\" +\n" +
                 "                \"\\t\\t\\t<ns0:Message>\\n\" +\n" +
                 "                \"\\t\\t\\t\\t<tns:GetTicketRequest xmlns:tns=\\\"urn://x-artefacts-gnivc-ru/ais3/kkt/KktTicketService/types/1.0\\\">\\n\" +\n" +
