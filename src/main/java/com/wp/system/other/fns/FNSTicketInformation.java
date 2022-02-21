@@ -13,17 +13,17 @@ public class FNSTicketInformation extends FNSIntegration {
                                      String fiscalSign,
                                      boolean rawData) {
         String response = FNSRequestSender.send("open-api/ais3/KktService/0.1", "<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
-                "\t<soap-env:Body>\n" +
-                "\t\t<ns0:SendMessageRequest xmlns:ns0=\"urn://x-artefacts-gnivc-ru/inplat/servin/OpenApiAsyncMessageConsumerService/types/1.0\">\n" +
+                "<soap-env:Body>" +
+                "<ns0:SendMessageRequest xmlns:ns0=\"urn://x-artefacts-gnivc-ru/inplat/servin/OpenApiAsyncMessageConsumerService/types/1.0\">\n" +
                 "\t\t\t<ns0:Message>\n" +
                 "\t\t\t\t<tns:GetTicketRequest xmlns:tns=\"urn://x-artefacts-gnivc-ru/ais3/kkt/KktTicketService/types/1.0\">\n" +
                 "\t<tns:GetTicketInfo>\n" +
-                "\t\t<tns:Sum>" + Math.round(sum) + "</tns:Sum>\n" +
-                "\t\t<tns:Date>" + date + "</tns:Date>\n" +
-                "\t\t<tns:Fn>" + fn + "</tns:Fn>\n" +
-                "\t\t<tns:TypeOperation>" + operationType + "</tns:TypeOperation>\n" +
-                "\t\t<tns:FiscalDocumentId>" + fiscalDocumentId + "</tns:FiscalDocumentId>\n" +
-                "\t\t<tns:FiscalSign>" + fiscalSign + "</tns:FiscalSign>\n" +
+                "\t\t<tns:Sum>" + "267,90" + "</tns:Sum>\n" +
+                "\t\t<tns:Date>" + "07.02.2018T10:08" + "</tns:Date>\n" +
+                "\t\t<tns:Fn>" + "8710000100682017" + "</tns:Fn>\n" +
+                "\t\t<tns:TypeOperation>" + "1" + "</tns:TypeOperation>\n" +
+                "\t\t<tns:FiscalDocumentId>" + "0000176902" + "</tns:FiscalDocumentId>\n" +
+                "\t\t<tns:FiscalSign>" + "1266035174" + "</tns:FiscalSign>\n" +
                 "\t\t<tns:RawData>" + rawData + "</tns:RawData>\n" +
                 "\t\t</tns:GetTicketInfo>\n" +
                 "\t</tns:GetTicketRequest>\n" +
