@@ -36,6 +36,7 @@ public class FNSTicketInformation extends FNSIntegration {
                 "<tns:TypeOperation>" + operationType + "</tns:TypeOperation>" +
                 "<tns:FiscalDocumentId>" + fiscalDocumentId + "</tns:FiscalDocumentId>" +
                 "<tns:FiscalSign>" + fiscalSign + "</tns:FiscalSign>" +
+                "<tns:RawData>true</tns:RawData>" +
                 "</tns:GetTicketInfo>" +
                 "</tns:GetTicketRequest>" +
                 "</ns0:Message>" +
