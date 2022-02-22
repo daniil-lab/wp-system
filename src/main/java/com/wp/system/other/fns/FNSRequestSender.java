@@ -23,12 +23,11 @@ public final class FNSRequestSender {
             if(tempToken != null) {
                 con.setRequestProperty("FNS-OpenApi-Token", tempToken);
                 con.setRequestProperty("FNS-OpenApi-UserToken", Base64.getEncoder().encodeToString("+7-926-527-77-54".getBytes()));
-                con.setRequestProperty("SOAPAction", action);
             }
 
             con.setRequestMethod(method);
             con.setDoOutput(true);
-            con.setRequestProperty("Content-Type","application/soap+xml; charset=utf-8");
+            con.setRequestProperty("Content-Type","text/xml; charset=utf-8");
 
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 

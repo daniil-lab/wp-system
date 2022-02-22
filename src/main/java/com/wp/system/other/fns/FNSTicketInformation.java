@@ -1,6 +1,7 @@
 package com.wp.system.other.fns;
 
-import org.apache.el.util.MessageFactory;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPMessage;
 
 public class FNSTicketInformation extends FNSIntegration {
     public FNSTicketInformation(String tempToken) {
@@ -14,6 +15,14 @@ public class FNSTicketInformation extends FNSIntegration {
                                      String fiscalDocumentId,
                                      String fiscalSign,
                                      boolean rawData) {
+        try {
+            MessageFactory messageFactory = MessageFactory.newInstance();
+            SOAPMessage soapMessage = messageFactory.createMessage();
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         String response = FNSRequestSender.send("open-api/ais3/KktService/0.1", "<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                 "   <soap-env:Body>\n" +
