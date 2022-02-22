@@ -28,7 +28,7 @@ public final class FNSRequestSender {
 
             con.setRequestMethod(method);
             con.setDoOutput(true);
-            con.setRequestProperty("Content-Type","text/xml; charset=utf-8");
+            con.setRequestProperty("Content-Type","application/soap+xml; charset=utf-8");
 
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 
