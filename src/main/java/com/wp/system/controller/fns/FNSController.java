@@ -28,7 +28,7 @@ public class FNSController {
 
     @Operation(summary = "Получение информации по чеку")
     @GetMapping("/ticket-info")
-    public ResponseEntity<ServiceResponse<String>> getTicketInfo(@RequestParam Double sum,
+    public ResponseEntity<ServiceResponse<String>> getTicketInfo(@RequestParam Integer sum,
                                                                  @RequestParam String date,
                                                                  @RequestParam String fn,
                                                                  @RequestParam Integer operationType,

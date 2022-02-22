@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FNSService {
 
-    public String getTicketInformation(Double sum,
+    public String getTicketInformation(Integer sum,
                                        String date,
                                        String fn,
                                        int operationType,

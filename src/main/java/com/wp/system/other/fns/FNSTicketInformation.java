@@ -8,7 +8,7 @@ public class FNSTicketInformation extends FNSIntegration {
         super(tempToken);
     }
 
-    public String getTicketInformation(Double sum,
+    public String getTicketInformation(Integer sum,
                                      String date,
                                      String fn,
                                      int operationType,
@@ -30,13 +30,12 @@ public class FNSTicketInformation extends FNSIntegration {
                 "         <ns0:Message>\n" +
                 "            <tns:GetTicketRequest xmlns:tns=\"urn://x-artefacts-gnivc-ru/ais3/kkt/KktTicketService/types/1.0\">\n" +
                 "               <tns:GetTicketInfo>\n" +
-                "                  <tns:Sum>267448566</tns:Sum>\n" +
-                "                  <tns:Date>" + "07.02.2018T10:08" + "</tns:Date>\n" +
-                "                  <tns:Fn>" + "8710000100682017" + "</tns:Fn>\n" +
-                "                  <tns:TypeOperation>" + "1" + "</tns:TypeOperation>\n" +
-                "                  <tns:FiscalDocumentId>" + "0000176902" + "</tns:FiscalDocumentId>\n" +
-                "                  <tns:FiscalSign>" + "1266035174" + "</tns:FiscalSign>\n" +
-                "                  <tns:RawData>" + rawData + "</tns:RawData>\n" +
+                "                  <tns:Sum>" + sum + "</tns:Sum>\n" +
+                "                  <tns:Date>" + date + "</tns:Date>\n" +
+                "                  <tns:Fn>" + fn + "</tns:Fn>\n" +
+                "                  <tns:TypeOperation>" + operationType + "</tns:TypeOperation>\n" +
+                "                  <tns:FiscalDocumentId>" + fiscalDocumentId + "</tns:FiscalDocumentId>\n" +
+                "                  <tns:FiscalSign>" + fiscalSign + "</tns:FiscalSign>\n" +
                 "               </tns:GetTicketInfo>\n" +
                 "            </tns:GetTicketRequest>\n" +
                 "         </ns0:Message>\n" +
