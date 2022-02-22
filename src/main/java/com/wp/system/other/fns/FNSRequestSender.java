@@ -14,6 +14,7 @@ public final class FNSRequestSender {
 
     public static String send(String path, String content, String method, String tempToken, String action) {
         try {
+            System.out.println(content);
             String url = "https://openapi.nalog.ru:8090/" + path;
 
             URL obj = new URL(url);
