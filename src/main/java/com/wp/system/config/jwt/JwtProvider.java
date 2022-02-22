@@ -13,12 +13,12 @@ import java.util.*;
 public class JwtProvider {
     private String jwtSecret = Base64.getEncoder().encodeToString("xyz".getBytes());
 
-    public String generateToken(String login) {
+    public String generateToken(String login, String email) {
         Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         ObjectMapper mapper = new ObjectMapper();
 
-        AuthCredentials credentials = new AuthCredentials(login);
+        AuthCredentials credentials = new AuthCredentials(login, email);
 
         Map<String, Object> tokenData = mapper.convertValue(credentials, new TypeReference<>() {});
 

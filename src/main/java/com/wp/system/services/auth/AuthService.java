@@ -57,7 +57,7 @@ public class AuthService {
             throw new ServiceException("Error on get register cred", HttpStatus.BAD_REQUEST);
 
         if(user.getRegisterCred().equals(request.getRegisterCred()))
-            return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
+            return new AuthDataResponse(jwtProvider.generateToken(user.getUsername(), user.getEmail().getAddress()), user);
 
         throw new ServiceException("Invalid data", HttpStatus.BAD_REQUEST);
     }
@@ -144,7 +144,7 @@ public class AuthService {
 
         User user = this.userService.getUserByUsername(smsSubmit.getPhone());
 
-        return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
+        return new AuthDataResponse(jwtProvider.generateToken(user.getUsername(), user.getEmail().getAddress()), user);
     }
 
     public AuthDataResponse authUserByEmail(EmailAuthRequest request) {
@@ -153,7 +153,7 @@ public class AuthService {
         byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
 
         if(passwordEncoder.matches(new String(passwordBytes), user.getPassword()))
-            return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
+            return new AuthDataResponse(jwtProvider.generateToken(user.getUsername(), user.getEmail().getAddress()), user);
 
         throw new ServiceException("Check given data. Auth failed.", HttpStatus.BAD_REQUEST);
     }
@@ -164,7 +164,7 @@ public class AuthService {
         byte[] passwordBytes = Base64.getDecoder().decode(request.getPassword());
 
         if(passwordEncoder.matches(new String(passwordBytes), user.getPassword()))
-            return new AuthDataResponse(jwtProvider.generateToken(user.getUsername()), user);
+            return new AuthDataResponse(jwtProvider.generateToken(user.getUsername(), user.getEmail().getAddress()), user);
 
         throw new ServiceException("Check given data. Auth failed.", HttpStatus.BAD_REQUEST);
     }

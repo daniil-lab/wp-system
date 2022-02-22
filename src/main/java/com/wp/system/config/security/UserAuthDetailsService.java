@@ -17,4 +17,10 @@ public class UserAuthDetailsService implements UserDetailsService {
 
         return UserAuthDetails.createUserAuthDetails(user);
     }
+
+    public UserAuthDetails loadByEmail(String email) {
+        User user = userService.getUserByEmail(email);
+
+        return UserAuthDetails.createUserAuthDetails(user);
+    }
 }

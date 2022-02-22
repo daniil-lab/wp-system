@@ -7,6 +7,7 @@ import com.wp.system.entity.user.UserRolePermission;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.other.WalletType;
 import com.wp.system.other.fns.FNSAuthProvider;
+import com.wp.system.other.tinkoff.TinkoffAuth;
 import com.wp.system.other.user.UserType;
 import com.wp.system.permissions.Permission;
 import com.wp.system.permissions.PermissionManager;
