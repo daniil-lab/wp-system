@@ -2,13 +2,10 @@ package com.wp.system.controller.user;
 
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.user.UserDTO;
-import com.wp.system.entity.user.User;
-import com.wp.system.other.user.UserType;
-import com.wp.system.permissions.user.UserPermissions;
+import com.wp.system.utils.user.UserType;
 import com.wp.system.request.user.*;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
-import com.wp.system.response.user.UserPageResponse;
 import com.wp.system.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

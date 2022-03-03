@@ -1,11 +1,10 @@
 package com.wp.system.request.user;
 
-import com.wp.system.other.ValidationErrorMessages;
+import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
-import java.util.UUID;
 
 public class CreateUserRoleRequest {
     @Schema(required = true, description = "Название роли")

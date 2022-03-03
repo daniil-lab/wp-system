@@ -1,10 +1,9 @@
 package com.wp.system.dto.user;
 
 import com.wp.system.entity.user.User;
-import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.entity.user.UserEmail;
-import com.wp.system.other.WalletType;
-import com.wp.system.other.user.UserType;
+import com.wp.system.utils.WalletType;
+import com.wp.system.utils.user.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;

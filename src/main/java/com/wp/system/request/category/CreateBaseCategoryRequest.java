@@ -1,7 +1,7 @@
 package com.wp.system.request.category;
 
-import com.wp.system.other.CategoryColor;
-import com.wp.system.other.ValidationErrorMessages;
+import com.wp.system.utils.CategoryColor;
+import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 

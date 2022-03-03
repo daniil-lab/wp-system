@@ -1,6 +1,6 @@
 package com.wp.system.dto.category;
 
-import com.wp.system.other.CategoryColor;
+import com.wp.system.utils.CategoryColor;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CategoryDTOColor {

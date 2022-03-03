@@ -1,6 +1,6 @@
 package com.wp.system.request.image;
 
-import com.wp.system.other.SystemImageTag;
+import com.wp.system.utils.SystemImageTag;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;

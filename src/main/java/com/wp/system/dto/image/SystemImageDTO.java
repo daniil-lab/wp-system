@@ -1,7 +1,7 @@
 package com.wp.system.dto.image;
 
 import com.wp.system.entity.image.SystemImage;
-import com.wp.system.other.SystemImageTag;
+import com.wp.system.utils.SystemImageTag;
 
 import java.util.UUID;
 

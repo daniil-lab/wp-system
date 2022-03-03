@@ -1,6 +1,6 @@
 package com.wp.system.request.auth;
 
-import com.wp.system.other.ValidationErrorMessages;
+import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;

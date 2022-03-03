@@ -1,15 +1,13 @@
 package com.wp.system.controller.wallet;
 
 import com.wp.system.controller.DocumentedRestController;
-import com.wp.system.dto.permission.PermissionDTO;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.other.CurrencySingleton;
-import com.wp.system.other.WalletType;
+import com.wp.system.utils.CurrencySingleton;
+import com.wp.system.utils.WalletType;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.response.wallet.WalletCourseResponse;
 import com.wp.system.response.wallet.WalletResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

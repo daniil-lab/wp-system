@@ -1,13 +1,12 @@
 package com.wp.system.request.bill;
 
-import com.wp.system.other.ValidationErrorMessages;
+import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
 public class CreateBillRequest {

@@ -1,12 +1,10 @@
 package com.wp.system.request.user;
 
-import com.wp.system.other.ValidationErrorMessages;
+import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.UUID;
 
 public class SetUserPincodeRequest {

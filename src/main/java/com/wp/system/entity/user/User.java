@@ -8,8 +8,8 @@ import com.wp.system.entity.category.Category;
 import com.wp.system.entity.logging.SystemAdminLog;
 import com.wp.system.entity.loyalty.LoyaltyCard;
 import com.wp.system.entity.subscription.Subscription;
-import com.wp.system.other.WalletType;
-import com.wp.system.other.user.UserType;
+import com.wp.system.utils.WalletType;
+import com.wp.system.utils.user.UserType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 

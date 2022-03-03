@@ -1,10 +1,9 @@
 package com.wp.system.request.bill;
 
-import com.wp.system.other.ValidationErrorMessages;
+import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 

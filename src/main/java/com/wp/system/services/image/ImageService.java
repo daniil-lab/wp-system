@@ -1,28 +1,18 @@
 package com.wp.system.services.image;
 
-import com.wp.system.config.security.AuthCredentials;
-import com.wp.system.config.security.UserAuthDetails;
-import com.wp.system.dto.image.SystemImageDTO;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.other.AdminChecker;
-import com.wp.system.other.FileUploadUtil;
-import com.wp.system.other.SystemImageTag;
+import com.wp.system.utils.AdminChecker;
+import com.wp.system.utils.FileUploadUtil;
+import com.wp.system.utils.SystemImageTag;
 import com.wp.system.repository.image.SystemImageRepository;
 import com.wp.system.request.image.UploadImageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
-import javax.persistence.Entity;
-import javax.persistence.Tuple;
-import javax.servlet.ServletContext;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.nio.file.FileSystems;

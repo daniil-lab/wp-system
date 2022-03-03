@@ -1,8 +1,8 @@
 package com.wp.system.services.fns;
 
-import com.wp.system.other.fns.FNSAuthProvider;
-import com.wp.system.other.fns.FNSMessageData;
-import com.wp.system.other.fns.FNSTicketInformation;
+import com.wp.system.utils.fns.FNSAuthProvider;
+import com.wp.system.utils.fns.FNSMessageData;
+import com.wp.system.utils.fns.FNSTicketInformation;
 import org.springframework.stereotype.Service;
 
 @Service

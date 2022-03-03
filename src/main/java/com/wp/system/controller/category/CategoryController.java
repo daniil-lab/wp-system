@@ -2,7 +2,7 @@ package com.wp.system.controller.category;
 
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.category.CategoryDTO;
-import com.wp.system.other.CategoryColor;
+import com.wp.system.utils.CategoryColor;
 import com.wp.system.request.category.CreateCategoryRequest;
 import com.wp.system.request.category.EditCategoryRequest;
 import com.wp.system.response.ServiceResponse;

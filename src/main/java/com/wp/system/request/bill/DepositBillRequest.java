@@ -1,13 +1,9 @@
 package com.wp.system.request.bill;
 
-import com.wp.system.other.ValidationErrorMessages;
+import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.checkerframework.checker.nullness.compatqual.NonNullType;
-import reactor.util.annotation.NonNull;
 
-import javax.annotation.Nonnegative;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 public class DepositBillRequest {

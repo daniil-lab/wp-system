@@ -2,11 +2,10 @@ package com.wp.system.dto.bill;
 
 import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.entity.bill.BillTransaction;
-import com.wp.system.other.WalletType;
-import com.wp.system.other.bill.BillBalanceAction;
+import com.wp.system.utils.WalletType;
+import com.wp.system.utils.bill.BillBalanceAction;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import javax.persistence.Id;
 import java.util.UUID;
 
 public class BillTransactionDTO {

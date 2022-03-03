@@ -4,7 +4,7 @@ import com.wp.system.entity.category.Category;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.other.SystemImageTag;
+import com.wp.system.utils.SystemImageTag;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.request.category.CreateCategoryRequest;
 import com.wp.system.request.category.EditCategoryRequest;

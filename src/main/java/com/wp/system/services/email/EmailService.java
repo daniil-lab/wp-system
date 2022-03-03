@@ -4,8 +4,8 @@ import com.wp.system.entity.email.EmailMail;
 import com.wp.system.entity.email.EmailSubmitRequest;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.other.email.EmailBlank;
-import com.wp.system.other.email.EmailUtil;
+import com.wp.system.utils.email.EmailBlank;
+import com.wp.system.utils.email.EmailUtil;
 import com.wp.system.repository.email.EmailMailRepository;
 import com.wp.system.repository.email.EmailSubmitRequestRepository;
 import com.wp.system.request.email.SubmitEmailVerificationRequest;
@@ -13,7 +13,6 @@ import com.wp.system.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.util.function.Tuple2;
 

@@ -1,7 +1,7 @@
 package com.wp.system.entity.category;
 
 import com.wp.system.entity.image.SystemImage;
-import com.wp.system.other.CategoryColor;
+import com.wp.system.utils.CategoryColor;
 
 import javax.persistence.*;
 import java.util.UUID;

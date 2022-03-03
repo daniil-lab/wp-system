@@ -2,9 +2,7 @@ package com.wp.system.entity.category;
 
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
-import com.wp.system.other.CategoryColor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import com.wp.system.utils.CategoryColor;
 
 import javax.persistence.*;
 

@@ -1,0 +1,86 @@
+package com.wp.system.entity.tinkoff;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wp.system.entity.BankCard;
+import com.wp.system.entity.bill.Bill;
+import com.wp.system.utils.WalletType;
+
+import javax.persistence.*;
+
+@Entity
+public class TinkoffCard extends BankCard {
+    private String cardNumber;
+
+    private String name;
+
+    private String cardId;
+
+    private String status;
+
+    private Long expirationMillis;
+
+    private WalletType currency;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name="integration_id")
+    private TinkoffIntegration integration;
+
+    public TinkoffCard() {}
+
+    public TinkoffIntegration getIntegration() {
+        return integration;
+    }
+
+    public void setIntegration(TinkoffIntegration integration) {
+        this.integration = integration;
+    }
+
+    public WalletType getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(WalletType currency) {
+        this.currency = currency;
+    }
+
+    public String getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Long getExpirationMillis() {
+        return expirationMillis;
+    }
+
+    public void setExpirationMillis(Long expirationMillis) {
+        this.expirationMillis = expirationMillis;
+    }
+}

@@ -1,7 +1,6 @@
 package com.wp.system.response.category;
 
-import com.wp.system.entity.category.Category;
-import com.wp.system.other.CategoryColor;
+import com.wp.system.utils.CategoryColor;
 
 public class CategoryColorResponse {
 

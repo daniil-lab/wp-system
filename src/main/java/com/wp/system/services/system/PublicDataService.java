@@ -1,7 +1,7 @@
 package com.wp.system.services.system;
 
 import com.wp.system.entity.PublicData;
-import com.wp.system.other.PublicDataSingleton;
+import com.wp.system.utils.PublicDataSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

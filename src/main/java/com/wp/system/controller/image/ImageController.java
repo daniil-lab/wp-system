@@ -1,14 +1,10 @@
 package com.wp.system.controller.image;
 
 import com.wp.system.controller.DocumentedRestController;
-import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.dto.image.SystemImageDTO;
-import com.wp.system.entity.image.SystemImage;
-import com.wp.system.other.CategoryColor;
-import com.wp.system.other.SystemImageTag;
+import com.wp.system.utils.SystemImageTag;
 import com.wp.system.request.image.UploadImageRequest;
 import com.wp.system.response.ServiceResponse;
-import com.wp.system.response.category.CategoryColorResponse;
 import com.wp.system.services.image.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,11 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import reactor.util.function.Tuple2;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

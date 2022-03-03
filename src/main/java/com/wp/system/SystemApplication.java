@@ -1,14 +1,11 @@
 package com.wp.system;
 
-import com.wp.system.dto.permission.PermissionDTO;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.user.UserRolePermission;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.other.WalletType;
-import com.wp.system.other.fns.FNSAuthProvider;
-import com.wp.system.other.tinkoff.TinkoffAuth;
-import com.wp.system.other.user.UserType;
+import com.wp.system.utils.WalletType;
+import com.wp.system.utils.user.UserType;
 import com.wp.system.permissions.Permission;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.request.user.AddPermissionToRoleRequest;
@@ -27,17 +24,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.util.*;
 
 @SpringBootApplication
@@ -79,6 +71,19 @@ public class SystemApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+//		System.setProperty("http.proxyHost", "ru3.mproxy.top");
+//		System.setProperty("http.proxyPort", "20004");
+//		System.setProperty("http.proxyUser", "robocontext");
+//		System.setProperty("http.proxyPassword", "34LAFVWNUC");
+//
+//		Authenticator.setDefault(
+//				new Authenticator() {
+//					public PasswordAuthentication getPasswordAuthentication() {
+//						return new PasswordAuthentication("robocontext", "34LAFVWNUC".toCharArray());
+//					}
+//				}
+//		);
+
 		User user = null;
 		UserRole role = null;
 

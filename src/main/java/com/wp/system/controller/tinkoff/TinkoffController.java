@@ -1,6 +1,10 @@
 package com.wp.system.controller.tinkoff;
 
+import com.wp.system.entity.tinkoff.TinkoffCard;
+import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.response.ServiceResponse;
+import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
+import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
 import com.wp.system.services.tinkoff.TinkoffService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -9,9 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
+import java.util.UUID;
 
 @Controller
 @Tag(name = "Tinkoff API")
@@ -22,16 +27,43 @@ public class TinkoffController {
     @Autowired
     private TinkoffService tinkoffService;
 
-    @GetMapping(value = "/auth-hook")
-    @Operation(summary = "Получение данных подписки по ID")
+    @PostMapping(value = "/connect/start")
+    @Operation(summary = "Старт авторизации Tinkoff")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<ServiceResponse<Boolean>> authHook(
-            @RequestParam
-                    String state,
-            @RequestParam
-                    String code
+    public ResponseEntity<ServiceResponse<TinkoffAuthChromeTab>> startAuth(
+            @RequestBody
+                TinkoffStartAuthRequest request
     ) {
-        tinkoffService.authHook(state, code);
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), true, ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.startTinkoffAuth(request), ""), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/sync/cards/{userId}")
+    @Operation(summary = "Синхронизация карт")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<Boolean>> syncCards(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.syncCards(userId), ""), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/cards/{userId}")
+    @Operation(summary = "Получение карт")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<Set<TinkoffCard>>> getCards(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getCards(userId), ""), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/connect/submit")
+    @Operation(summary = "Подтвреждение авторизации Tinkoff")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<Boolean>> submitAuth(
+            @RequestBody
+                    TinkoffSubmitAuthRequest request
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.submitTinkoffAuth(request), ""), HttpStatus.OK);
     }
 }

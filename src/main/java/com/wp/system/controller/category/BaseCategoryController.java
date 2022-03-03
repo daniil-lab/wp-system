@@ -2,16 +2,10 @@ package com.wp.system.controller.category;
 
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.category.BaseCategoryDTO;
-import com.wp.system.dto.category.CategoryDTO;
-import com.wp.system.other.CategoryColor;
 import com.wp.system.request.category.CreateBaseCategoryRequest;
-import com.wp.system.request.category.CreateCategoryRequest;
 import com.wp.system.request.category.EditBaseCategoryRequest;
-import com.wp.system.request.category.EditCategoryRequest;
 import com.wp.system.response.ServiceResponse;
-import com.wp.system.response.category.CategoryColorResponse;
 import com.wp.system.services.category.BaseCategoryService;
-import com.wp.system.services.category.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

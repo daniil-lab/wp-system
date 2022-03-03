@@ -2,7 +2,7 @@ package com.wp.system.entity.image;
 
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.loyalty.LoyaltyBlank;
-import com.wp.system.other.SystemImageTag;
+import com.wp.system.utils.SystemImageTag;
 
 import javax.persistence.*;
 import java.util.List;

@@ -2,8 +2,8 @@ package com.wp.system.entity.bill;
 
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
-import com.wp.system.other.WalletType;
-import com.wp.system.other.bill.BillBalanceAction;
+import com.wp.system.utils.WalletType;
+import com.wp.system.utils.bill.BillBalanceAction;
 
 import javax.persistence.*;
 import java.time.Instant;

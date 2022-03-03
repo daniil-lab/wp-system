@@ -1,7 +1,7 @@
 package com.wp.system.entity.bill;
 
 import com.wp.system.entity.category.Category;
-import com.wp.system.other.bill.BillBalanceAction;
+import com.wp.system.utils.bill.BillBalanceAction;
 
 import javax.persistence.*;
 import java.util.UUID;
