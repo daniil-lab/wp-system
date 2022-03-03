@@ -56,9 +56,11 @@ public class TinkoffService {
         option.setExperimentalOption("mobileEmulation", mobileEmulation);
         option.addArguments("--disable-blink-features=AutomationControlled");
         option.addArguments("--headless");
+        option.addArguments("--disable-gpu");
         option.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://robocontext:34LAFVWNUC@ru3.mproxy.top:20004"));
 
         WebDriver driver = new ChromeDriver(option);
+        driver.manage().timeouts().pageLoadTimeout(300, TimeUnit.SECONDS);
 
         driver.manage().deleteAllCookies();
 
