@@ -39,9 +39,10 @@ public class TinkoffService {
     private List<TinkoffAuthChromeTab> tinkoffChromeTabs = new ArrayList<>();
 
     public TinkoffAuthChromeTab startTinkoffAuth(TinkoffStartAuthRequest request) {
-        userService.getUserById(request.getUserId());
+        WebDriverManager.chromedriver().linux().arch64().setup();
+        WebDriverManager.chromiumdriver().linux().arch64().setup();
 
-        System.setProperty("webdriver.chrome.driver","./chromedriver");
+        userService.getUserById(request.getUserId());
 
         Map<String, Object> deviceMetrics = new HashMap<>();
         deviceMetrics.put("width", 1078);
