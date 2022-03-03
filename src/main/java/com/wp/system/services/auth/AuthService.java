@@ -6,6 +6,7 @@ import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.utils.*;
 import com.wp.system.utils.sms.sendpulse.SendPulseSmsSender;
+import com.wp.system.utils.sms.sigmasms.SigmaSmsSender;
 import com.wp.system.utils.user.UserType;
 import com.wp.system.repository.auth.PhoneAuthRequestRepository;
 import com.wp.system.repository.auth.SmsSubmitRepository;
@@ -102,7 +103,7 @@ public class AuthService {
 
         smsSubmitRepository.save(smsSubmit);
 
-        SmsSender smsSender = new SendPulseSmsSender();
+        SmsSender smsSender = new SigmaSmsSender();
 
         smsSender.setPhone(request.getPhone());
         smsSender.setContent("Ваш код для подтверждения: " + code);

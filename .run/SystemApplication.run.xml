@@ -6,6 +6,8 @@
       <env name="POSTGRES_DB" value="wp" />
       <env name="SPRING_DATASOURCE_URL" value="jdbc:postgresql://localhost:5432/wp" />
       <env name="SENDPULSE_CLIENT_SECRET" value="e6a25e4d987db74d7e63543d9ca429c1" />
+      <env name="SIGMA_USER" value="2025sel@gmail.com" />
+      <env name="SIGMA_PASS" value="j4nLYx" />
       <env name="SENDPULSE_CLIENT_ID" value="d9bdd184a2a4a14b830a8b264ce33f31" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.wp.system.SystemApplication" />
