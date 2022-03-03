@@ -16,11 +16,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -39,9 +41,6 @@ public class TinkoffService {
     private List<TinkoffAuthChromeTab> tinkoffChromeTabs = new ArrayList<>();
 
     public TinkoffAuthChromeTab startTinkoffAuth(TinkoffStartAuthRequest request) {
-        WebDriverManager.chromedriver().linux().arch64().setup();
-        WebDriverManager.chromiumdriver().linux().arch64().setup();
-
         userService.getUserById(request.getUserId());
 
         Map<String, Object> deviceMetrics = new HashMap<>();
@@ -64,7 +63,15 @@ public class TinkoffService {
         option.addArguments("--disable-gpu");
         option.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://robocontext:34LAFVWNUC@ru3.mproxy.top:20004"));
 
-        WebDriver driver = new ChromeDriver(option);
+        URL url = null;
+
+        try {
+            url = new URL(System.getenv("SELENIUM_URL"));
+        } catch (Exception e) {
+            return null;
+        }
+
+        WebDriver driver = new RemoteWebDriver(url, option);
 
         driver.manage().timeouts().pageLoadTimeout(300, TimeUnit.SECONDS);
         driver.manage().deleteAllCookies();

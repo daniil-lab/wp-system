@@ -16,6 +16,8 @@ COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
 COPY ./images ./images
 
+RUN apk add chromium
+
 EXPOSE 8080
 
 ENTRYPOINT java -jar system-dev.jar
