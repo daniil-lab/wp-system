@@ -39,12 +39,15 @@ public class TinkoffService {
     private List<TinkoffAuthChromeTab> tinkoffChromeTabs = new ArrayList<>();
 
     public TinkoffAuthChromeTab startTinkoffAuth(TinkoffStartAuthRequest request) {
-        WebDriverManager.chromedriver().setup();
+        userService.getUserById(request.getUserId());
+
+        System.setProperty("webdriver.chrome.driver","chromedriver");
 
         Map<String, Object> deviceMetrics = new HashMap<>();
         deviceMetrics.put("width", 1078);
         deviceMetrics.put("height", 924);
         deviceMetrics.put("pixelRatio", 3.0);
+
         Map<String, Object> mobileEmulation = new HashMap<>();
         mobileEmulation.put("deviceMetrics", deviceMetrics);
         mobileEmulation.put("userAgent", "Mozilla/5.0 (Linux; Android 8.0.0;" +
@@ -53,6 +56,7 @@ public class TinkoffService {
         "Chrome/67.0.3396.99 Mobile Safari/537.36");
 
         ChromeOptions option = new ChromeOptions();
+
         option.setExperimentalOption("mobileEmulation", mobileEmulation);
         option.addArguments("--disable-blink-features=AutomationControlled");
         option.addArguments("--headless");
@@ -60,11 +64,9 @@ public class TinkoffService {
         option.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://robocontext:34LAFVWNUC@ru3.mproxy.top:20004"));
 
         WebDriver driver = new ChromeDriver(option);
+
         driver.manage().timeouts().pageLoadTimeout(300, TimeUnit.SECONDS);
-
         driver.manage().deleteAllCookies();
-
-        userService.getUserById(request.getUserId());
 
         driver.get("https://www.tinkoff.ru/login/");
 
