@@ -1,18 +1,23 @@
 package com.wp.system.utils.tinkoff;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wp.system.entity.BankTransactionType;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
+import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
+import com.wp.system.repository.tinkoff.TinkoffTransactionRepository;
 import com.wp.system.utils.BankSync;
 import com.wp.system.utils.TrustedHttpClient;
 import com.wp.system.utils.WalletType;
 import com.wp.system.utils.tinkoff.response.cards.TinkoffCardsContainerResponse;
 import com.wp.system.utils.tinkoff.response.cards.TinkoffCardsResponse;
 import com.wp.system.utils.tinkoff.response.cards.TinkoffCardsWrapperResponse;
+import com.wp.system.utils.tinkoff.response.operations.TinkoffOperationResponse;
+import com.wp.system.utils.tinkoff.response.operations.TinkoffOperationsWrapperResponse;
 import com.wp.system.utils.tinkoff.response.session.TinkoffSessionStatusResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -20,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class TinkoffSync implements BankSync {
@@ -33,13 +40,67 @@ public class TinkoffSync implements BankSync {
 
     private TinkoffCardRepository cardRepository;
 
+    private TinkoffTransactionRepository transactionRepository;
+
     public TinkoffSync(TinkoffIntegration integration) {
         this.integration = integration;
     }
 
-    public void getOperations(Long startTime, Long endTime) {
-        if(validateSession()) {
+    public TinkoffTransaction createTransaction(TinkoffOperationResponse o, BankTransactionType t) {
+        TinkoffTransaction transaction = new TinkoffTransaction();
 
+        if(o.getCard() != null) {
+            Optional<TinkoffCard> foundCard = cardRepository.getCardByCardId(o.getCard());
+
+            foundCard.ifPresent(transaction::setCard);
+        }
+
+        String[] arr= String.valueOf(o.getAmount().getValue()).split("\\.");
+
+        transaction.getAmount().deposit(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]));
+        transaction.setDescription(o.getDescription());
+        transaction.setTransactionType(t);
+        transaction.setDate(Instant.ofEpochMilli(o.getOperationTime().getMilliseconds()));
+        transaction.setTinkoffId(o.getId());
+        transaction.setStatus(o.getStatus());
+        transaction.setCurrency(WalletType.valueOf(o.getAmount().getCurrency().getName()));
+
+        return transaction;
+    }
+
+    public void getOperations() {
+        if(validateSession()) {
+            ResponseEntity<TinkoffOperationsWrapperResponse> withdrawResponse = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/operations?sessionid="
+                            + integration.getToken() + "&start=" + (integration.getLastOperationsSyncDate() == null ?
+                    integration.getStartDate().toEpochMilli() : integration.getLastOperationsSyncDate().toEpochMilli()) +
+                    "&end=" + Instant.now().toEpochMilli() + "&config=spending",
+                    HttpMethod.GET, new HttpEntity<>(null), TinkoffOperationsWrapperResponse.class);
+
+            for (TinkoffOperationResponse o : withdrawResponse.getBody().getPayload()) {
+                Optional<TinkoffTransaction> transactionDuplicate = transactionRepository.getTinkoffTransactionByTinkoffId(o.getId());
+
+                if(transactionDuplicate.isPresent())
+                    continue;
+
+                transactionRepository.save(createTransaction(o, BankTransactionType.SPEND));
+            }
+
+            ResponseEntity<TinkoffOperationsWrapperResponse> earnResponse = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/operations?sessionid="
+                            + integration.getToken() + "&start=" + (integration.getLastOperationsSyncDate() == null ?
+                            integration.getStartDate().toEpochMilli() : integration.getLastOperationsSyncDate().toEpochMilli()) +
+                            "&end=" + Instant.now().toEpochMilli() + "&config=earning",
+                    HttpMethod.GET, new HttpEntity<>(null), TinkoffOperationsWrapperResponse.class);
+
+            for (TinkoffOperationResponse o : earnResponse.getBody().getPayload()) {
+                Optional<TinkoffTransaction> transactionDuplicate = transactionRepository.getTinkoffTransactionByTinkoffId(o.getId());
+
+                if(transactionDuplicate.isPresent())
+                    continue;
+
+                transactionRepository.save(createTransaction(o, BankTransactionType.EARN));
+            }
+
+            integration.setLastOperationsSyncDate(Instant.now().minus(1, ChronoUnit.HOURS));
         }
     }
 
@@ -154,7 +215,12 @@ public class TinkoffSync implements BankSync {
 
     @Override
     public void sync() {
+        integration.setStage(TinkoffSyncStage.IN_SYNC);
+
+        integrationRepository.save(integration);
+
         this.getCards();
+        this.getOperations();
 
         integration.setStage(TinkoffSyncStage.SYNCED);
 

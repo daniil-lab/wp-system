@@ -6,6 +6,7 @@ import com.wp.system.entity.bill.Bill;
 import com.wp.system.utils.WalletType;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class TinkoffCard extends BankCard {
@@ -26,7 +27,19 @@ public class TinkoffCard extends BankCard {
     @JoinColumn(name="integration_id")
     private TinkoffIntegration integration;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    private Set<TinkoffTransaction> transactions;
+
     public TinkoffCard() {}
+
+    public Set<TinkoffTransaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<TinkoffTransaction> transactions) {
+        this.transactions = transactions;
+    }
 
     public TinkoffIntegration getIntegration() {
         return integration;

@@ -3,6 +3,7 @@ package com.wp.system.services.tinkoff;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
+import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
@@ -15,15 +16,12 @@ import com.wp.system.utils.tinkoff.WebDriverCreator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.net.URL;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +44,12 @@ public class TinkoffService {
         return tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId).orElseThrow(() -> {
             throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
+    }
+
+    public Set<TinkoffTransaction> getTransactionsByCardId(UUID cardId) {
+        return tinkoffCardRepository.findById(cardId).orElseThrow(() -> {
+            throw new ServiceException("Card not found", HttpStatus.NOT_FOUND);
+        }).getTransactions();
     }
 
     @Transactional
@@ -88,6 +92,15 @@ public class TinkoffService {
             if (integration.isPresent())
                 throw new ServiceException("Integration already exist", HttpStatus.BAD_REQUEST);
 
+            if(request.getPhone() == null)
+                throw new ServiceException("Pass phone to request body", HttpStatus.BAD_REQUEST);
+
+            if(request.getUserId() == null)
+                throw new ServiceException("Pass userId to request body", HttpStatus.BAD_REQUEST);
+
+            if(request.getExportStartDate() == null)
+                throw new ServiceException("Pass exportStartDate to request body", HttpStatus.BAD_REQUEST);
+
             phone = request.getPhone();
             userId = request.getUserId();
         }
@@ -105,6 +118,7 @@ public class TinkoffService {
         TinkoffAuthChromeTab tab = new TinkoffAuthChromeTab(driver);
         tab.setPhone(phone);
         tab.setUserId(userId);
+        tab.setExportStartDate(request.getExportStartDate());
 
         this.tinkoffChromeTabs.add(tab);
 
@@ -177,6 +191,7 @@ public class TinkoffService {
 
                 newIntegration.setPassword(request.getPassword());
                 newIntegration.setUsername(tinkoffAuthChromeTab.getPhone());
+                newIntegration.setStartDate(tinkoffAuthChromeTab.getExportStartDate());
 
                 tinkoffIntegrationRepository.save(newIntegration);
             }

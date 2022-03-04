@@ -3,6 +3,7 @@ package com.wp.system.controller.tinkoff;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
+import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
@@ -47,6 +48,16 @@ public class TinkoffController {
                     UUID userId
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.sync(userId), ""), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/transactions/{cardId}")
+    @Operation(summary = "Получить транзакции по карте")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<Set<TinkoffTransaction>>> getTransactions(
+            @PathVariable
+                    UUID cardId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getTransactionsByCardId(cardId), ""), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{userId}")

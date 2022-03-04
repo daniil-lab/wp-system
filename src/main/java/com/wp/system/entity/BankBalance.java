@@ -9,12 +9,12 @@ import javax.persistence.OneToOne;
 import java.util.UUID;
 
 @Embeddable
-public class BankCardBalance {
+public class BankBalance {
     private int amount;
 
     private int cents;
 
-    public BankCardBalance() {};
+    public BankBalance() {};
 
     public int getAmount() {
         return amount;

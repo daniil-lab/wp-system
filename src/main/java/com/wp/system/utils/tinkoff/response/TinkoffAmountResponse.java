@@ -1,11 +1,13 @@
-package com.wp.system.utils.tinkoff.response.cards;
+package com.wp.system.utils.tinkoff.response;
 
-public class TinkoffCardBalanceResponse {
+import com.wp.system.utils.tinkoff.response.cards.TinkoffCardBalanceCurrencyResponse;
+
+public class TinkoffAmountResponse {
     private TinkoffCardBalanceCurrencyResponse currency;
 
     private Double value;
 
-    public TinkoffCardBalanceResponse() {}
+    public TinkoffAmountResponse() {}
 
     public Double getValue() {
         return value;

@@ -11,7 +11,7 @@ public class BankCard {
     private UUID id = UUID.randomUUID();
 
     @Embedded
-    private BankCardBalance balance = new BankCardBalance();
+    private BankBalance balance = new BankBalance();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="icon_id")
@@ -27,11 +27,11 @@ public class BankCard {
         this.id = id;
     }
 
-    public BankCardBalance getBalance() {
+    public BankBalance getBalance() {
         return balance;
     }
 
-    public void setBalance(BankCardBalance balance) {
+    public void setBalance(BankBalance balance) {
         this.balance = balance;
     }
 

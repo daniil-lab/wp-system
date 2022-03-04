@@ -1,7 +1,9 @@
 package com.wp.system.utils.tinkoff.response.cards;
 
+import com.wp.system.utils.tinkoff.response.TinkoffAmountResponse;
+
 public class TinkoffCardsResponse {
-    private TinkoffCardBalanceResponse availableBalance;
+    private TinkoffAmountResponse availableBalance;
 
     private String id;
 
@@ -15,11 +17,11 @@ public class TinkoffCardsResponse {
 
     public TinkoffCardsResponse() {}
 
-    public TinkoffCardBalanceResponse getAvailableBalance() {
+    public TinkoffAmountResponse getAvailableBalance() {
         return availableBalance;
     }
 
-    public void setAvailableBalance(TinkoffCardBalanceResponse availableBalance) {
+    public void setAvailableBalance(TinkoffAmountResponse availableBalance) {
         this.availableBalance = availableBalance;
     }
 

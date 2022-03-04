@@ -2,12 +2,14 @@ package com.wp.system.utils.tinkoff.response.operations;
 
 import com.wp.system.utils.tinkoff.response.session.TinkoffSessionStatusPayloadResponse;
 
+import java.util.List;
+
 public class TinkoffOperationsWrapperResponse {
     private String trackingId;
 
     private String resultCode;
 
-    private TinkoffSessionStatusPayloadResponse payload;
+    private List<TinkoffOperationResponse> payload;
 
     public TinkoffOperationsWrapperResponse() {}
 
@@ -27,11 +29,11 @@ public class TinkoffOperationsWrapperResponse {
         this.resultCode = resultCode;
     }
 
-    public TinkoffSessionStatusPayloadResponse getPayload() {
+    public List<TinkoffOperationResponse> getPayload() {
         return payload;
     }
 
-    public void setPayload(TinkoffSessionStatusPayloadResponse payload) {
+    public void setPayload(List<TinkoffOperationResponse> payload) {
         this.payload = payload;
     }
 }

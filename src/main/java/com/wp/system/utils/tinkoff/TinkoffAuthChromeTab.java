@@ -25,11 +25,21 @@ public class TinkoffAuthChromeTab {
 
     private String phone;
 
+    private Instant exportStartDate;
+
     public TinkoffAuthChromeTab() {}
 
     public TinkoffAuthChromeTab(WebDriver driver) {
         this.expiredAt = Instant.now().plus(15, ChronoUnit.MINUTES);
         this.driver = driver;
+    }
+
+    public Instant getExportStartDate() {
+        return exportStartDate;
+    }
+
+    public void setExportStartDate(Instant exportStartDate) {
+        this.exportStartDate = exportStartDate;
     }
 
     public String getPhone() {
