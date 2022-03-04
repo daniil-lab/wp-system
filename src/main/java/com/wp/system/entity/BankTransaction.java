@@ -15,7 +15,7 @@ public class BankTransaction {
     private UUID id = UUID.randomUUID();
 
     @Embedded
-    private BankBalance amount;
+    private BankBalance amount = new BankBalance();
 
     private WalletType currency;
 

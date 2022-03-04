@@ -6,6 +6,7 @@ import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
+import com.wp.system.repository.tinkoff.TinkoffTransactionRepository;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
 import com.wp.system.services.user.UserService;
@@ -34,6 +35,9 @@ public class TinkoffService {
 
     @Autowired
     private TinkoffCardRepository tinkoffCardRepository;
+
+    @Autowired
+    private TinkoffTransactionRepository tinkoffTransactionRepository;
 
     @Autowired
     private UserService userService;
@@ -144,9 +148,10 @@ public class TinkoffService {
             TinkoffSync tinkoffSync = new TinkoffSync(integration.get());
             tinkoffSync.setCardRepository(tinkoffCardRepository);
             tinkoffSync.setIntegrationRepository(tinkoffIntegrationRepository);
+            tinkoffSync.setTransactionRepository(tinkoffTransactionRepository);
 
-            if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
-                return false;
+//            if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
+//                return false;
 
             new Thread(tinkoffSync::sync).start();
 
@@ -180,8 +185,8 @@ public class TinkoffService {
                 integration.get().setToken(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue());
                 integration.get().setWuid(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
 
-                if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
-                    return false;
+//                if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
+//                    return false;
 
                 tinkoffIntegrationRepository.save(integration.get());
             } else {

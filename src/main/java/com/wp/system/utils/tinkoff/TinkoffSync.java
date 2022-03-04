@@ -226,4 +226,12 @@ public class TinkoffSync implements BankSync {
 
         integrationRepository.save(integration);
     }
+
+    public TinkoffTransactionRepository getTransactionRepository() {
+        return transactionRepository;
+    }
+
+    public void setTransactionRepository(TinkoffTransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
 }
