@@ -2,27 +2,28 @@ package com.wp.system.services.tinkoff;
 
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
+import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
 import com.wp.system.services.user.UserService;
-import com.wp.system.utils.tinkoff.TinkoffApiConnector;
+import com.wp.system.utils.tinkoff.TinkoffSync;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.net.URL;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,19 @@ public class TinkoffService {
     private UserService userService;
 
     private List<TinkoffAuthChromeTab> tinkoffChromeTabs = new ArrayList<>();
+
+    @Scheduled(fixedDelay = 900 * 100)
+    public void cleanTabs() {
+        tinkoffChromeTabs.removeIf(tab -> tab.getExpiredAt().isBefore(Instant.now()));
+    }
+
+    public TinkoffSyncStage getSyncStage(UUID userId) {
+        TinkoffIntegration integration = tinkoffIntegrationRepository.findById(userId).orElseThrow(() -> {
+            throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
+        });
+
+        return integration.getStage();
+    }
 
     public TinkoffAuthChromeTab startTinkoffAuth(TinkoffStartAuthRequest request) {
         userService.getUserById(request.getUserId());
@@ -107,11 +121,13 @@ public class TinkoffService {
         Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId);
 
         if(integration.isPresent()) {
-            TinkoffApiConnector tinkoffApiConnector = new TinkoffApiConnector(integration.get());
-            tinkoffApiConnector.setCardRepository(tinkoffCardRepository);
-            tinkoffApiConnector.setIntegrationRepository(tinkoffIntegrationRepository);
+            integration.get().setStage(TinkoffSyncStage.IN_SYNC);
 
-            tinkoffApiConnector.getCards();
+            TinkoffSync tinkoffSync = new TinkoffSync(integration.get());
+            tinkoffSync.setCardRepository(tinkoffCardRepository);
+            tinkoffSync.setIntegrationRepository(tinkoffIntegrationRepository);
+
+            new Thread(tinkoffSync::sync).start();
 
             return true;
         }

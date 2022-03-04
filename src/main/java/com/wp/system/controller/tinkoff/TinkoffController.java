@@ -1,6 +1,7 @@
 package com.wp.system.controller.tinkoff;
 
 import com.wp.system.entity.tinkoff.TinkoffCard;
+import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
@@ -27,6 +28,8 @@ public class TinkoffController {
     @Autowired
     private TinkoffService tinkoffService;
 
+
+
     @PostMapping(value = "/connect/start")
     @Operation(summary = "Старт авторизации Tinkoff")
     @SecurityRequirement(name = "Bearer")
@@ -45,6 +48,16 @@ public class TinkoffController {
                     UUID userId
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.syncCards(userId), ""), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/sync/status/{userId}")
+    @Operation(summary = "Синхронизация карт")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<TinkoffSyncStage>> syncStatus(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.ge(userId), ""), HttpStatus.OK);
     }
 
     @GetMapping(value = "/cards/{userId}")

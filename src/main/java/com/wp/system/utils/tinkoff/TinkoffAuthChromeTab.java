@@ -7,7 +7,10 @@ import org.openqa.selenium.WebDriver;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class TinkoffAuthChromeTab {
     private UUID id = UUID.randomUUID();
@@ -18,10 +21,31 @@ public class TinkoffAuthChromeTab {
 
     private UUID userId;
 
+    private Instant expiredAt;
+
+    private String phone;
+
     public TinkoffAuthChromeTab() {}
 
     public TinkoffAuthChromeTab(WebDriver driver) {
+        this.expiredAt = Instant.now().plus(15, ChronoUnit.MINUTES);
         this.driver = driver;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Instant getExpiredAt() {
+        return expiredAt;
+    }
+
+    public void setExpiredAt(Instant expiredAt) {
+        this.expiredAt = expiredAt;
     }
 
     public UUID getUserId() {

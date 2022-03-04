@@ -3,8 +3,10 @@ package com.wp.system.utils.tinkoff;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
+import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
+import com.wp.system.utils.BankSync;
 import com.wp.system.utils.TrustedHttpClient;
 import com.wp.system.utils.WalletType;
 import com.wp.system.utils.tinkoff.response.cards.TinkoffCardsContainerResponse;
@@ -18,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
-public class TinkoffApiConnector {
+public class TinkoffSync implements BankSync {
     private final RestTemplate restTemplate = new RestTemplate();
 
     private final TinkoffIntegration integration;
@@ -29,7 +31,7 @@ public class TinkoffApiConnector {
 
     private TinkoffCardRepository cardRepository;
 
-    public TinkoffApiConnector(TinkoffIntegration integration) {
+    public TinkoffSync(TinkoffIntegration integration) {
         this.integration = integration;
     }
 
@@ -44,7 +46,6 @@ public class TinkoffApiConnector {
             try {
                 ResponseEntity<TinkoffCardsWrapperResponse> response = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/accounts_flat?sessionid=" + integration.getToken(),
                         HttpMethod.GET, new HttpEntity<>(null), TinkoffCardsWrapperResponse.class);
-
 
                 for (TinkoffCardsContainerResponse cr : response.getBody().getPayload()) {
                     Set<TinkoffCard> validateCards = integration.getCards();
@@ -103,6 +104,8 @@ public class TinkoffApiConnector {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+
+                this.handleError();
             }
 
         }
@@ -117,8 +120,16 @@ public class TinkoffApiConnector {
         } catch (Exception e) {
             e.printStackTrace();
 
+            this.handleError();
+
             return false;
         }
+    }
+
+    public void handleError() {
+        integration.setStage(TinkoffSyncStage.ERROR);
+
+        integrationRepository.save(integration);
     }
 
     public TinkoffIntegrationRepository getIntegrationRepository() {
@@ -135,5 +146,14 @@ public class TinkoffApiConnector {
 
     public void setCardRepository(TinkoffCardRepository cardRepository) {
         this.cardRepository = cardRepository;
+    }
+
+    @Override
+    public void sync() {
+        this.getCards();
+
+        integration.setStage(TinkoffSyncStage.SYNCED);
+
+        integrationRepository.save(integration);
     }
 }
