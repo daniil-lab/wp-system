@@ -1,5 +1,6 @@
 package com.wp.system.entity.tinkoff;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wp.system.entity.user.User;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -18,6 +19,9 @@ public class TinkoffIntegration {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant startDate;
 
+    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private Instant lastOperationsSyncDate;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
@@ -32,13 +36,23 @@ public class TinkoffIntegration {
 
     private TinkoffSyncStage stage = TinkoffSyncStage.NONE;
 
+    @JsonIgnore
     private String username;
 
+    @JsonIgnore
     private String password;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "integration")
     @Fetch(FetchMode.SUBSELECT)
     private Set<TinkoffCard> cards = new HashSet<>();
+
+    public Instant getLastOperationsSyncDate() {
+        return lastOperationsSyncDate;
+    }
+
+    public void setLastOperationsSyncDate(Instant lastOperationsSyncDate) {
+        this.lastOperationsSyncDate = lastOperationsSyncDate;
+    }
 
     public String getPassword() {
         return password;

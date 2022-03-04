@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
+import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
 import com.wp.system.utils.BankSync;
@@ -15,6 +16,7 @@ import com.wp.system.utils.tinkoff.response.cards.TinkoffCardsWrapperResponse;
 import com.wp.system.utils.tinkoff.response.session.TinkoffSessionStatusResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -130,6 +132,8 @@ public class TinkoffSync implements BankSync {
         integration.setStage(TinkoffSyncStage.ERROR);
 
         integrationRepository.save(integration);
+
+        throw new ServiceException("Auth session expired, need re-auth", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public TinkoffIntegrationRepository getIntegrationRepository() {

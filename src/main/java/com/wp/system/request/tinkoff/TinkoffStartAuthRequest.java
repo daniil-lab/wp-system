@@ -4,13 +4,22 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class TinkoffStartAuthRequest {
-    @NotNull
     private String phone;
 
-    @NotNull
     private UUID userId;
 
+    @NotNull
+    private boolean reAuth;
+
     public TinkoffStartAuthRequest() {}
+
+    public boolean isReAuth() {
+        return reAuth;
+    }
+
+    public void setReAuth(boolean reAuth) {
+        this.reAuth = reAuth;
+    }
 
     public UUID getUserId() {
         return userId;

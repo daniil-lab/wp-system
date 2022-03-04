@@ -1,6 +1,7 @@
 package com.wp.system.controller.tinkoff;
 
 import com.wp.system.entity.tinkoff.TinkoffCard;
+import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.response.ServiceResponse;
@@ -35,7 +36,7 @@ public class TinkoffController {
             @RequestBody
                 TinkoffStartAuthRequest request
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.startTinkoffAuth(request), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.startTinkoffConnect(request), ""), HttpStatus.OK);
     }
 
     @GetMapping(value = "/sync/{userId}")
@@ -46,6 +47,26 @@ public class TinkoffController {
                     UUID userId
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.sync(userId), ""), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{userId}")
+    @Operation(summary = "Получить интеграцию по ID пользователя")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<TinkoffIntegration>> getIntegrationByUserId(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getIntegrationByUserId(userId), ""), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{userId}")
+    @Operation(summary = "Отключить интеграцию по ID пользователя")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<TinkoffIntegration>> removeIntegration(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.removeIntegration(userId), ""), HttpStatus.OK);
     }
 
     @GetMapping(value = "/sync/status/{userId}")
@@ -75,6 +96,6 @@ public class TinkoffController {
             @RequestBody
                     TinkoffSubmitAuthRequest request
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.submitTinkoffAuth(request), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.submitTinkoffConnect(request), ""), HttpStatus.OK);
     }
 }

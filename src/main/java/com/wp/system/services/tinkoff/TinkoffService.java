@@ -11,6 +11,7 @@ import com.wp.system.services.user.UserService;
 import com.wp.system.utils.tinkoff.TinkoffSync;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
+import com.wp.system.utils.tinkoff.WebDriverCreator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -41,66 +42,69 @@ public class TinkoffService {
 
     private List<TinkoffAuthChromeTab> tinkoffChromeTabs = new ArrayList<>();
 
+    public TinkoffIntegration getIntegrationByUserId(UUID userId) {
+        return tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId).orElseThrow(() -> {
+            throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
+        });
+    }
+
+    @Transactional
+    public TinkoffIntegration removeIntegration(UUID userId) {
+        TinkoffIntegration integration = getIntegrationByUserId(userId);
+
+        tinkoffIntegrationRepository.delete(integration);
+
+        return integration;
+    }
+
     @Scheduled(fixedDelay = 900 * 100)
     public void cleanTabs() {
         tinkoffChromeTabs.removeIf(tab -> tab.getExpiredAt().isBefore(Instant.now()));
     }
 
     public TinkoffSyncStage getSyncStage(UUID userId) {
-        TinkoffIntegration integration = tinkoffIntegrationRepository.findById(userId).orElseThrow(() -> {
+        TinkoffIntegration integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId).orElseThrow(() -> {
             throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
 
         return integration.getStage();
     }
 
-    public TinkoffAuthChromeTab startTinkoffAuth(TinkoffStartAuthRequest request) {
+    public TinkoffAuthChromeTab startTinkoffConnect(TinkoffStartAuthRequest request) {
         userService.getUserById(request.getUserId());
 
-        Map<String, Object> deviceMetrics = new HashMap<>();
-        deviceMetrics.put("width", 1078);
-        deviceMetrics.put("height", 924);
-        deviceMetrics.put("pixelRatio", 3.0);
+        String phone = null;
+        UUID userId = null;
 
-        Map<String, Object> mobileEmulation = new HashMap<>();
-        mobileEmulation.put("deviceMetrics", deviceMetrics);
-        mobileEmulation.put("userAgent", "Mozilla/5.0 (Linux; Android 8.0.0;" +
-                        "Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML," +
-                "like Gecko) " +
-        "Chrome/67.0.3396.99 Mobile Safari/537.36");
+        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(request.getUserId());
 
-        ChromeOptions option = new ChromeOptions();
+        if(request.isReAuth()) {
+            if(integration.isEmpty())
+                throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
 
-        option.setExperimentalOption("mobileEmulation", mobileEmulation);
-        option.addArguments("--disable-blink-features=AutomationControlled");
-        option.addArguments("--headless");
-        option.addArguments("--disable-gpu");
-        option.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://robocontext:34LAFVWNUC@ru3.mproxy.top:20004"));
+            phone = integration.get().getUsername();
+            userId = integration.get().getUser().getId();
+        } else {
+            if (integration.isPresent())
+                throw new ServiceException("Integration already exist", HttpStatus.BAD_REQUEST);
 
-        URL url = null;
-
-        try {
-            url = new URL(System.getenv("SELENIUM_URL"));
-        } catch (Exception e) {
-            return null;
+            phone = request.getPhone();
+            userId = request.getUserId();
         }
-
-        WebDriver driver = new RemoteWebDriver(url, option);
-
-        driver.manage().timeouts().pageLoadTimeout(300, TimeUnit.SECONDS);
-        driver.manage().deleteAllCookies();
+        WebDriver driver = WebDriverCreator.create();
 
         driver.get("https://www.tinkoff.ru/login/");
 
         WebElement phoneInput = driver.findElement(By.id("phoneNumber"));
-        phoneInput.sendKeys(request.getPhone());
+        phoneInput.sendKeys(phone);
 
         WebElement button = driver.findElement(By.id("submit-button"));
 
         button.click();
 
         TinkoffAuthChromeTab tab = new TinkoffAuthChromeTab(driver);
-        tab.setUserId(request.getUserId());
+        tab.setPhone(phone);
+        tab.setUserId(userId);
 
         this.tinkoffChromeTabs.add(tab);
 
@@ -138,7 +142,7 @@ public class TinkoffService {
         throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
     }
 
-    public Boolean submitTinkoffAuth(TinkoffSubmitAuthRequest request) {
+    public Boolean submitTinkoffConnect(TinkoffSubmitAuthRequest request) {
         TinkoffAuthChromeTab tinkoffAuthChromeTab = null;
 
         for (TinkoffAuthChromeTab r : this.tinkoffChromeTabs)
@@ -162,17 +166,19 @@ public class TinkoffService {
                 integration.get().setToken(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue());
                 integration.get().setWuid(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
 
-                if(integration.get().getCards() == null)
-                    integration.get().setCards(new HashSet<>());
-
                 if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
                     return false;
 
                 tinkoffIntegrationRepository.save(integration.get());
             } else {
-                tinkoffIntegrationRepository.save(new TinkoffIntegration(userService.getUserById(tinkoffAuthChromeTab.getUserId()),
+                TinkoffIntegration newIntegration = new TinkoffIntegration(userService.getUserById(tinkoffAuthChromeTab.getUserId()),
                         tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue(),
-                        tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue()));
+                        tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
+
+                newIntegration.setPassword(request.getPassword());
+                newIntegration.setUsername(tinkoffAuthChromeTab.getPhone());
+
+                tinkoffIntegrationRepository.save(newIntegration);
             }
 
             tinkoffAuthChromeTab.getDriver().quit();
