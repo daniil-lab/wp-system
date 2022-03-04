@@ -38,14 +38,14 @@ public class TinkoffController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.startTinkoffAuth(request), ""), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/sync/cards/{userId}")
-    @Operation(summary = "Синхронизация карт")
+    @GetMapping(value = "/sync/{userId}")
+    @Operation(summary = "Синхронизация")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<Boolean>> syncCards(
             @PathVariable
                     UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.syncCards(userId), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.sync(userId), ""), HttpStatus.OK);
     }
 
     @GetMapping(value = "/sync/status/{userId}")

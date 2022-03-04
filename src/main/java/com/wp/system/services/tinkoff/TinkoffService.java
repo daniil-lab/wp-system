@@ -117,7 +117,7 @@ public class TinkoffService {
     }
 
     @Transactional
-    public Boolean syncCards(UUID userId) {
+    public Boolean sync(UUID userId) {
         Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId);
 
         if(integration.isPresent()) {
@@ -126,6 +126,9 @@ public class TinkoffService {
             TinkoffSync tinkoffSync = new TinkoffSync(integration.get());
             tinkoffSync.setCardRepository(tinkoffCardRepository);
             tinkoffSync.setIntegrationRepository(tinkoffIntegrationRepository);
+
+            if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
+                return false;
 
             new Thread(tinkoffSync::sync).start();
 
@@ -161,6 +164,9 @@ public class TinkoffService {
 
                 if(integration.get().getCards() == null)
                     integration.get().setCards(new HashSet<>());
+
+                if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
+                    return false;
 
                 tinkoffIntegrationRepository.save(integration.get());
             } else {
