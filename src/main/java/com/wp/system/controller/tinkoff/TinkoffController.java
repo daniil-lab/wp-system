@@ -28,8 +28,6 @@ public class TinkoffController {
     @Autowired
     private TinkoffService tinkoffService;
 
-
-
     @PostMapping(value = "/connect/start")
     @Operation(summary = "Старт авторизации Tinkoff")
     @SecurityRequirement(name = "Bearer")
@@ -57,7 +55,7 @@ public class TinkoffController {
             @PathVariable
                     UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.ge(userId), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getSyncStage(userId), ""), HttpStatus.OK);
     }
 
     @GetMapping(value = "/cards/{userId}")
