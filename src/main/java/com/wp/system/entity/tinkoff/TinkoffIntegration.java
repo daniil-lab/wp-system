@@ -31,8 +31,10 @@ public class TinkoffIntegration {
     })
     private User user;
 
+    @JsonIgnore
     private String token;
 
+    @JsonIgnore
     private String wuid;
 
     private TinkoffSyncStage stage = TinkoffSyncStage.NONE;
