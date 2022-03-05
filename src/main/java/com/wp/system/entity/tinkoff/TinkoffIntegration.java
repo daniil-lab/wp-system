@@ -45,6 +45,7 @@ public class TinkoffIntegration {
     @JsonIgnore
     private String password;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "integration")
     @Fetch(FetchMode.SUBSELECT)
     private Set<TinkoffCard> cards = new HashSet<>();
