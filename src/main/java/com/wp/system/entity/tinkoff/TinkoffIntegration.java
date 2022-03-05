@@ -22,6 +22,7 @@ public class TinkoffIntegration {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant lastOperationsSyncDate;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
