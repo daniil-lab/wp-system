@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wp.system.entity.BankCard;
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.utils.WalletType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -28,7 +30,7 @@ public class TinkoffCard extends BankCard {
     private TinkoffIntegration integration;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<TinkoffTransaction> transactions;
 
     public TinkoffCard() {}
