@@ -3,6 +3,7 @@ package com.wp.system.exception;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ServiceException extends RuntimeException {
     private HttpStatus httpCode;
@@ -14,7 +15,7 @@ public class ServiceException extends RuntimeException {
     public ServiceException(String errorName, HttpStatus httpStatus) {
         super(errorName);
         this.httpCode = httpStatus;
-        this.lastTrace = Arrays.toString(Arrays.stream(this.getStackTrace()).toList().subList());
+        this.lastTrace = Arrays.toString(new List[]{Arrays.stream(this.getStackTrace()).toList().subList(0, 10)});
     }
 
     public ServiceException(String errorName, HttpStatus httpStatus, String description) {
