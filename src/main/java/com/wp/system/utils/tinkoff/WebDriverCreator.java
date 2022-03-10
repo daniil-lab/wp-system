@@ -32,7 +32,7 @@ public final class WebDriverCreator {
         option.addArguments("--disable-blink-features=AutomationControlled");
         option.addArguments("--headless");
         option.addArguments("--disable-gpu");
-        option.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://robocontext:34LAFVWNUC@ru3.mproxy.top:20004"));
+//        option.setCapability("chrome.switches", Arrays.asList("--proxy-server=http://robocontext:34LAFVWNUC@ru3.mproxy.top:20004"));
 
         URL url = null;
 
