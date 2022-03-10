@@ -14,7 +14,7 @@ public class ServiceException extends RuntimeException {
     public ServiceException(String errorName, HttpStatus httpStatus) {
         super(errorName);
         this.httpCode = httpStatus;
-        this.lastTrace = Arrays.toString(this.getStackTrace());
+        this.lastTrace = Arrays.toString(Arrays.stream(this.getStackTrace()).toList().subList());
     }
 
     public ServiceException(String errorName, HttpStatus httpStatus, String description) {

@@ -38,6 +38,8 @@ public class SigmaSmsSender extends SigmaIntegration implements SmsSender {
 
             data.put("payload", smsData);
 
+            System.out.println(mapper.writeValueAsString(data));
+
             HttpRequest sendRequest = HttpRequest.newBuilder()
                     .uri(URI.create(this.API_URL + "sendings"))
                     .method("POST", HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(data)))
@@ -47,9 +49,10 @@ public class SigmaSmsSender extends SigmaIntegration implements SmsSender {
 
             HttpResponse<String> sendResponse = HttpClient.newBuilder().build().send(sendRequest, HttpResponse.BodyHandlers.ofString());
 
+            System.out.println(sendResponse.body());
+
             if(sendResponse.statusCode() != 200)
                 throw new ServiceException("Sms does`t send", HttpStatus.INTERNAL_SERVER_ERROR);
-
 
             return true;
         } catch (Exception e) {
