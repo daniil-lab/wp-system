@@ -106,7 +106,8 @@ public class AuthService {
         SmsSender smsSender = new SigmaSmsSender();
 
         smsSender.setPhone(request.getPhone());
-        smsSender.setContent("Это Wallet Box. Ваш код " + code + ". Используйте его только для активации приложения.");
+        smsSender.setContent("Wallet Box.\n" +
+                "Ваш код: " + code + ".");
 
         if(!smsSender.send())
             throw new ServiceException("SMS does`t send", HttpStatus.INTERNAL_SERVER_ERROR);
