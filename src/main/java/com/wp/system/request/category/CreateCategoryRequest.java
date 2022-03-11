@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class CreateCategoryRequest {
     @Schema(required = true, description = "Название категории")
-    @Length(min = 4, max = 64, message = ValidationErrorMessages.INVALID_CATEGORY_NAME)
+    @Length(min = 1, max = 64, message = ValidationErrorMessages.INVALID_CATEGORY_NAME)
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private String name;
 
