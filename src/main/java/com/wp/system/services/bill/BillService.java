@@ -147,7 +147,7 @@ public class BillService {
     public BillTransaction depositBill(DepositBillRequest request, UUID billId) {
         Bill bill = this.getBillById(billId);
 
-        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(null, bill, bill.getUser());
+        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(request.getCategoryId() == null ? null : this.categoryService.getCategoryById(request.getCategoryId()), bill, bill.getUser());
 
         BillTransaction transaction = facade.deposit(request.getAmount(), request.getCents(), request.getDescription());
 

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.UUID;
 
 public class DepositBillRequest {
     @Schema(required = true, description = "Целая часть баланса")
@@ -20,12 +21,23 @@ public class DepositBillRequest {
     @Schema(required = false, description = "Комментарий к пополнению")
     private String description;
 
+    @Schema(required = false, description = "Категория")
+    private UUID categoryId;
+
     public DepositBillRequest() {}
 
     public DepositBillRequest(int amount, int cents, String description) {
         this.amount = amount;
         this.cents = cents;
         this.description = description;
+    }
+
+    public UUID getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(UUID categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getDescription() {
