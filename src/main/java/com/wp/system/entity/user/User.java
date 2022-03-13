@@ -43,7 +43,7 @@ public class User {
     private boolean faceId;
 
     @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<LoyaltyCard> cards;
+    private Set<LoyaltyCard> cards;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "role_id")
@@ -56,11 +56,11 @@ public class User {
     private Set<Activity> activities;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
-    private List<PhoneAuthData> phoneAuthRequests;
+    private Set<PhoneAuthData> phoneAuthRequests;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     @Fetch(FetchMode.SUBSELECT)
-    private List<Category> categories;
+    private Set<Category> categories;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "subscription_id")
