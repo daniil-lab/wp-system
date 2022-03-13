@@ -1,10 +1,12 @@
 package com.wp.system.entity.category;
 
+import com.wp.system.entity.bill.BillLog;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
 import com.wp.system.utils.CategoryColor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Category {
@@ -26,6 +28,9 @@ public class Category {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="icon_id")
     private SystemImage icon;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "category")
+    private Set<BillLog> billLogs;
 
     public Category() {};
 
