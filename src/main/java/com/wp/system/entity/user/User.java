@@ -7,7 +7,9 @@ import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.logging.SystemAdminLog;
 import com.wp.system.entity.loyalty.LoyaltyCard;
+import com.wp.system.entity.sber.SberIntegration;
 import com.wp.system.entity.subscription.Subscription;
+import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.utils.WalletType;
 import com.wp.system.utils.user.UserType;
 import org.hibernate.annotations.Fetch;
@@ -74,6 +76,14 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     @Fetch(FetchMode.SUBSELECT)
     private Set<BillTransaction> transactions = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<TinkoffIntegration> tinkoffIntegrations = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<SberIntegration> sberIntegrations = new HashSet<>();
 
     @Column(columnDefinition = "TEXT")
     private String registerCred;
