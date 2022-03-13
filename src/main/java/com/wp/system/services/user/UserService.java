@@ -468,8 +468,6 @@ public class UserService {
     public User removeUser(UUID id) {
         User user = this.getUserById(id);
 
-        userRepository.delete(user);
-
         SecurityContext context = SecurityContextHolder.getContext();
 
         if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
@@ -485,6 +483,8 @@ public class UserService {
                     );
             }
         }
+
+        userRepository.delete(user);
 
         return user;
     }

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +27,10 @@ import java.util.UUID;
 @RequestMapping("/api/v1/tinkoff")
 @SecurityRequirement(name = "Bearer")
 public class TinkoffController {
-
     @Autowired
     private TinkoffService tinkoffService;
 
+    @PreAuthorize("hasAnyAuthority('TINKOFF_CREATE', 'TINKOFF_FULL')")
     @PostMapping(value = "/connect/start")
     @Operation(summary = "Старт авторизации Tinkoff")
     @SecurityRequirement(name = "Bearer")
@@ -40,6 +41,7 @@ public class TinkoffController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.startTinkoffConnect(request), ""), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TINKOFF_SYNC', 'TINKOFF_FULL')")
     @GetMapping(value = "/sync/{userId}")
     @Operation(summary = "Синхронизация")
     @SecurityRequirement(name = "Bearer")
@@ -50,6 +52,7 @@ public class TinkoffController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.sync(userId), ""), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TINKOFF_GET', 'TINKOFF_FULL')")
     @GetMapping(value = "/transactions/{cardId}")
     @Operation(summary = "Получить транзакции по карте")
     @SecurityRequirement(name = "Bearer")
@@ -60,6 +63,7 @@ public class TinkoffController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getTransactionsByCardId(cardId), ""), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TINKOFF_GET', 'TINKOFF_FULL')")
     @GetMapping(value = "/{userId}")
     @Operation(summary = "Получить интеграцию по ID пользователя")
     @SecurityRequirement(name = "Bearer")
@@ -70,6 +74,7 @@ public class TinkoffController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getIntegrationByUserId(userId), ""), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TINKOFF_REMOVE', 'TINKOFF_FULL')")
     @DeleteMapping(value = "/{userId}")
     @Operation(summary = "Отключить интеграцию по ID пользователя")
     @SecurityRequirement(name = "Bearer")
@@ -80,6 +85,7 @@ public class TinkoffController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.removeIntegration(userId), ""), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TINKOFF_SYNC', 'TINKOFF_FULL')")
     @GetMapping(value = "/sync/status/{userId}")
     @Operation(summary = "Синхронизация карт")
     @SecurityRequirement(name = "Bearer")
@@ -90,6 +96,7 @@ public class TinkoffController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getSyncStage(userId), ""), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TINKOFF_GET', 'TINKOFF_FULL')")
     @GetMapping(value = "/cards/{userId}")
     @Operation(summary = "Получение карт")
     @SecurityRequirement(name = "Bearer")
@@ -100,6 +107,7 @@ public class TinkoffController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getCards(userId), ""), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TINKOFF_CREATE', 'TINKOFF_FULL')")
     @PostMapping(value = "/connect/submit")
     @Operation(summary = "Подтвреждение авторизации Tinkoff")
     @SecurityRequirement(name = "Bearer")
