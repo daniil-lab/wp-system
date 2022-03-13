@@ -4,6 +4,8 @@ import com.wp.system.entity.bill.BillLog;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
 import com.wp.system.utils.CategoryColor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -30,6 +32,7 @@ public class Category {
     private SystemImage icon;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "category")
+    @Fetch(FetchMode.SUBSELECT)
     private Set<BillLog> billLogs;
 
     public Category() {};
