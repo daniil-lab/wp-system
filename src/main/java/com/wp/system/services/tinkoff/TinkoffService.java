@@ -60,6 +60,8 @@ public class TinkoffService {
     public TinkoffIntegration removeIntegration(UUID userId) {
         TinkoffIntegration integration = getIntegrationByUserId(userId);
 
+        integration.setUser(null);
+
         tinkoffIntegrationRepository.delete(integration);
 
         return integration;
