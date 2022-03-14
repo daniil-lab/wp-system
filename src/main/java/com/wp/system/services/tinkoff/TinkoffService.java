@@ -15,6 +15,7 @@ import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
 import com.wp.system.utils.tinkoff.WebDriverCreator;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,50 +168,55 @@ public class TinkoffService {
     }
 
     public Boolean submitTinkoffConnect(TinkoffSubmitAuthRequest request) {
-        TinkoffAuthChromeTab tinkoffAuthChromeTab = null;
+        try {
+            TinkoffAuthChromeTab tinkoffAuthChromeTab = null;
 
-        for (TinkoffAuthChromeTab r : this.tinkoffChromeTabs)
-            if(r.getId().equals(request.getId()))
-                tinkoffAuthChromeTab = r;
+            for (TinkoffAuthChromeTab r : this.tinkoffChromeTabs)
+                if(r.getId().equals(request.getId()))
+                    tinkoffAuthChromeTab = r;
 
-        if(tinkoffAuthChromeTab != null) {
-            tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            if(tinkoffAuthChromeTab != null) {
+                tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-            tinkoffAuthChromeTab.getDriver().findElement(By.id("smsCode")).sendKeys(request.getCode());
+                tinkoffAuthChromeTab.getDriver().findElement(By.id("smsCode")).sendKeys(request.getCode());
 
-            tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+                tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-            tinkoffAuthChromeTab.getDriver().findElement(By.id("password")).sendKeys(request.getPassword());
+                tinkoffAuthChromeTab.getDriver().findElement(By.id("password")).sendKeys(request.getPassword());
 
-            tinkoffAuthChromeTab.getDriver().findElement(By.id("submit-button")).click();
+                tinkoffAuthChromeTab.getDriver().findElement(By.id("submit-button")).click();
 
-            Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(tinkoffAuthChromeTab.getUserId());
+                Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(tinkoffAuthChromeTab.getUserId());
 
-            if(integration.isPresent()) {
-                integration.get().setToken(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue());
-                integration.get().setWuid(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
+                if(integration.isPresent()) {
+                    integration.get().setToken(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue());
+                    integration.get().setWuid(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
 
 //                if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
 //                    return false;
 
-                tinkoffIntegrationRepository.save(integration.get());
-            } else {
-                TinkoffIntegration newIntegration = new TinkoffIntegration(userService.getUserById(tinkoffAuthChromeTab.getUserId()),
-                        tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue(),
-                        tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
+                    tinkoffIntegrationRepository.save(integration.get());
+                } else {
+                    TinkoffIntegration newIntegration = new TinkoffIntegration(userService.getUserById(tinkoffAuthChromeTab.getUserId()),
+                            tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue(),
+                            tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
 
-                newIntegration.setPassword(request.getPassword());
-                newIntegration.setUsername(tinkoffAuthChromeTab.getPhone());
-                newIntegration.setStartDate(tinkoffAuthChromeTab.getExportStartDate());
+                    newIntegration.setPassword(request.getPassword());
+                    newIntegration.setUsername(tinkoffAuthChromeTab.getPhone());
+                    newIntegration.setStartDate(tinkoffAuthChromeTab.getExportStartDate());
 
-                tinkoffIntegrationRepository.save(newIntegration);
+                    tinkoffIntegrationRepository.save(newIntegration);
+                }
+
+                tinkoffAuthChromeTab.getDriver().quit();
+
+                tinkoffChromeTabs.remove(tinkoffAuthChromeTab);
+
+                return true;
             }
-
-            tinkoffAuthChromeTab.getDriver().quit();
-
-            tinkoffChromeTabs.remove(tinkoffAuthChromeTab);
-
-            return true;
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            throw new ServiceException("Auth page element not found", HttpStatus.BAD_REQUEST);
         }
 
         throw new ServiceException("Start auth stage not found", HttpStatus.NOT_FOUND);
