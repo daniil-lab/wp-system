@@ -1,5 +1,6 @@
 package com.wp.system.dto.tinkoff;
 
+import com.wp.system.entity.BankList;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.utils.WalletType;
 
@@ -23,6 +24,8 @@ public class TinkoffCardDTO {
 
     private WalletType currency;
 
+    private BankList bankName;
+
     public TinkoffCardDTO() {}
 
     public TinkoffCardDTO(TinkoffCard c) {
@@ -37,6 +40,15 @@ public class TinkoffCardDTO {
         this.expiration = c.getExpirationMillis() == null ? null : Instant.ofEpochMilli(c.getExpirationMillis());
         this.createdInBank = c.getCreatedMillis() == null ? null : Instant.ofEpochMilli(c.getCreatedMillis());
         this.currency = c.getCurrency();
+        this.bankName = c.getBankName();
+    }
+
+    public BankList getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(BankList bankName) {
+        this.bankName = bankName;
     }
 
     public UUID getId() {

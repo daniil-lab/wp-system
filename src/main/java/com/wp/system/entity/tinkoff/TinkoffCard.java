@@ -2,6 +2,7 @@ package com.wp.system.entity.tinkoff;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wp.system.entity.BankCard;
+import com.wp.system.entity.BankList;
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.utils.WalletType;
 import org.hibernate.annotations.OnDelete;
@@ -35,7 +36,9 @@ public class TinkoffCard extends BankCard {
     @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<TinkoffTransaction> transactions;
 
-    public TinkoffCard() {}
+    public TinkoffCard() {
+        setBankName(BankList.TINKOFF);
+    }
 
     public Long getCreatedMillis() {
         return createdMillis;

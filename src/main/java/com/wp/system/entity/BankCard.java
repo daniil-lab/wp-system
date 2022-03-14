@@ -17,7 +17,17 @@ public class BankCard {
     @JoinColumn(name="icon_id")
     private SystemImage picture;
 
+    private BankList bankName;
+
     public BankCard() {}
+
+    public BankList getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(BankList bankName) {
+        this.bankName = bankName;
+    }
 
     public UUID getId() {
         return id;
