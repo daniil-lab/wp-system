@@ -110,6 +110,9 @@ public class TinkoffSync implements BankSync {
                 ResponseEntity<TinkoffCardsWrapperResponse> response = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/accounts_flat?sessionid=" + integration.getToken(),
                         HttpMethod.GET, new HttpEntity<>(null), TinkoffCardsWrapperResponse.class);
 
+                System.out.println(response.getStatusCode());
+                System.out.println(response.getBody().getPayload().size());
+
                 for (TinkoffCardsContainerResponse cr : response.getBody().getPayload()) {
                     Set<TinkoffCard> validateCards = integration.getCards();
 
@@ -127,6 +130,8 @@ public class TinkoffSync implements BankSync {
                             cardRepository.delete(c);
                         }
                     }
+
+                    System.out.println(cr.getCardNumbers().size());
 
                     for (TinkoffCardsResponse r : cr.getCardNumbers()) {
                         Optional<TinkoffCard> foundCard = cardRepository.getCardByCardId(r.getId());
