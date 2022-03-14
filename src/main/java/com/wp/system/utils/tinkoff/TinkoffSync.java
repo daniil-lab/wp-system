@@ -50,7 +50,7 @@ public class TinkoffSync implements BankSync {
         TinkoffTransaction transaction = new TinkoffTransaction();
 
         if(o.getCard() != null) {
-            Optional<TinkoffCard> foundCard = cardRepository.getCardByCardId(o.getCard());
+            Optional<TinkoffCard> foundCard = cardRepository.getCardByCardId(o.getCard(), integration.getUser().getId());
 
             foundCard.ifPresent(transaction::setCard);
         }
@@ -134,7 +134,7 @@ public class TinkoffSync implements BankSync {
                     System.out.println(cr.getCardNumbers().size());
 
                     for (TinkoffCardsResponse r : cr.getCardNumbers()) {
-                        Optional<TinkoffCard> foundCard = cardRepository.getCardByCardId(r.getId());
+                        Optional<TinkoffCard> foundCard = cardRepository.getCardByCardId(r.getId(), integration.getUser().getId());
 
                         if (foundCard.isPresent()) {
                             TinkoffCard card = foundCard.get();

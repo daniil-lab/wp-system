@@ -11,6 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface TinkoffCardRepository extends JpaRepository<TinkoffCard, UUID> {
-    @Query("SELECT t FROM TinkoffCard t WHERE t.cardId = ?1")
-    Optional<TinkoffCard> getCardByCardId(String id);
+    @Query("SELECT t FROM TinkoffCard t WHERE t.cardId = ?1 AND t.user.id = ?2")
+    Optional<TinkoffCard> getCardByCardId(String id, UUID userId);
 }
