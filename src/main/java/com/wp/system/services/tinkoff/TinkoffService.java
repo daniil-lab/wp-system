@@ -83,6 +83,7 @@ public class TinkoffService {
 
         String phone = null;
         UUID userId = null;
+        Instant startExportDate = null;
 
         Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(request.getUserId());
 
@@ -92,6 +93,7 @@ public class TinkoffService {
 
             phone = integration.get().getUsername();
             userId = integration.get().getUser().getId();
+            startExportDate = integration.get().getStartDate();
         } else {
             if (integration.isPresent())
                 throw new ServiceException("Integration already exist", HttpStatus.BAD_REQUEST);
@@ -107,6 +109,7 @@ public class TinkoffService {
 
             phone = request.getPhone();
             userId = request.getUserId();
+            startExportDate = request.getExportStartDate();
         }
         WebDriver driver = WebDriverCreator.create();
 
@@ -122,7 +125,7 @@ public class TinkoffService {
         TinkoffAuthChromeTab tab = new TinkoffAuthChromeTab(driver);
         tab.setPhone(phone);
         tab.setUserId(userId);
-        tab.setExportStartDate(request.getExportStartDate());
+        tab.setExportStartDate(startExportDate);
 
         this.tinkoffChromeTabs.add(tab);
 

@@ -468,21 +468,21 @@ public class UserService {
     public User removeUser(UUID id) {
         User user = this.getUserById(id);
 
-        SecurityContext context = SecurityContextHolder.getContext();
+//        SecurityContext context = SecurityContextHolder.getContext();
 
-        if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
-            if(context.getAuthentication().getPrincipal() instanceof UserAuthDetails credentials) {
-                if(credentials.isAdmin())
-                    systemAdminLogger.createAdminLog(
-                            new CreateAdminLogRequest(
-                                    credentials.getId(),
-                                    "Создание пользователя",
-                                    "Админом был изменен пользователь с ID " + user.getId() +
-                                            ". Номере телефона: " + user.getUsername()
-                            )
-                    );
-            }
-        }
+//        if(context.getAuthentication() != null && context.getAuthentication().getPrincipal() != null) {
+//            if(context.getAuthentication().getPrincipal() instanceof UserAuthDetails credentials) {
+//                if(credentials.isAdmin())
+//                    systemAdminLogger.createAdminLog(
+//                            new CreateAdminLogRequest(
+//                                    credentials.getId(),
+//                                    "Создание пользователя",
+//                                    "Админом был изменен пользователь с ID " + user.getId() +
+//                                            ". Номере телефона: " + user.getUsername()
+//                            )
+//                    );
+//            }
+//        }
 
         userRepository.delete(user);
 
