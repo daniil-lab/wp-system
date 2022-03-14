@@ -15,7 +15,17 @@ public class TinkoffCardsResponse {
 
     private TinkoffCardExpirationResponse expiration;
 
+    private TinkoffCardExpirationResponse creationDate;
+
     public TinkoffCardsResponse() {}
+
+    public TinkoffCardExpirationResponse getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(TinkoffCardExpirationResponse creationDate) {
+        this.creationDate = creationDate;
+    }
 
     public TinkoffAmountResponse getAvailableBalance() {
         return availableBalance;

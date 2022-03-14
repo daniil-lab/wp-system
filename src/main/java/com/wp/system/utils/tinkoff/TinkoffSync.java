@@ -149,7 +149,7 @@ public class TinkoffSync implements BankSync {
                             card.setName(r.getName());
                             card.setExpirationMillis(r.getExpiration().getMilliseconds());
                             card.setCurrency(WalletType.valueOf(r.getAvailableBalance().getCurrency().getName()));
-
+                            card.setCreatedMillis(r.getCreationDate().getMilliseconds());
                             cardRepository.save(card);
 
                             continue;
@@ -166,6 +166,7 @@ public class TinkoffSync implements BankSync {
                         newCard.setStatus(r.getStatus());
                         newCard.setName(r.getName());
                         newCard.setExpirationMillis(r.getExpiration().getMilliseconds());
+                        newCard.setCreatedMillis(r.getCreationDate().getMilliseconds());
 
                         cardRepository.save(newCard);
                     }

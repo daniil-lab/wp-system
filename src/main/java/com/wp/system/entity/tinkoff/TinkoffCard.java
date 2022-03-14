@@ -24,6 +24,8 @@ public class TinkoffCard extends BankCard {
 
     private WalletType currency;
 
+    private Long createdMillis;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="integration_id")
@@ -34,6 +36,14 @@ public class TinkoffCard extends BankCard {
     private Set<TinkoffTransaction> transactions;
 
     public TinkoffCard() {}
+
+    public Long getCreatedMillis() {
+        return createdMillis;
+    }
+
+    public void setCreatedMillis(Long createdMillis) {
+        this.createdMillis = createdMillis;
+    }
 
     public Set<TinkoffTransaction> getTransactions() {
         return transactions;
