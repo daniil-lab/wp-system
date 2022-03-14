@@ -5,9 +5,7 @@ import com.wp.system.exception.ServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 
 @Component
 public class PublicDataSingleton {
@@ -26,6 +24,14 @@ public class PublicDataSingleton {
             this.data = (PublicData) stream.readObject();
         } catch (Exception ex) {
             throw new ServiceException("Can`t read Public Data from dat file", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void save() {
+        try(ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream("publicData.dat"))) {
+            stream.writeObject(data);
+        } catch (Exception ex) {
+            throw new ServiceException("Error on create save data", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
