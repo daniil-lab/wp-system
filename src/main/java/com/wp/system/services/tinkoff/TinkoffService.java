@@ -216,6 +216,7 @@ public class TinkoffService {
             }
         } catch (NoSuchElementException e) {
             e.printStackTrace();
+            tinkoffChromeTabs.removeIf((val) -> val.getId().equals(request.getId()));
             throw new ServiceException("Auth page element not found", HttpStatus.BAD_REQUEST);
         }
 
