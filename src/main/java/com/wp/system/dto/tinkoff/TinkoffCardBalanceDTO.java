@@ -2,14 +2,14 @@ package com.wp.system.dto.tinkoff;
 
 import com.wp.system.entity.BankBalance;
 
-public class TinkoffTransactionAmountDTO {
+public class TinkoffCardBalanceDTO {
     private int amount;
 
     private int cents;
 
-    public TinkoffTransactionAmountDTO() {}
+    public TinkoffCardBalanceDTO() {}
 
-    public TinkoffTransactionAmountDTO(BankBalance b) {
+    public TinkoffCardBalanceDTO(BankBalance b) {
         if(b == null)
             return;
 

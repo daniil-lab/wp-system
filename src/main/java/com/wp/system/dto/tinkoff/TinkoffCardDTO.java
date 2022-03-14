@@ -14,6 +14,8 @@ public class TinkoffCardDTO {
 
     private String name;
 
+    private TinkoffCardBalanceDTO balance;
+
     private String cardId;
 
     private String status;
@@ -41,6 +43,15 @@ public class TinkoffCardDTO {
         this.createdInBank = c.getCreatedMillis() == null ? null : Instant.ofEpochMilli(c.getCreatedMillis());
         this.currency = c.getCurrency();
         this.bankName = c.getBankName();
+        this.balance = new TinkoffCardBalanceDTO(c.getBalance());
+    }
+
+    public TinkoffCardBalanceDTO getBalance() {
+        return balance;
+    }
+
+    public void setBalance(TinkoffCardBalanceDTO balance) {
+        this.balance = balance;
     }
 
     public BankList getBankName() {
