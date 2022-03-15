@@ -27,6 +27,8 @@ public class TinkoffAuthChromeTab {
 
     private Instant exportStartDate;
 
+    private String password;
+
     public TinkoffAuthChromeTab() {}
 
     public TinkoffAuthChromeTab(WebDriver driver) {
@@ -80,5 +82,13 @@ public class TinkoffAuthChromeTab {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

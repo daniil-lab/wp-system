@@ -87,6 +87,7 @@ public class TinkoffService {
         String phone = null;
         UUID userId = null;
         Instant startExportDate = null;
+        String password = null;
 
         Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(request.getUserId());
 
@@ -97,6 +98,7 @@ public class TinkoffService {
             phone = integration.get().getUsername();
             userId = integration.get().getUser().getId();
             startExportDate = integration.get().getStartDate();
+            password = integration.get().getPassword();
         } else {
             if (integration.isPresent())
                 throw new ServiceException("Integration already exist", HttpStatus.BAD_REQUEST);
@@ -129,6 +131,7 @@ public class TinkoffService {
         tab.setPhone(phone);
         tab.setUserId(userId);
         tab.setExportStartDate(startExportDate);
+        tab.setExportStartDate(password);
 
         this.tinkoffChromeTabs.add(tab);
 
@@ -182,7 +185,8 @@ public class TinkoffService {
 
                 tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-                tinkoffAuthChromeTab.getDriver().findElement(By.id("password")).sendKeys(request.getPassword());
+                tinkoffAuthChromeTab.getDriver().findElement(By.id("password")).sendKeys(tinkoffAuthChromeTab.getPassword() == null ?
+                        request.getPassword() : tinkoffAuthChromeTab.getPassword());
 
                 tinkoffAuthChromeTab.getDriver().findElement(By.id("submit-button")).click();
 
