@@ -77,14 +77,16 @@ public class TinkoffSync implements BankSync {
                     HttpMethod.GET, new HttpEntity<>(null), TinkoffOperationsWrapperResponse.class);
 
             for (TinkoffOperationResponse o : withdrawResponse.getBody().getPayload()) {
-                System.out.println(o.getId());
-                Optional<TinkoffTransaction> transactionDuplicate = transactionRepository.getTinkoffTransactionByTinkoffId(o.getId());
-                System.out.println(transactionDuplicate.isPresent());
-                if(transactionDuplicate.isPresent())
-                    continue;
-                System.out.println("SAVE SPEND");
+                Optional<TinkoffCard> foundCard = cardRepository.getCardByCardId(o.getCard(), integration.getUser().getId());
 
-                transactionRepository.save(createTransaction(o, BankTransactionType.SPEND));
+                if(foundCard.isPresent()) {
+                    Optional<TinkoffTransaction> transactionDuplicate = transactionRepository.getTinkoffTransactionByTinkoffId(o.getId(), foundCard.get().getId());
+
+                    if(transactionDuplicate.isPresent())
+                        continue;
+
+                    transactionRepository.save(createTransaction(o, BankTransactionType.SPEND));
+                }
             }
 
             ResponseEntity<TinkoffOperationsWrapperResponse> earnResponse = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/operations?sessionid="
@@ -94,18 +96,16 @@ public class TinkoffSync implements BankSync {
                     HttpMethod.GET, new HttpEntity<>(null), TinkoffOperationsWrapperResponse.class);
 
             for (TinkoffOperationResponse o : earnResponse.getBody().getPayload()) {
-                System.out.println(o.getId());
+                Optional<TinkoffCard> foundCard = cardRepository.getCardByCardId(o.getCard(), integration.getUser().getId());
 
-                Optional<TinkoffTransaction> transactionDuplicate = transactionRepository.getTinkoffTransactionByTinkoffId(o.getId());
+                if(foundCard.isPresent()) {
+                    Optional<TinkoffTransaction> transactionDuplicate = transactionRepository.getTinkoffTransactionByTinkoffId(o.getId(), foundCard.get().getId());
 
-                System.out.println(transactionDuplicate.isPresent());
+                    if(transactionDuplicate.isPresent())
+                        continue;
 
-                if(transactionDuplicate.isPresent())
-                    continue;
-
-                System.out.println("SAVE EAR");
-
-                transactionRepository.save(createTransaction(o, BankTransactionType.EARN));
+                    transactionRepository.save(createTransaction(o, BankTransactionType.EARN));
+                }
             }
 
 //            integration.setLastOperationsSyncDate(Instant.now().minus(1, ChronoUnit.HOURS));
