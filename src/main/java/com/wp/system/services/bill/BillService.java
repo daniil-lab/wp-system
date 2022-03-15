@@ -160,6 +160,8 @@ public class BillService {
     public Bill removeBill(UUID billId) {
         Bill bill = this.getBillById(billId);
 
+        bill.setUser(null);
+
         this.billRepository.delete(bill);
         this.billBalanceRepository.delete(bill.getBalance());
 
