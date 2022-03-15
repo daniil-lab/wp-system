@@ -89,6 +89,8 @@ public class TinkoffService {
         Instant startExportDate = null;
         String password = null;
 
+        tinkoffChromeTabs.removeIf((val) -> val.getId().equals(request.getUserId()));
+
         Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(request.getUserId());
 
         if(request.isReAuth()) {
@@ -131,7 +133,7 @@ public class TinkoffService {
         tab.setPhone(phone);
         tab.setUserId(userId);
         tab.setExportStartDate(startExportDate);
-        tab.setExportStartDate(password);
+        tab.setPassword(password);
 
         this.tinkoffChromeTabs.add(tab);
 
