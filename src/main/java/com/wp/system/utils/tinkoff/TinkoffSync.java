@@ -71,8 +71,7 @@ public class TinkoffSync implements BankSync {
     public void getOperations() {
         if(validateSession()) {
             ResponseEntity<TinkoffOperationsWrapperResponse> withdrawResponse = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/operations?sessionid="
-                            + integration.getToken() + "&start=" + (integration.getLastOperationsSyncDate() == null ?
-                    integration.getStartDate().toEpochMilli() : integration.getLastOperationsSyncDate().toEpochMilli()) +
+                            + integration.getToken() + "&start=" + integration.getLastOperationsSyncDate().toEpochMilli() +
                     "&end=" + Instant.now().toEpochMilli() + "&config=spending",
                     HttpMethod.GET, new HttpEntity<>(null), TinkoffOperationsWrapperResponse.class);
 
@@ -90,8 +89,8 @@ public class TinkoffSync implements BankSync {
             }
 
             ResponseEntity<TinkoffOperationsWrapperResponse> earnResponse = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/operations?sessionid="
-                            + integration.getToken() + "&start=" + (integration.getLastOperationsSyncDate() == null ?
-                            integration.getStartDate().toEpochMilli() : integration.getLastOperationsSyncDate().toEpochMilli()) +
+                            + integration.getToken() + "&start=" +
+                            integration.getStartDate().toEpochMilli() +
                             "&end=" + Instant.now().toEpochMilli() + "&config=earning",
                     HttpMethod.GET, new HttpEntity<>(null), TinkoffOperationsWrapperResponse.class);
 
