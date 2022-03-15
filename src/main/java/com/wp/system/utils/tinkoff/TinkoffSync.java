@@ -77,10 +77,12 @@ public class TinkoffSync implements BankSync {
                     HttpMethod.GET, new HttpEntity<>(null), TinkoffOperationsWrapperResponse.class);
 
             for (TinkoffOperationResponse o : withdrawResponse.getBody().getPayload()) {
+                System.out.println(o.getId());
                 Optional<TinkoffTransaction> transactionDuplicate = transactionRepository.getTinkoffTransactionByTinkoffId(o.getId());
-
+                System.out.println(transactionDuplicate.isPresent());
                 if(transactionDuplicate.isPresent())
                     continue;
+                System.out.println("SAVE SPEND");
 
                 transactionRepository.save(createTransaction(o, BankTransactionType.SPEND));
             }
@@ -92,15 +94,21 @@ public class TinkoffSync implements BankSync {
                     HttpMethod.GET, new HttpEntity<>(null), TinkoffOperationsWrapperResponse.class);
 
             for (TinkoffOperationResponse o : earnResponse.getBody().getPayload()) {
+                System.out.println(o.getId());
+
                 Optional<TinkoffTransaction> transactionDuplicate = transactionRepository.getTinkoffTransactionByTinkoffId(o.getId());
+
+                System.out.println(transactionDuplicate.isPresent());
 
                 if(transactionDuplicate.isPresent())
                     continue;
 
+                System.out.println("SAVE EAR");
+
                 transactionRepository.save(createTransaction(o, BankTransactionType.EARN));
             }
 
-            integration.setLastOperationsSyncDate(Instant.now().minus(1, ChronoUnit.HOURS));
+//            integration.setLastOperationsSyncDate(Instant.now().minus(1, ChronoUnit.HOURS));
         }
     }
 
