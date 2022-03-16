@@ -38,7 +38,7 @@ public class SberSync implements BankSync {
 
         HttpEntity<MultiValueMap<String, String>> confirmRequest = new HttpEntity<MultiValueMap<String, String>>(confirmRequestBody, headers);
 
-        ResponseEntity<String> confirmResponse = restTemplate.postForEntity( "https://online.sberbank.ru:4477/CSAMAPI/registerApp.do", confirmRequest , String.class);
+        ResponseEntity<String> confirmResponse = restTemplate.postForEntity( "https://node2.online.sberbank.ru:4477/mobile9/private/products/list.do", confirmRequest , String.class);
 
         return confirmResponse.getBody();
     }
