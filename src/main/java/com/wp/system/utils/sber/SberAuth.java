@@ -84,6 +84,7 @@ public class SberAuth {
     private void submitAuth() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Set-Cookie", sberIntegration.getSession());
 
         MultiValueMap<String, String> submitAuthRequestBody = new LinkedMultiValueMap<String, String>();
         submitAuthRequestBody.add("token", sberIntegration.getToken());
@@ -107,6 +108,13 @@ public class SberAuth {
 
         if(responseCode == null || responseCode != 0)
             throw new ServiceException("Invalid SBER response code", HttpStatus.BAD_REQUEST);
+
+        String sessionCookie = SberUtils.exportSessionCookieFromCookies(submitAuthResponse.getHeaders());
+
+        if(sessionCookie == null)
+            throw new ServiceException("Can`t exact session", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        sberIntegration.setSession(sessionCookie);
     }
 
     public SberIntegrationRepository getSberIntegrationRepository() {

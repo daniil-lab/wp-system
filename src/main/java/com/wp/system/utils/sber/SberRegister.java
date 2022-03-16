@@ -87,12 +87,12 @@ public class SberRegister {
 
         mGUID = responseMGUID;
 
-        for (String cookie : response.getHeaders().get(HttpHeaders.SET_COOKIE)) {
-            if(cookie.startsWith("JSESSIONID")) {
-                jSession = cookie;
-                break;
-            }
-        }
+        String sessionCookie = SberUtils.exportSessionCookieFromCookies(response.getHeaders());
+
+        if(sessionCookie == null)
+            throw new ServiceException("Can`t exact session", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        jSession = sessionCookie;
 
         state = SberRegisterState.WAIT_SUBMIT;
     }

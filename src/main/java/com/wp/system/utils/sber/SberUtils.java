@@ -1,5 +1,6 @@
 package com.wp.system.utils.sber;
 
+import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -71,6 +72,16 @@ public final class SberUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String exportSessionCookieFromCookies(HttpHeaders headers) {
+        for (String cookie : headers.get(HttpHeaders.SET_COOKIE)) {
+            if(cookie.startsWith("JSESSIONID")) {
+                return cookie;
+            }
+        }
+
+        return null;
     }
 
     public static String getHostFromResponse(String response) {
