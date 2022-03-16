@@ -4,7 +4,8 @@ import com.wp.system.permissions.Permission;
 
 public enum BillTransactionPermissions implements Permission {
     GET_BILL_TRANSACTION("BILL_TRANSACTION_PERMISSION_1","Получение транзакций", "Позволяет получать транзакции", "BILL_TRANSACTION_GET"),
-    FULL_BILL_TRANSACTION("BILL_TRANSACTION_PERMISSION_2","Полный доступ для транзакций", "Позволяет выполнять любые операции над транзакциями", "BILL_TRANSACTION_FULL");
+    UPDATE_BILL_TRANSACTION("BILL_TRANSACTION_PERMISSION_2","Изменение транзакций", "Позволяет изменять транзакции", "BILL_TRANSACTION_UPDATE"),
+    FULL_BILL_TRANSACTION("BILL_TRANSACTION_PERMISSION_3","Полный доступ для транзакций", "Позволяет выполнять любые операции над транзакциями", "BILL_TRANSACTION_FULL");
 
     private String permissionId;
 

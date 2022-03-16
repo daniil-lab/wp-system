@@ -2,6 +2,7 @@ package com.wp.system.controller.bill;
 
 import com.wp.system.controller.DocumentedRestController;
 import com.wp.system.dto.bill.BillTransactionDTO;
+import com.wp.system.request.bill.UpdateBillTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.bill.BillTransactionService;
@@ -53,6 +54,13 @@ public class BillTransactionController extends DocumentedRestController {
     @GetMapping("/bill/{billId}")
     public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getAllBillTransactions(@PathVariable UUID billId, @RequestParam int page, @RequestParam int pageSize) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllTransactionsByBillId(billId, page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_UPDATE', 'BILL_TRANSACTION_FULL')")
+    @Operation(summary = "Изменение транзакции")
+    @PatchMapping("/{transactionId}")
+    public ResponseEntity<ServiceResponse<BillTransactionDTO>> updateTransaction(@PathVariable UUID transactionId, @RequestBody UpdateBillTransactionRequest request) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billTransactionService.updateBillTransaction(request, transactionId)), "Bill Transactions updated"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_FULL')")

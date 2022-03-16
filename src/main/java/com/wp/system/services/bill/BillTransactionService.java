@@ -1,11 +1,20 @@
 package com.wp.system.services.bill;
 
 import com.wp.system.dto.bill.BillTransactionDTO;
+import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
+import com.wp.system.entity.category.Category;
 import com.wp.system.entity.transaction.Transaction;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.bill.BillRepository;
 import com.wp.system.repository.bill.BillTransactionRepository;
+import com.wp.system.repository.category.CategoryRepository;
+import com.wp.system.request.bill.UpdateBillTransactionRequest;
+import com.wp.system.request.bill.WithdrawBillRequest;
 import com.wp.system.response.PagingResponse;
+import com.wp.system.services.category.CategoryService;
+import com.wp.system.utils.Geocoder;
+import com.wp.system.utils.bill.BillBalanceFacade;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -33,10 +42,62 @@ public class BillTransactionService {
     private BillTransactionRepository billTransactionRepository;
 
     @Autowired
+    private BillRepository billRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private SessionFactory sessionFactory;
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Transactional
+    public BillTransaction updateBillTransaction(UpdateBillTransactionRequest request, UUID id) {
+        BillTransaction transaction = billTransactionRepository.findById(id).orElseThrow(() -> {
+            throw new ServiceException("Transaction not found", HttpStatus.NOT_FOUND);
+        });
+
+        if(request.getAction() != null)
+            transaction.setAction(request.getAction());
+
+        if(request.getBillId() != null)
+            transaction.setBill(billRepository.findById(request.getBillId()).orElseThrow(() -> {
+                throw new ServiceException("Bill not found", HttpStatus.NOT_FOUND);
+            }));
+
+        if(request.getBillId() != null)
+            transaction.setCategory(categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
+                throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
+            }));
+
+        if(request.getCurrency() != null)
+            transaction.setCurrency(request.getCurrency());
+
+        if(request.getLatitude() != null)
+            transaction.setLatitude(request.getLatitude());
+
+        if(request.getLongitude() != null)
+            transaction.setLongitude(request.getLongitude());
+
+        if(request.getGeocodedPlace() != null)
+            transaction.setGeocodedPlace(request.getGeocodedPlace());
+
+        if(request.getDescription() != null)
+            transaction.setDescription(request.getDescription());
+
+        if(request.getAmount() != null) {
+            if(request.getCents() == null)
+                throw new ServiceException("If you pass amount, pass and cents", HttpStatus.BAD_REQUEST);
+
+            transaction.setSum(Double.parseDouble(request.getAmount() + "." + request.getCents()));
+        }
+
+        billTransactionRepository.save(transaction);
+
+        return transaction;
+    }
 
     @Transactional
     public BillTransaction removeTransaction(UUID transactionId) {

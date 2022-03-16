@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.time.Instant;
 import java.util.UUID;
 
 public class WithdrawBillRequest {
@@ -35,6 +36,8 @@ public class WithdrawBillRequest {
             "останется пустым")
     private String placeName;
 
+    private Instant time;
+
     public WithdrawBillRequest() {}
 
     public WithdrawBillRequest(int amount, int cents, String description, UUID categoryId) {
@@ -42,6 +45,14 @@ public class WithdrawBillRequest {
         this.cents = cents;
         this.description = description;
         this.categoryId = categoryId;
+    }
+
+    public Instant getTime() {
+        return time;
+    }
+
+    public void setTime(Instant time) {
+        this.time = time;
     }
 
     public String getPlaceName() {

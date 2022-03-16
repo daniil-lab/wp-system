@@ -5,6 +5,8 @@ import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
 
+import java.time.Instant;
+
 public class BillBalanceFacade {
     private BillBalanceLogger logger;
 
@@ -25,15 +27,17 @@ public class BillBalanceFacade {
     }
 
     public BillTransaction deposit(int amount,
-                        int cents,
-                        String description) {
+                                   int cents,
+                                   String description,
+                                   Instant time) {
         BillTransaction transaction = this.transactionManager.createTransaction(BillBalanceAction.DEPOSIT,
                 amount,
                 cents,
                 bill,
                 category,
                 description,
-                user);
+                user,
+                time);
 
         this.logger.createBillLog(BillBalanceAction.DEPOSIT,
                 amount,
@@ -48,14 +52,16 @@ public class BillBalanceFacade {
 
     public BillTransaction withdraw(int amount,
                          int cents,
-                         String description) {
+                         String description,
+                          Instant time) {
         BillTransaction transaction = this.transactionManager.createTransaction(BillBalanceAction.WITHDRAW,
                 amount,
                 cents,
                 bill,
                 category,
                 description,
-                user);
+                user,
+                time);
 
         this.logger.createBillLog(BillBalanceAction.WITHDRAW,
                 amount,

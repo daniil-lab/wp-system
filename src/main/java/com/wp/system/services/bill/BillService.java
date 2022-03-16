@@ -110,7 +110,7 @@ public class BillService {
 
         BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(category, bill, bill.getUser());
 
-        BillTransaction transaction = facade.withdraw(request.getAmount(), request.getCents(), request.getDescription());
+        BillTransaction transaction = facade.withdraw(request.getAmount(), request.getCents(), request.getDescription(), request.getTime());
 
         if(request.getPlaceName() != null)
             transaction.setGeocodedPlace(request.getPlaceName());
@@ -149,7 +149,7 @@ public class BillService {
 
         BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(request.getCategoryId() == null ? null : this.categoryService.getCategoryById(request.getCategoryId()), bill, bill.getUser());
 
-        BillTransaction transaction = facade.deposit(request.getAmount(), request.getCents(), request.getDescription());
+        BillTransaction transaction = facade.deposit(request.getAmount(), request.getCents(), request.getDescription(), request.getTime());
 
         this.billRepository.save(bill);
 
@@ -162,8 +162,8 @@ public class BillService {
 
         bill.setUser(null);
 
-        this.billRepository.delete(bill);
         this.billBalanceRepository.delete(bill.getBalance());
+        this.billRepository.delete(bill);
 
         return bill;
     }

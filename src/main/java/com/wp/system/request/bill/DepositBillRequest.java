@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.time.Instant;
 import java.util.UUID;
 
 public class DepositBillRequest {
@@ -24,12 +25,22 @@ public class DepositBillRequest {
     @Schema(required = false, description = "Категория")
     private UUID categoryId;
 
+    private Instant time;
+
     public DepositBillRequest() {}
 
     public DepositBillRequest(int amount, int cents, String description) {
         this.amount = amount;
         this.cents = cents;
         this.description = description;
+    }
+
+    public Instant getTime() {
+        return time;
+    }
+
+    public void setTime(Instant time) {
+        this.time = time;
     }
 
     public UUID getCategoryId() {

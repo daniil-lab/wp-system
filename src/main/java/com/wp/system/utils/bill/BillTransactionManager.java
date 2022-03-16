@@ -8,6 +8,8 @@ import com.wp.system.repository.bill.BillTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 @Component
 public class BillTransactionManager {
     @Autowired
@@ -21,7 +23,8 @@ public class BillTransactionManager {
                                              Bill bill,
                                              Category category,
                                              String description,
-                                             User user) {
+                                             User user,
+                                             Instant time) {
         BillTransaction transaction = new BillTransaction(action,
                 amount,
                 cents,
@@ -29,6 +32,7 @@ public class BillTransactionManager {
                 bill,
                 category,
                 user.getWallet(),
+                time,
                 user);
 
         this.billTransactionRepository.save(transaction);

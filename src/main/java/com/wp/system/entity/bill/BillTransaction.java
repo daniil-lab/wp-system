@@ -45,14 +45,14 @@ public class BillTransaction {
 
     public BillTransaction() {};
 
-    public BillTransaction(BillBalanceAction action, int amount, int cents, String description, Bill bill, Category category, WalletType currency, User user) {
+    public BillTransaction(BillBalanceAction action, int amount, int cents, String description, Bill bill, Category category, WalletType currency, Instant time, User user) {
         this.action = action;
         this.sum = Double.parseDouble(amount+"."+cents);
         this.description = description;
         this.currency = currency;
         this.bill = bill;
         this.category = category;
-        this.createAt = Instant.now();
+        this.createAt = time == null ? Instant.now() : time;
         this.user = user;
     }
 
