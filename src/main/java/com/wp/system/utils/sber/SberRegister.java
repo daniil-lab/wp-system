@@ -176,10 +176,10 @@ public class SberRegister {
         String responseToken = SberUtils.getTokenFromResponse(createPinResponse.getBody());
         String responseHost = SberUtils.getHostFromResponse(createPinResponse.getBody());
 
-        if(token == null)
+        if(responseToken == null)
             throw new ServiceException("SBER Token not found", HttpStatus.INTERNAL_SERVER_ERROR);
 
-        if(host == null)
+        if(responseHost == null)
             throw new ServiceException("SBER Host not found", HttpStatus.INTERNAL_SERVER_ERROR);
 
         token = responseToken;
