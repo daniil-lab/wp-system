@@ -192,6 +192,16 @@ public class TinkoffService {
 
                 tinkoffAuthChromeTab.getDriver().findElement(By.id("submit-button")).click();
 
+                tinkoffAuthChromeTab.getDriver().manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+
+                if(!tinkoffAuthChromeTab.getDriver().getCurrentUrl().contains("summary")) {
+                    tinkoffAuthChromeTab.getDriver().quit();
+
+                    tinkoffChromeTabs.remove(tinkoffAuthChromeTab);
+
+                    throw new ServiceException("Error on submit auth step, let`s try more or later", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+
                 Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(tinkoffAuthChromeTab.getUserId());
 
                 if(integration.isPresent()) {
