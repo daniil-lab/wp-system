@@ -69,7 +69,7 @@ public class User {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant createAt;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @Fetch(FetchMode.SUBSELECT)
     private Set<Bill> bills = new HashSet<>();
 

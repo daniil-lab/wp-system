@@ -162,7 +162,6 @@ public class BillService {
 
         bill.setUser(null);
 
-        this.billBalanceRepository.delete(bill.getBalance());
         this.billRepository.delete(bill);
 
         return bill;
