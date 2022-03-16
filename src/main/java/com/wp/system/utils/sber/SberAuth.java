@@ -61,7 +61,7 @@ public class SberAuth {
 
         System.out.println(preAuthResponse.getBody());
 
-        for (String cookie : preAuthRequest.getHeaders().get(HttpHeaders.SET_COOKIE)) {
+        for (String cookie : preAuthResponse.getHeaders().get(HttpHeaders.SET_COOKIE)) {
             if(cookie.startsWith("JSESSIONID")) {
                 sberIntegration.setSession(cookie);
                 break;
