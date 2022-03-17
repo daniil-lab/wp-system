@@ -57,6 +57,7 @@ public class NotificationService {
 
             return new SendNotificationToSomeUsersResponse(users, request.getHeader(), request.getBody());
         } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
             throw new ServiceException("Notification send error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -83,6 +84,7 @@ public class NotificationService {
 
             return new SendNotificationResponse(user, request.getHeader(), request.getBody());
         } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
             throw new ServiceException("Notification send error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -111,6 +113,7 @@ public class NotificationService {
 
             return new SendNotificationResponse(null, request.getHeader(), request.getBody());
         } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
             throw new ServiceException("Notification not send", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
