@@ -82,7 +82,7 @@ public class SberService {
             throw new ServiceException("Register session not found", HttpStatus.BAD_REQUEST);
 
         sberRegister.submitRegister(request.getCode());
-        sberRegister.createPin(request.getSberMobilePassword());
+        sberRegister.createPin();
 
         SberIntegration integration = new SberIntegration();
         integration.setUser(userService.getUserById(sberRegister.getUserId()));

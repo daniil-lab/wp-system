@@ -137,7 +137,7 @@ public class SberRegister {
         state = SberRegisterState.WAIT_CREATE_PIN;
     }
 
-    public void createPin(String pin) {
+    public void createPin() {
         if(!state.equals(SberRegisterState.WAIT_CREATE_PIN))
             throw new ServiceException("Try recreate sber register instance", HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -149,7 +149,7 @@ public class SberRegister {
 
         MultiValueMap<String, String> createPinRequestBody = new LinkedMultiValueMap<String, String>();
         createPinRequestBody.add("operation", "createPIN");
-        createPinRequestBody.add("password", pin);
+        createPinRequestBody.add("password", "17856");
         createPinRequestBody.add("mGUID", mGUID);
         createPinRequestBody.add("appType", "android");
         createPinRequestBody.add("version", "9.20");
