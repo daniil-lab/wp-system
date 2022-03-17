@@ -9,6 +9,7 @@ import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
@@ -61,11 +62,15 @@ public class TinkoffController {
     @GetMapping(value = "/transactions/{cardId}")
     @Operation(summary = "Получить транзакции по карте")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<ServiceResponse<Set<TinkoffTransactionDTO>>> getTransactions(
+    public ResponseEntity<ServiceResponse<PagingResponse<TinkoffTransactionDTO>>> getTransactions(
             @PathVariable
-                    UUID cardId
+                    UUID cardId,
+            @RequestParam
+                    int page,
+            @RequestParam
+                    int pageSize
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getTransactionsByCardId(cardId).stream().map(TinkoffTransactionDTO::new).collect(Collectors.toSet()), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getTransactionsByCardId(cardId, page, pageSize), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_GET', 'TINKOFF_FULL')")

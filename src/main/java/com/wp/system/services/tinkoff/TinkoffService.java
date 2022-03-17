@@ -1,5 +1,6 @@
 package com.wp.system.services.tinkoff;
 
+import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
@@ -9,6 +10,7 @@ import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tinkoff.TinkoffTransactionRepository;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.services.user.UserService;
 import com.wp.system.utils.tinkoff.TinkoffSync;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
@@ -19,6 +21,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,7 @@ import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class TinkoffService {
@@ -51,10 +56,11 @@ public class TinkoffService {
         });
     }
 
-    public Set<TinkoffTransaction> getTransactionsByCardId(UUID cardId) {
-        return tinkoffCardRepository.findById(cardId).orElseThrow(() -> {
-            throw new ServiceException("Card not found", HttpStatus.NOT_FOUND);
-        }).getTransactions();
+    public PagingResponse<TinkoffTransactionDTO> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
+        Page<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, PageRequest.of(page, pageSize));
+
+        return new PagingResponse<>(tinkoffTransactions.getContent().stream().map(TinkoffTransactionDTO::new).collect(Collectors.toList()),
+                tinkoffTransactions.getTotalElements(), tinkoffTransactions.getTotalPages());
     }
 
     @Transactional

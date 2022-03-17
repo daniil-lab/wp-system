@@ -15,6 +15,7 @@ import com.wp.system.permissions.logging.SystemErrorLoggingPermissions;
 import com.wp.system.permissions.loyalty.LoyaltyBlankPermissions;
 import com.wp.system.permissions.loyalty.LoyaltyCardPermissions;
 import com.wp.system.permissions.notification.NotificationPermissions;
+import com.wp.system.permissions.sber.SberPermissions;
 import com.wp.system.permissions.subscription.SubscriptionPermissions;
 import com.wp.system.permissions.subscription.SubscriptionVariantPermissions;
 import com.wp.system.permissions.system.SystemPermissions;
@@ -54,6 +55,7 @@ public class PermissionManager {
         permissionList.addAll(Arrays.stream(AdvertisingPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(TinkoffPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(SystemPermissions.values()).toList());
+        permissionList.addAll(Arrays.stream(SberPermissions.values()).toList());
     }
 
     public Permission getPermissionBySystemName(String systemName) {

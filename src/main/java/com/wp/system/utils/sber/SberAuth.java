@@ -18,6 +18,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import java.io.StringReader;
+import java.util.List;
 
 public class SberAuth {
     private final RestTemplate restTemplate = new RestTemplate();
@@ -34,8 +35,6 @@ public class SberAuth {
     public void auth() {
         preAuth();
         submitAuth();
-
-        sberIntegrationRepository.save(sberIntegration);
     }
 
     private void preAuth() {
@@ -61,12 +60,12 @@ public class SberAuth {
 
         System.out.println(preAuthResponse.getBody());
 
-        for (String cookie : preAuthResponse.getHeaders().get(HttpHeaders.SET_COOKIE)) {
-            if(cookie.startsWith("JSESSIONID")) {
-                sberIntegration.setSession(cookie);
-                break;
-            }
-        }
+        String sessionCookie = SberUtils.exportSessionCookieFromCookies(preAuthResponse.getHeaders());
+
+        if(sessionCookie == null)
+            throw new ServiceException("Can`t exact session", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        sberIntegration.setSession(sessionCookie);
 
         Integer responseCode = SberUtils.getCodeFromResponse(preAuthResponse.getBody());
 
@@ -79,12 +78,13 @@ public class SberAuth {
             throw new ServiceException("Can`t find SBER token", HttpStatus.INTERNAL_SERVER_ERROR);
 
         sberIntegration.setToken(token);
+
+        sberIntegrationRepository.save(sberIntegration);
     }
 
     private void submitAuth() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Set-Cookie", sberIntegration.getSession());
 
         MultiValueMap<String, String> submitAuthRequestBody = new LinkedMultiValueMap<String, String>();
         submitAuthRequestBody.add("token", sberIntegration.getToken());
@@ -114,7 +114,16 @@ public class SberAuth {
         if(sessionCookie == null)
             throw new ServiceException("Can`t exact session", HttpStatus.INTERNAL_SERVER_ERROR);
 
-        sberIntegration.setSession(sessionCookie);
+        List<String> responseCookies = submitAuthResponse.getHeaders().get(HttpHeaders.SET_COOKIE);
+
+        StringBuilder cookieResult = new StringBuilder();
+
+        for (String c : responseCookies)
+            cookieResult.append(c.replaceAll("secure", "")).append(";");
+
+        sberIntegration.setSession(cookieResult.toString());
+
+        sberIntegrationRepository.save(sberIntegration);
     }
 
     public SberIntegrationRepository getSberIntegrationRepository() {

@@ -7,7 +7,17 @@ public class SubmitCreateSberIntegrationRequest {
 
     private String code;
 
+    private String sberMobilePassword;
+
     public SubmitCreateSberIntegrationRequest() {}
+
+    public String getSberMobilePassword() {
+        return sberMobilePassword;
+    }
+
+    public void setSberMobilePassword(String sberMobilePassword) {
+        this.sberMobilePassword = sberMobilePassword;
+    }
 
     public String getCode() {
         return code;

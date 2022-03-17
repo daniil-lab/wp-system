@@ -20,6 +20,7 @@ public class SberIntegration {
 
     private String host;
 
+    @Column(columnDefinition = "TEXT")
     private String session;
 
     @JsonIgnore
@@ -37,7 +38,17 @@ public class SberIntegration {
 
     private String mGUID;
 
+    private SberIntegrationState state;
+
     public SberIntegration() {}
+
+    public SberIntegrationState getState() {
+        return state;
+    }
+
+    public void setState(SberIntegrationState state) {
+        this.state = state;
+    }
 
     public String getSession() {
         return session;

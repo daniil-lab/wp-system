@@ -1,5 +1,6 @@
 package com.wp.system;
 
+import com.wp.system.entity.sber.SberIntegrationState;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.user.UserRolePermission;
@@ -28,6 +29,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.util.*;
@@ -65,12 +68,18 @@ public class SystemApplication implements CommandLineRunner {
 	@Autowired
 	private JavaMailSender mailSender;
 
+	@PersistenceContext
+	private EntityManager entityManager;
+
 	public static void main(String[] args) {
 		SpringApplication.run(SystemApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
+		entityManager.createQuery("UPDATE SberIntegration SET state = :state1 WHERE state = :state2")
+				.setParameter("state1", SberIntegrationState.ERROR_SYNC)
+				.setParameter("state2", SberIntegrationState.SYNC);
 //		System.setProperty("http.proxyHost", "ru3.mproxy.top");
 //		System.setProperty("http.proxyPort", "20004");
 //		System.setProperty("http.proxyUser", "robocontext");

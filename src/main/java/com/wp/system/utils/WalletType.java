@@ -30,7 +30,8 @@ public enum WalletType {
     INR("Индийская рупия"),
     CHF("Швейцарский франк"),
     ARS("Аргентинское песо"),
-    CNY("Китайский юань");
+    CNY("Китайский юань"),
+    NONE("Неизвестно");
 
     private String walletName;
 

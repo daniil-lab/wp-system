@@ -77,7 +77,8 @@ public final class SberUtils {
     public static String exportSessionCookieFromCookies(HttpHeaders headers) {
         for (String cookie : headers.get(HttpHeaders.SET_COOKIE)) {
             if(cookie.startsWith("JSESSIONID")) {
-                return cookie;
+                System.out.println(cookie.split(";")[0]);
+                return cookie.split(";")[0];
             }
         }
 
@@ -98,6 +99,41 @@ public final class SberUtils {
             Node node = (Node) expression.evaluate(doc, XPathConstants.NODE);
 
             return node.getNodeValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Object getDataFromResponse(String response, String path) {
+        try {
+            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            builderFactory.setNamespaceAware(true);
+            DocumentBuilder builder = builderFactory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(new StringReader(response)));
+
+            XPath xpath = XPathFactory.newInstance().newXPath();
+
+            XPathExpression expression = xpath.compile(path);
+
+
+            return expression.evaluate(doc, XPathConstants.NODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Object getListDataFromResponse(String response, String path) {
+        try {
+            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            builderFactory.setNamespaceAware(true);
+            DocumentBuilder builder = builderFactory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(new StringReader(response)));
+
+            doc.normalizeDocument();
+
+            return doc.getElementsByTagName(path);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
