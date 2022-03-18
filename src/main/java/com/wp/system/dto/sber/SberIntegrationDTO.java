@@ -21,4 +21,20 @@ public class SberIntegrationDTO {
         this.id = sberIntegration.getId();
         this.startDate = sberIntegration.getStartDate();
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Instant getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Instant startDate) {
+        this.startDate = startDate;
+    }
 }
