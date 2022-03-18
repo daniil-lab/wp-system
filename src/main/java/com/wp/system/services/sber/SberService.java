@@ -59,6 +59,10 @@ public class SberService {
     public boolean startCreateSberIntegration(CreateSberIntegrationRequest request) {
         registerList.removeIf(register -> register.getUserId().equals(request.getUserId()));
 
+        sberIntegrationRepository.getSberIntegrationByUserId(request.getUserId()).ifPresent((val) -> {
+            throw new ServiceException("Sber integration already exists", HttpStatus.BAD_REQUEST);
+        });
+
         SberRegister sberRegister = new SberRegister(request.getUserId(), request.getPhone());
 
         sberRegister.setStartExportDate(request.getStartExportDate());

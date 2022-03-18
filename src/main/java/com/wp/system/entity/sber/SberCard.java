@@ -26,8 +26,6 @@ public class SberCard extends BankCard {
 
     private WalletType currency;
 
-    private Long createdMillis;
-
     private String cardAccount;
 
     private String type;
@@ -83,14 +81,6 @@ public class SberCard extends BankCard {
 
     public SberCard() {
         setBankName(BankList.SBER);
-    }
-
-    public Long getCreatedMillis() {
-        return createdMillis;
-    }
-
-    public void setCreatedMillis(Long createdMillis) {
-        this.createdMillis = createdMillis;
     }
 
     public SberIntegration getIntegration() {
