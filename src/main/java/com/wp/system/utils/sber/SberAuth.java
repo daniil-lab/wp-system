@@ -43,7 +43,7 @@ public class SberAuth {
 
         MultiValueMap<String, String> preAuthRequestBody = new LinkedMultiValueMap<String, String>();
         preAuthRequestBody.add("operation", "button.login");
-        preAuthRequestBody.add("password", "14569");
+        preAuthRequestBody.add("password", "17856");
         preAuthRequestBody.add("mGUID", sberIntegration.getmGUID());
         preAuthRequestBody.add("appType", "android");
         preAuthRequestBody.add("version", "9.20");
