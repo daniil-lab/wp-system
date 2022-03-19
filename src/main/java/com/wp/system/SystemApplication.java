@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -43,6 +44,9 @@ import java.util.*;
 		scheme = "bearer"
 )
 @OpenAPIDefinition(
+		servers = {
+				@Server(url = "http://188.225.45.41:8080/")
+		},
 		info = @Info(
 				title = "WP API",
 				version = "1.0",
