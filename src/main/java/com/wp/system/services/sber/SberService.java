@@ -49,9 +49,13 @@ public class SberService {
     private List<SberRegister> registerList = new ArrayList<>();
 
     public boolean removeSberIntegration(UUID userId) {
-        sberIntegrationRepository.delete(sberIntegrationRepository.getSberIntegrationByUserId(userId).orElseThrow(() -> {
+        SberIntegration sberIntegration = sberIntegrationRepository.getSberIntegrationByUserId(userId).orElseThrow(() -> {
             throw new ServiceException("Sber integration not found", HttpStatus.BAD_REQUEST);
-        }));
+        });
+
+        sberIntegration.setUser(null);
+
+        sberIntegrationRepository.delete(sberIntegration);
 
         return true;
     }
