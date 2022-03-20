@@ -106,7 +106,7 @@ public class SberSync implements BankSync  {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Cookie", sberIntegration.getSession());
 
-        ResponseEntity<String> getTransactionsResponse = restTemplate.exchange("https://node2.online.sberbank.ru:4477/mobile9/private/payments/list.do?" +
+        ResponseEntity<String> getTransactionsResponse = restTemplate.exchange(sberIntegration.getHost() +":4477/mobile9/private/payments/list.do?" +
                 "from=" + SberDateConverter.getStringByInstant(sberIntegration.getStartDate()) +
                 "&to=" + SberDateConverter.getStringByInstant(Instant.now()) +
                 "&usedResource=card:" + cardId +
@@ -206,7 +206,7 @@ public class SberSync implements BankSync  {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Cookie", sberIntegration.getSession());
 
-        ResponseEntity<String> getCardResponse = restTemplate.exchange( "https://node2.online.sberbank.ru:4477/mobile9/private/products/list.do?showProductType=cards,accounts,imaccounts,loans", HttpMethod.POST, new HttpEntity<>(headers) , String.class);
+        ResponseEntity<String> getCardResponse = restTemplate.exchange( sberIntegration.getHost() + ":4477/mobile9/private/products/list.do?showProductType=cards,accounts,imaccounts,loans", HttpMethod.POST, new HttpEntity<>(headers) , String.class);
 
         Integer responseCode = SberUtils.getCodeFromResponse(getCardResponse.getBody());
 
