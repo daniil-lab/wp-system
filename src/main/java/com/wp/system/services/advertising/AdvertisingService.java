@@ -112,7 +112,9 @@ public class AdvertisingService {
         try {
             Advertising advertising = getAdvertisingById(id);
 
-            String fileName = Instant.now().toString() + "-" + UUID.randomUUID() + "." + request.getFile().getOriginalFilename().split("\\.")[1];
+            String[] splittedFileName = request.getFile().getOriginalFilename().split("\\.");
+
+            String fileName = UUID.randomUUID() + "." + splittedFileName[splittedFileName.length - 1];
 
             String uploadDir = "ads/";
 
