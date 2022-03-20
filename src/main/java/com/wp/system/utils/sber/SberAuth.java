@@ -77,6 +77,13 @@ public class SberAuth {
         if(token == null)
             throw new ServiceException("Can`t find SBER token", HttpStatus.INTERNAL_SERVER_ERROR);
 
+        String host = SberUtils.getHostFromResponse(preAuthResponse.getBody());
+
+        if(host == null)
+            throw new ServiceException("Can`t find SBER host", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        sberIntegration.setHost(host);
+
         sberIntegration.setToken(token);
 
         sberIntegrationRepository.save(sberIntegration);
@@ -100,7 +107,7 @@ public class SberAuth {
 
         HttpEntity<MultiValueMap<String, String>> submitAuthRequest = new HttpEntity<MultiValueMap<String, String>>(submitAuthRequestBody, headers);
 
-        ResponseEntity<String> submitAuthResponse = restTemplate.postForEntity( "https://node2.online.sberbank.ru:4477/mobile9/postCSALogin.do", submitAuthRequest , String.class);
+        ResponseEntity<String> submitAuthResponse = restTemplate.postForEntity( sberIntegration.getHost() + ":4477/mobile9/postCSALogin.do", submitAuthRequest , String.class);
 
         System.out.println(submitAuthResponse.getBody());
 
