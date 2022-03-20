@@ -48,6 +48,14 @@ public class SberCardDTO {
         this.bankName = c.getBankName();
     }
 
+    public BankList getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(BankList bankName) {
+        this.bankName = bankName;
+    }
+
     public UUID getId() {
         return id;
     }

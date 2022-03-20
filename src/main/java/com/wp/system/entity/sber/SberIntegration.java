@@ -1,10 +1,15 @@
 package com.wp.system.entity.sber;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.user.User;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -31,6 +36,11 @@ public class SberIntegration {
             CascadeType.REFRESH
     })
     private User user;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "integration")
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<SberCard> cards = new HashSet<>();
 
     private String token;
 
