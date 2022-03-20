@@ -66,7 +66,7 @@ public class SberSync implements BankSync  {
 
             sberIntegrationRepository.save(sberIntegration);
 
-            System.out.println(syncCards());
+            syncCards();
             syncTransactions();
 
             System.out.println(transactions.size());
@@ -124,75 +124,81 @@ public class SberSync implements BankSync  {
     }
 
     private void syncTransactions() {
-        for (SberCard card : sberCardRepository.findByIntegrationId(sberIntegration.getId())) {
+        try {
+            for (SberCard card : cards) {
+                System.out.println(card.getCardId());
 
-            boolean flag = true;
+                boolean flag = true;
 
-            while(flag) {
-                NodeList transactionList = (NodeList) SberUtils.getListDataFromResponse(syncRequest(card.getCardId()), "operation");
+                while(flag) {
+                    NodeList transactionList = (NodeList) SberUtils.getListDataFromResponse(syncRequest(card.getCardId()), "operation");
 
-                if(transactionList == null || transactionList.getLength() == 0)
-                    flag = false;
+                    if(transactionList == null || transactionList.getLength() == 0)
+                        flag = false;
 
-                for (int i = 0; i < transactionList.getLength(); i++) {
-                    Element el = (Element) transactionList.item(i);
+                    for (int i = 0; i < transactionList.getLength(); i++) {
+                        Element el = (Element) transactionList.item(i);
 
-                    if(el == null)
-                        continue;
+                        if(el == null)
+                            continue;
 
-                    String id = el.getElementsByTagName("id").item(0).getTextContent();
+                        String id = el.getElementsByTagName("id").item(0).getTextContent();
 
-                    if(id == null)
-                        continue;
+                        if(id == null)
+                            continue;
 
-                    Element amount = (Element) el.getElementsByTagName("operationAmount").item(0);
+                        Element amount = (Element) el.getElementsByTagName("operationAmount").item(0);
 
-                    if(amount == null)
-                        continue;
+                        if(amount == null)
+                            continue;
 
-                    Element amountCurrency = (Element) amount.getElementsByTagName("currency").item(0);
+                        Element amountCurrency = (Element) amount.getElementsByTagName("currency").item(0);
 
-                    if(amountCurrency == null)
-                        continue;
+                        if(amountCurrency == null)
+                            continue;
 
-                    SberTransaction sberTransaction = null;
+                        SberTransaction sberTransaction = null;
 
-                    Optional<SberTransaction> transactionDuplicate = sberTransactionRepository.findByCardIdAndCardIntegrationIdAndSberId(card.getId(), card.getIntegration().getId(), id);
+                        Optional<SberTransaction> transactionDuplicate = sberTransactionRepository.findByCardIdAndCardIntegrationIdAndSberId(card.getId(), card.getIntegration().getId(), id);
 
-                    sberTransaction = transactionDuplicate.orElseGet(SberTransaction::new);
+                        sberTransaction = transactionDuplicate.orElseGet(SberTransaction::new);
 
-                    sberTransaction.setSberId(id);
-                    sberTransaction.setDescription(el.getElementsByTagName("description").item(0).getTextContent());
-                    sberTransaction.setStatus(el.getElementsByTagName("state").item(0).getTextContent());
-                    sberTransaction.setDate(SberDateConverter.getInstantByString(el.getElementsByTagName("date").item(0).getTextContent()));
+                        sberTransaction.setSberId(id);
+                        sberTransaction.setDescription(el.getElementsByTagName("description").item(0).getTextContent());
+                        sberTransaction.setStatus(el.getElementsByTagName("state").item(0).getTextContent());
+                        sberTransaction.setDate(SberDateConverter.getInstantByString(el.getElementsByTagName("date").item(0).getTextContent()));
 
-                    WalletType walletType = null;
+                        WalletType walletType = null;
 
-                    try {
-                        walletType = WalletType.valueOf(amountCurrency.getElementsByTagName("code").item(0).getTextContent());
-                    } catch (Exception ignored) {
+                        try {
+                            walletType = WalletType.valueOf(amountCurrency.getElementsByTagName("code").item(0).getTextContent());
+                        } catch (Exception ignored) {
 
+                        }
+
+                        String wallet = amountCurrency.getElementsByTagName("code").item(0).getTextContent();
+
+                        if(wallet.equals("RUR"))
+                            walletType = WalletType.RUB;
+
+                        sberTransaction.setCurrency(wallet.equals("RUR") ? WalletType.RUB : WalletType.valueOf(wallet));
+
+                        Double transactionAmount = Double.parseDouble(amount.getElementsByTagName("amount").item(0).getTextContent());
+                        sberTransaction.setTransactionType(transactionAmount < 0 ? BankTransactionType.SPEND : BankTransactionType.EARN);
+                        sberTransaction.getAmount().setAmount(Math.abs(Integer.parseInt(amount.getElementsByTagName("amount").item(0).getTextContent().split("\\.")[0])));
+                        sberTransaction.getAmount().setCents(Integer.parseInt(amount.getElementsByTagName("amount").item(0).getTextContent().split("\\.")[1]));
+                        sberTransaction.setCard(card);
+
+                        transactions.add(sberTransaction);
+
+                        pageOffset += 50;
                     }
-
-                    String wallet = amountCurrency.getElementsByTagName("code").item(0).getTextContent();
-
-                    if(wallet.equals("RUR"))
-                        walletType = WalletType.RUB;
-
-                    sberTransaction.setCurrency(wallet.equals("RUR") ? WalletType.RUB : WalletType.valueOf(wallet));
-
-                    Double transactionAmount = Double.parseDouble(amount.getElementsByTagName("amount").item(0).getTextContent());
-                    sberTransaction.setTransactionType(transactionAmount < 0 ? BankTransactionType.SPEND : BankTransactionType.EARN);
-                    sberTransaction.getAmount().setAmount(Integer.parseInt(amount.getElementsByTagName("amount").item(0).getTextContent().split("\\.")[0]));
-                    sberTransaction.getAmount().setCents(Integer.parseInt(amount.getElementsByTagName("amount").item(0).getTextContent().split("\\.")[1]));
-                    sberTransaction.setCard(card);
-
-                    transactions.add(sberTransaction);
-
-                    pageOffset += 50;
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private String syncCards() {

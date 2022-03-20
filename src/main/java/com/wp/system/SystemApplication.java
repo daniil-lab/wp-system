@@ -44,9 +44,9 @@ import java.util.*;
 		scheme = "bearer"
 )
 @OpenAPIDefinition(
-		servers = {
-				@Server(url = "http://188.225.45.41/")
-		},
+//		servers = {
+//				@Server(url = "http://188.225.45.41/")
+//		},
 		info = @Info(
 				title = "WP API",
 				version = "1.0",

@@ -1,5 +1,6 @@
 package com.wp.system.dto.sber;
 
+import com.wp.system.entity.BankList;
 import com.wp.system.entity.sber.SberCard;
 import com.wp.system.utils.WalletType;
 
@@ -26,6 +27,8 @@ public class SberCardDTO {
 
     private String cardName;
 
+    private BankList bankName;
+
     public SberCardDTO() {}
 
     public SberCardDTO(SberCard c) {
@@ -42,6 +45,7 @@ public class SberCardDTO {
         this.status = c.getStatus();
         this.name = c.getName();
         this.description = c.getDescription();
+        this.bankName = c.getBankName();
     }
 
     public UUID getId() {

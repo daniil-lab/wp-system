@@ -1,6 +1,7 @@
 package com.wp.system.dto.sber;
 
 import com.wp.system.entity.sber.SberIntegration;
+import com.wp.system.entity.sber.SberIntegrationState;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -12,14 +13,25 @@ public class SberIntegrationDTO {
 
     private Instant startDate;
 
+    private SberIntegrationState state;
+
     public SberIntegrationDTO() {}
 
     public SberIntegrationDTO(SberIntegration sberIntegration) {
         if(sberIntegration == null)
             return;
 
+        this.state = sberIntegration.getState();
         this.id = sberIntegration.getId();
         this.startDate = sberIntegration.getStartDate();
+    }
+
+    public SberIntegrationState getState() {
+        return state;
+    }
+
+    public void setState(SberIntegrationState state) {
+        this.state = state;
     }
 
     public UUID getId() {
