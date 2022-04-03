@@ -1,5 +1,7 @@
 package com.wp.system.response;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public class PagingResponse<T> {
@@ -10,6 +12,12 @@ public class PagingResponse<T> {
     private Integer totalPages;
 
     public PagingResponse() {}
+
+    public PagingResponse(Page<T> p) {
+        this.page = p.getContent();
+        this.total = p.getTotalElements();
+        this.totalPages = p.getTotalPages();
+    }
 
     public PagingResponse(List<T> page, int total) {
         this.page = page;

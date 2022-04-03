@@ -17,6 +17,7 @@ import com.wp.system.utils.Geocoder;
 import com.wp.system.utils.bill.BillBalanceFacade;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -127,39 +128,13 @@ public class BillTransactionService {
         if (userId == null && billId == null)
             throw new ServiceException("Pass to Request Params userId or billId", HttpStatus.BAD_REQUEST);
 
-        CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();;
-        CriteriaQuery<BillTransaction> cr = cb.createQuery(BillTransaction.class);
-        Root<BillTransaction> root = cr.from(BillTransaction.class);
+        Page<BillTransaction> transactions = userId != null ? billTransactionRepository.getAllUserTransactionsByPeriod(userId, Timestamp.from(start),
+                Timestamp.from(end), PageRequest.of(page, pageSize)) :
+                billTransactionRepository.getBillTransactionsByPeriod(billId, Timestamp.from(start),
+                        Timestamp.from(end), PageRequest.of(page, pageSize));
 
-        Predicate[] predicates = new Predicate[2];
-
-        predicates[0] = cb.between(root.get("createAt"), start, end);
-
-        if(userId != null)
-            predicates[1] = cb.equal(root.join("user").get("id"), userId);
-        else predicates[1] = cb.equal(root.join("bill").get("id"), billId);
-
-        List<BillTransaction> transactions = entityManager
-                .createQuery(cr.select(root).where(predicates))
-                .setFirstResult(page * pageSize)
-                .setMaxResults(pageSize)
-                .getResultList();
-
-        List<BillTransaction> transactionsFull = entityManager
-                .createQuery(cr.select(root).where(predicates))
-                .getResultList();
-
-        return new PagingResponse<>((page != 0 && pageSize != 0 ? transactions : transactionsFull).stream().filter((item) -> {
-            if(categoryId != null) {
-                if(item.getCategory() == null)
-                    return false;
-
-                return item.getCategory().getId().equals(categoryId);
-            }
-
-            return true;
-        }).map(BillTransactionDTO::new).collect(Collectors.toList()),
-            transactionsFull.size());
+        return new PagingResponse<BillTransactionDTO>(transactions.stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
+                transactions.getTotalElements(), transactions.getTotalPages());
     }
 
     public PagingResponse<BillTransactionDTO> getAllCategoryTransactions(UUID categoryId, int page, int pageSize) {
