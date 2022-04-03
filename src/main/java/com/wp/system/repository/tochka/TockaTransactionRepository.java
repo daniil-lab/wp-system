@@ -15,9 +15,9 @@ import java.util.UUID;
 @Repository
 public interface TockaTransactionRepository extends JpaRepository<TochkaTransaction, UUID> {
 //    @Query("SELECT c FROM SberCard c JOIN c.sberIntegration s JOIN s.user u WHERE u.id = ?1")
-    Optional<SberTransaction> findByCardIdAndCardIntegrationIdAndSberId(UUID cardId, UUID integrationId, String sberId);
-
-    List<SberTransaction> findByCardId(UUID id);
-
-    Page<SberTransaction> findByCardId(UUID id, Pageable pageable);
+//    Optional<SberTransaction> findByCardIdAndCardIntegrationIdAndSberId(UUID cardId, UUID integrationId, String sberId);
+//
+//    List<SberTransaction> findByCardId(UUID id);
+//
+//    Page<SberTransaction> findByCardId(UUID id, Pageable pageable);
 }

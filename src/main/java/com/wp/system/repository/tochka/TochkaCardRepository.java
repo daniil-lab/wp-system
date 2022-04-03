@@ -12,9 +12,9 @@ import java.util.UUID;
 @Repository
 public interface TochkaCardRepository extends JpaRepository<TochkaCard, UUID> {
 //    @Query("SELECT c FROM SberCard c JOIN c.sberIntegration s JOIN s.user u WHERE u.id = ?1")
-    Optional<SberCard> findByCardIdAndIntegrationId(String cardId, UUID integrationId);
-
-    List<SberCard> findByIntegrationId(UUID integrationId);
-
-    List<SberCard> findByIntegrationUserId(UUID userId);
+//    Optional<TochkaCard> findByCardIdAndIntegrationId(String cardId, UUID integrationId);
+//
+//    List<TochkaCard> findByIntegrationId(UUID integrationId);
+//
+//    List<TochkaCard> findByIntegrationUserId(UUID userId);
 }
