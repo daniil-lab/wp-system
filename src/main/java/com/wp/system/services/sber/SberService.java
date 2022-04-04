@@ -2,6 +2,7 @@ package com.wp.system.services.sber;
 
 import com.wp.system.dto.sber.SberTransactionDTO;
 import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
+import com.wp.system.entity.category.Category;
 import com.wp.system.entity.sber.SberCard;
 import com.wp.system.entity.sber.SberIntegration;
 import com.wp.system.entity.sber.SberTransaction;
@@ -9,11 +10,13 @@ import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.sber.SberCardRepository;
 import com.wp.system.repository.sber.SberIntegrationRepository;
 import com.wp.system.repository.sber.SberTransactionRepository;
 import com.wp.system.request.sber.CreateSberIntegrationRequest;
 import com.wp.system.request.sber.SubmitCreateSberIntegrationRequest;
+import com.wp.system.request.sber.UpdateSberTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.services.user.UserService;
 import com.wp.system.utils.sber.SberAuth;
@@ -46,11 +49,30 @@ public class SberService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     private List<SberRegister> registerList = new ArrayList<>();
+
+    public SberTransaction updateSberTransaction(UpdateSberTransactionRequest request, UUID transactionId) {
+        SberTransaction transaction = sberTransactionRepository.findById(transactionId).orElseThrow(() -> {
+            throw new ServiceException("Sber transaction not found", HttpStatus.NOT_FOUND);
+        });
+
+        Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
+            throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
+        });
+
+        transaction.setCategory(category);
+
+        sberTransactionRepository.save(transaction);
+
+        return transaction;
+    }
 
     public boolean removeSberIntegration(UUID userId) {
         SberIntegration sberIntegration = sberIntegrationRepository.getSberIntegrationByUserId(userId).orElseThrow(() -> {
-            throw new ServiceException("Sber integration not found", HttpStatus.BAD_REQUEST);
+            throw new ServiceException("Sber integration not found", HttpStatus.NOT_FOUND);
         });
 
         sberIntegration.setUser(null);

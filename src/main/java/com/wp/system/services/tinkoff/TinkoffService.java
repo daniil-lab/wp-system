@@ -1,15 +1,20 @@
 package com.wp.system.services.tinkoff;
 
 import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
+import com.wp.system.entity.category.Category;
+import com.wp.system.entity.sber.SberTransaction;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tinkoff.TinkoffTransactionRepository;
+import com.wp.system.request.sber.UpdateSberTransactionRequest;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
+import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.services.user.UserService;
 import com.wp.system.utils.tinkoff.TinkoffSync;
@@ -35,6 +40,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class TinkoffService {
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private TinkoffIntegrationRepository tinkoffIntegrationRepository;
@@ -72,6 +80,22 @@ public class TinkoffService {
         tinkoffIntegrationRepository.delete(integration);
 
         return integration;
+    }
+
+    public TinkoffTransaction updateTinkoffTransaction(UpdateTinkoffTransactionRequest request, UUID transactionId) {
+        TinkoffTransaction transaction = tinkoffTransactionRepository.findById(transactionId).orElseThrow(() -> {
+            throw new ServiceException("Tinkoff transaction not found", HttpStatus.NOT_FOUND);
+        });
+
+        Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
+            throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
+        });
+
+        transaction.setCategory(category);
+
+        tinkoffTransactionRepository.save(transaction);
+
+        return transaction;
     }
 
     @Scheduled(fixedDelay = 900 * 100)

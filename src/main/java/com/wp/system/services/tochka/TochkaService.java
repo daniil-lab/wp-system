@@ -1,5 +1,6 @@
 package com.wp.system.services.tochka;
 
+import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tochka.TochkaCard;
 import com.wp.system.entity.tochka.TochkaIntegration;
 import com.wp.system.entity.user.User;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.transaction.Transactional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,6 +33,18 @@ public class TochkaService {
 
     @Autowired
     private TochkaCardRepository tochkaCardRepository;
+
+    @Transactional
+    public TochkaIntegration removeIntegration(UUID userId) {
+        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(userId).orElseThrow(() -> {
+            throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
+        });
+        integration.setUser(null);
+
+        tochkaIntegrationRepository.delete(integration);
+
+        return integration;
+    }
 
     public TochkaIntegration submitCreate(CreateTochkaIntegrationRequest request) {
         User user = userRepository.findById(request.getUserId()).orElseThrow(() -> {
@@ -64,7 +78,7 @@ public class TochkaService {
 
     public Boolean sync(UUID userId) {
         TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(userId).orElseThrow(() -> {
-            throw new ServiceException("Integration not found", HttpStatus.BAD_REQUEST);
+            throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
 
         new Thread(() -> {
@@ -76,7 +90,7 @@ public class TochkaService {
 
     public TochkaIntegration getIntegration(UUID userId) {
         TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(userId).orElseThrow(() -> {
-            throw new ServiceException("Integration not found", HttpStatus.BAD_REQUEST);
+            throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
 
         return integration;
@@ -84,7 +98,7 @@ public class TochkaService {
 
     public Set<TochkaCard> getCards(UUID userId) {
         TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(userId).orElseThrow(() -> {
-            throw new ServiceException("Integration not found", HttpStatus.BAD_REQUEST);
+            throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
 
         return integration.getCards();

@@ -7,15 +7,14 @@ import com.wp.system.request.tochka.CreateTochkaIntegrationRequest;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.tochka.TochkaService;
 import com.wp.system.utils.tochka.TochkaAuthSubmit;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.naming.ServiceRef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
@@ -23,7 +22,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Controller("api/v1/tochka")
+@RestController
+@Tag(name = "Tochka API")
+@RequestMapping("/api/v1/tochka")
+@SecurityRequirement(name = "Bearer")
 public class TochkaController {
     @Autowired
     private TochkaService tochkaService;

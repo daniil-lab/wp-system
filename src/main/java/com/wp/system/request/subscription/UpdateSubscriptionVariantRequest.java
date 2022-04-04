@@ -1,6 +1,7 @@
 package com.wp.system.request.subscription;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 public class UpdateSubscriptionVariantRequest {
     private String name;
@@ -13,6 +14,8 @@ public class UpdateSubscriptionVariantRequest {
 
     private Integer expiration;
 
+    private UUID roleId;
+
     public UpdateSubscriptionVariantRequest() {}
 
     public UpdateSubscriptionVariantRequest(String name, String description, double price, double newPrice, int expiration) {
@@ -21,6 +24,14 @@ public class UpdateSubscriptionVariantRequest {
         this.price = price;
         this.newPrice = newPrice;
         this.expiration = expiration;
+    }
+
+    public UUID getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(UUID roleId) {
+        this.roleId = roleId;
     }
 
     public String getName() {

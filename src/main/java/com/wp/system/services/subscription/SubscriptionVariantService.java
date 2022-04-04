@@ -3,11 +3,13 @@ package com.wp.system.services.subscription;
 import com.wp.system.entity.subscription.SubscriptionVariant;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.subscription.SubscriptionVariantRepository;
+import com.wp.system.repository.user.UserRoleRepository;
 import com.wp.system.request.subscription.CreateSubscriptionVariantRequest;
 import com.wp.system.request.subscription.UpdateSubscriptionVariantRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -17,6 +19,9 @@ import java.util.UUID;
 public class SubscriptionVariantService {
     @Autowired
     private SubscriptionVariantRepository subscriptionVariantRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     public List<SubscriptionVariant> getAllSubscriptionVariants() {
         return subscriptionVariantRepository.findAll().stream().toList();
@@ -33,6 +38,10 @@ public class SubscriptionVariantService {
                 request.getName(),
                 request.getDescription(),
                 request.getPrice());
+
+        variant.setRole(userRoleRepository.findById(request.getRoleId()).orElseThrow(() -> {
+            throw new ServiceException("Role not found", HttpStatus.NOT_FOUND);
+        }));
 
         variant.setExpiration(request.getExpiration());
         variant.setNewPrice(request.getNewPrice());
@@ -68,6 +77,12 @@ public class SubscriptionVariantService {
 
         if(request.getNewPrice() != null && request.getNewPrice() != variant.getNewPrice())
             variant.setNewPrice(request.getNewPrice());
+
+        if(request.getRoleId() != null) {
+            variant.setRole(userRoleRepository.findById(request.getRoleId()).orElseThrow(() -> {
+                throw new ServiceException("Role not found", HttpStatus.NOT_FOUND);
+            }));
+        }
 
         subscriptionVariantRepository.save(variant);
 

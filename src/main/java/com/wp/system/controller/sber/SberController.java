@@ -11,8 +11,10 @@ import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.request.sber.CreateSberIntegrationRequest;
 import com.wp.system.request.sber.SubmitCreateSberIntegrationRequest;
+import com.wp.system.request.sber.UpdateSberTransactionRequest;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
+import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.sber.SberService;
@@ -40,6 +42,19 @@ import java.util.stream.Collectors;
 public class SberController {
     @Autowired
     private SberService sberService;
+
+    @PreAuthorize("hasAnyAuthority('SBER_UPDATE', 'SBER_FULL')")
+    @PatchMapping(value = "/transaction/{transactionId}")
+    @Operation(summary = "Обновление транзакции Sber")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<SberTransactionDTO>> updateTransaction(
+            @RequestBody
+                    UpdateSberTransactionRequest request,
+            @PathVariable
+                    UUID transactionId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SberTransactionDTO(sberService.updateSberTransaction(request, transactionId)), ""), HttpStatus.OK);
+    }
 
     @PreAuthorize("hasAnyAuthority('SBER_CREATE', 'SBER_FULL')")
     @PostMapping(value = "/connect/start")

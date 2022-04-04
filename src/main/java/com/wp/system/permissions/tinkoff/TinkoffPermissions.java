@@ -7,7 +7,8 @@ public enum TinkoffPermissions implements Permission {
     REMOVE_TINKOFF("TINKOFF_PERMISSION_3","Удаление интеграции Tinkoff", "Позволяет удалять интеграции", "TINKOFF_DELETE"),
     GET_TINKOFF("TINKOFF_PERMISSION_4","Получение интеграции Tinkoff", "Позволяет получать интеграции", "TINKOFF_GET"),
     SYNC_TINKFOFF("TINKOFF_PERMISSION_5","Синхронизация по интеграции Tinkoff", "Позволяет синхронизироваться по интеграции", "TINKOFF_SYNC"),
-    FULL_TINKOFF("TINKOFF_PERMISSION_6","Полный доступ для интеграций Tinkoff", "Позволяет выполнять любые операции над интеграциями", "TINKOFF_FULL");
+    FULL_TINKOFF("TINKOFF_PERMISSION_6","Полный доступ для интеграций Tinkoff", "Позволяет выполнять любые операции над интеграциями", "TINKOFF_FULL"),
+    UPDATE_TINKOFF("TINKOFF_PERMISSION_7","Обновление Tinkoff данных", "Позволяет выполнять операции обновления транзакций и прочего", "TINKOFF_UPDATE");
 
     private String permissionId;
 

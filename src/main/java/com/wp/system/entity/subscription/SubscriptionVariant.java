@@ -1,7 +1,8 @@
 package com.wp.system.entity.subscription;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.wp.system.entity.user.UserRole;
+
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -19,12 +20,32 @@ public class SubscriptionVariant {
 
     private double newPrice;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST
+    })
+    @JoinColumn(name = "role_id")
+    private UserRole role;
+
     public SubscriptionVariant() {}
 
     public SubscriptionVariant(String name, String description, double price) {
         this.name = name;
         this.description = description;
         this.price = price;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public double getNewPrice() {

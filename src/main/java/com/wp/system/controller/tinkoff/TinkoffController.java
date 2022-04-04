@@ -9,6 +9,7 @@ import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
+import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
@@ -45,6 +46,19 @@ public class TinkoffController {
                 TinkoffStartAuthRequest request
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffAuthChromeTabDTO(tinkoffService.startTinkoffConnect(request)), ""), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('TINKOFF_UPDATE', 'TINKOFF_FULL')")
+    @PatchMapping(value = "/transaction/{transactionId}")
+    @Operation(summary = "Обновление транзакции Tinkoff")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<TinkoffTransactionDTO>> updateTransaction(
+            @RequestBody
+                    UpdateTinkoffTransactionRequest request,
+            @PathVariable
+                    UUID transactionId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffTransactionDTO(tinkoffService.updateTinkoffTransaction(request, transactionId)), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_SYNC', 'TINKOFF_FULL')")

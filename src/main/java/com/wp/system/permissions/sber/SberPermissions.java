@@ -7,7 +7,8 @@ public enum SberPermissions implements Permission {
     REMOVE_SBER("SBER_PERMISSION_3","Удаление интеграции Sber", "Позволяет удалять интеграции", "SBER_DELETE"),
     GET_SBER("SBER_PERMISSION_4","Получение интеграции Sber", "Позволяет получать интеграции", "SBER_GET"),
     SYNC_SBER("SBER_PERMISSION_5","Синхронизация по интеграции Sber", "Позволяет синхронизироваться по интеграции", "SBER_SYNC"),
-    FULL_SBER("SBER_PERMISSION_6","Полный доступ для интеграций Sber", "Позволяет выполнять любые операции над интеграциями", "SBER_FULL");
+    FULL_SBER("SBER_PERMISSION_6","Полный доступ для интеграций Sber", "Позволяет выполнять любые операции над интеграциями", "SBER_FULL"),
+    UPDATE_SBER("SBER_PERMISSION_7","Обновление Sber данных", "Позволяет выполнять операции обновления транзакций и прочего", "SBER_UPDATE");
 
     private String permissionId;
 
