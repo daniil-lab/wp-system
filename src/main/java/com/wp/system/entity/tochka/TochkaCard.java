@@ -1,4 +1,4 @@
-package com.wp.system.entity.tochka.sber;
+package com.wp.system.entity.tochka;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wp.system.entity.BankCard;
@@ -17,6 +17,8 @@ public class TochkaCard extends BankCard {
     private String cardAccount;
 
     private String type;
+
+    private String bik;
 
     @JsonIgnore
     @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -77,5 +79,13 @@ public class TochkaCard extends BankCard {
 
     public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
+    }
+
+    public String getBik() {
+        return bik;
+    }
+
+    public void setBik(String bik) {
+        this.bik = bik;
     }
 }

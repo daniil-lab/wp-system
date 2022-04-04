@@ -1,4 +1,4 @@
-package com.wp.system.entity.tochka.sber;
+package com.wp.system.entity.tochka;
 
 public enum TochkaIntegrationState {
     SYNC,

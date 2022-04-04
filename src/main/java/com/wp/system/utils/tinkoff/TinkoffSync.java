@@ -192,9 +192,6 @@ public class TinkoffSync implements BankSync {
             ResponseEntity<TinkoffSessionStatusResponse> response = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/session_status?sessionid=" + integration.getToken(),
                     HttpMethod.GET, new HttpEntity<>(null), TinkoffSessionStatusResponse.class);
 
-            System.out.println(response.getStatusCode());
-            System.out.println(response.getBody().getPayload().getAccessLevel());
-
             return response.getBody().getPayload().getAccessLevel().equals("CLIENT");
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,11 +1,9 @@
 package com.wp.system.entity;
 
+import com.wp.system.entity.category.Category;
 import com.wp.system.utils.WalletType;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -24,7 +22,23 @@ public class BankTransaction {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant date;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+    })
+    private Category category;
+
     public BankTransaction() {}
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public Instant getDate() {
         return date;

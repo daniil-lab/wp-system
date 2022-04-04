@@ -1,6 +1,6 @@
 package com.wp.system.utils.tochka;
 
-import com.wp.system.entity.tochka.sber.TochkaIntegration;
+import com.wp.system.entity.tochka.TochkaIntegration;
 import org.springframework.web.client.RestTemplate;
 
 public class TochkaAuthSubmit {
