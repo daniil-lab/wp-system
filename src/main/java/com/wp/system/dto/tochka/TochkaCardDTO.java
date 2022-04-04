@@ -44,14 +44,6 @@ public class TochkaCardDTO {
         this.cardNumber = cardNumber;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public TochkaCardBalanceDTO getBalance() {
         return balance;
     }
