@@ -4,7 +4,7 @@ import com.wp.system.entity.tochka.TochkaCard;
 import com.wp.system.entity.tochka.TochkaIntegration;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
-import com.wp.system.repository.tochka.*;
+import com.wp.system.repository.tochkaa.*;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.request.tochka.CreateTochkaIntegrationRequest;
 import com.wp.system.utils.tochka.TochkaSync;
@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

@@ -11,7 +11,7 @@ import com.wp.system.utils.tochka.response.TochkaAuthResponse;
 import com.wp.system.utils.tochka.response.TochkaCardResponse;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
-import com.wp.system.repository.tochka.*;
+import com.wp.system.repository.tochkaa.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package com.wp.system.repository.tochka;
+package com.wp.system.repository.tochkaa;
 
 import com.wp.system.entity.tochka.TochkaTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
