@@ -13,10 +13,10 @@ spring:
 
   datasource:
     username: postgres
-    password: test
+    password: 123
     driver-class-name: org.postgresql.Driver
-#    url: { $SPRING_DATASOURCE_URL }
-    url: jdbc:postgresql://localhost:5432/wp
+    url: { $SPRING_DATASOURCE_URL }
+#    url: jdbc:postgresql://localhost:5432/wp
 
   jpa:
     generate-ddl: true
