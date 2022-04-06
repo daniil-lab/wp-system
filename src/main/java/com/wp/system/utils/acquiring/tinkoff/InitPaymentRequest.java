@@ -1,0 +1,85 @@
+package com.wp.system.utils.acquiring.tinkoff;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class InitPaymentRequest {
+    @JsonProperty("TerminalKey")
+    private String TerminalKey;
+
+    @JsonProperty("Amount")
+    private Integer Amount;
+
+    @JsonProperty("Description")
+    private String Description;
+
+    @JsonProperty("OrderId")
+    private String OrderId;
+
+    @JsonProperty("DATA")
+    private InitPaymentData DATA;
+
+    @JsonProperty("Receipt")
+    private InitPaymentReceipt Receipt;
+
+    public InitPaymentRequest() {}
+
+    @Override
+    public String toString() {
+        return "InitPaymentRequest{" +
+                "TerminalKey='" + TerminalKey + '\'' +
+                ", Amount='" + Amount + '\'' +
+                ", Description='" + Description + '\'' +
+                ", OrderId='" + OrderId + '\'' +
+                ", DATA=" + DATA +
+                ", Receipt=" + Receipt +
+                '}';
+    }
+
+    public InitPaymentData getDATA() {
+        return DATA;
+    }
+
+    public void setDATA(InitPaymentData DATA) {
+        this.DATA = DATA;
+    }
+
+    public InitPaymentReceipt getReceipt() {
+        return Receipt;
+    }
+
+    public void setReceipt(InitPaymentReceipt receipt) {
+        Receipt = receipt;
+    }
+
+    public String getTerminalKey() {
+        return TerminalKey;
+    }
+
+    public void setTerminalKey(String terminalKey) {
+        TerminalKey = terminalKey;
+    }
+
+    public Integer getAmount() {
+        return Amount;
+    }
+
+    public void setAmount(Integer amount) {
+        Amount = amount;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
+
+    public String getOrderId() {
+        return OrderId;
+    }
+
+    public void setOrderId(String orderId) {
+        OrderId = orderId;
+    }
+}

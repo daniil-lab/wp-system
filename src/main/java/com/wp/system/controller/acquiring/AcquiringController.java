@@ -24,7 +24,7 @@ public class AcquiringController {
     @Autowired
     private AcquiringService acquiringService;
 
-    @GetMapping("/payment-url")
+    @GetMapping("/tinkoff/payment-url")
     public ResponseEntity<ServiceResponse<String>> getPaymentUrl(
             @RequestParam
                     UUID subscriptionVariantId,

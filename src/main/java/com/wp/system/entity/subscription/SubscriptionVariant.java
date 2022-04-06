@@ -18,7 +18,7 @@ public class SubscriptionVariant {
 
     private double price;
 
-    private double newPrice;
+    private Double newPrice;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
@@ -48,11 +48,11 @@ public class SubscriptionVariant {
         this.role = role;
     }
 
-    public double getNewPrice() {
+    public Double getNewPrice() {
         return newPrice;
     }
 
-    public void setNewPrice(double newPrice) {
+    public void setNewPrice(Double newPrice) {
         this.newPrice = newPrice;
     }
 

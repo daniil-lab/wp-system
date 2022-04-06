@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface TochkaIntegrationRepository extends JpaRepository<TochkaIntegration, UUID> {
-    @Query("SELECT t FROM TochkaIntegration s JOIN t.user u WHERE u.id = ?1")
+    @Query("SELECT t FROM TochkaIntegration t JOIN t.user u WHERE u.id = ?1")
     Optional<TochkaIntegration> getTochkaIntegrationByUserId(UUID id);
 }
