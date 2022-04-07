@@ -31,15 +31,11 @@ public class TochkaController {
     private TochkaService tochkaService;
 
     @GetMapping("/auth-hook")
-    public RedirectView authHook(
+    public ResponseEntity authHook(
             @RequestParam
                     String code
     ) {
-        RedirectView redirect = new RedirectView();
-
-        redirect.setUrl("walletbox.app/tochka-auth/" + code);
-
-        return redirect;
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/submit-auth")
