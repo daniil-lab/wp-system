@@ -35,6 +35,9 @@ public class CategoryDTO {
     private UserDTO user;
 
     public CategoryDTO(Category category) {
+        if(category == null)
+            return;
+
         this.id = category.getId();
         this.name = category.getName();
         this.color = new CategoryDTOColor(category.getColor());
