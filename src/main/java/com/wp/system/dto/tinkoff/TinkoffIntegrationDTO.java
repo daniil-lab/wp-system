@@ -1,5 +1,6 @@
 package com.wp.system.dto.tinkoff;
 
+import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 
@@ -17,6 +18,8 @@ public class TinkoffIntegrationDTO {
 
     private TinkoffSyncStage stage;
 
+    private CategoryDTO category;
+
     public TinkoffIntegrationDTO() {}
 
     public TinkoffIntegrationDTO(TinkoffIntegration ti) {
@@ -27,6 +30,15 @@ public class TinkoffIntegrationDTO {
         this.stage = ti.getStage();
         this.startDate = ti.getStartDate();
         this.lastOperationsSyncDate = ti.getLastOperationsSyncDate();
+        this.category = new CategoryDTO(t.getCategory());
+    }
+
+    public CategoryDTO getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryDTO category) {
+        this.category = category;
     }
 
     public UUID getId() {

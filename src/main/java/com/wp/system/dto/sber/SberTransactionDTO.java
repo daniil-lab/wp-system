@@ -1,5 +1,6 @@
 package com.wp.system.dto.sber;
 
+import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.entity.BankTransactionType;
 import com.wp.system.entity.sber.SberTransaction;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
@@ -23,6 +24,8 @@ public class SberTransactionDTO {
 
     private Instant date;
 
+    private CategoryDTO category;
+
     public SberTransactionDTO() {}
 
     public SberTransactionDTO(SberTransaction t) {
@@ -36,6 +39,15 @@ public class SberTransactionDTO {
         this.currency = t.getCurrency();
         this.transactionType = t.getTransactionType();
         this.date = t.getDate();
+        this.category = new CategoryDTO(t.getCategory());
+    }
+
+    public CategoryDTO getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryDTO category) {
+        this.category = category;
     }
 
     public UUID getId() {
