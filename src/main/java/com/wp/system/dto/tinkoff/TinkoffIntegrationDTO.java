@@ -30,7 +30,7 @@ public class TinkoffIntegrationDTO {
         this.stage = ti.getStage();
         this.startDate = ti.getStartDate();
         this.lastOperationsSyncDate = ti.getLastOperationsSyncDate();
-        this.category = new CategoryDTO(t.getCategory());
+        this.category = new CategoryDTO(ti.getCategory());
     }
 
     public CategoryDTO getCategory() {
