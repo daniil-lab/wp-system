@@ -39,7 +39,7 @@ public class TinkoffTransactionDTO {
         this.currency = t.getCurrency();
         this.transactionType = t.getTransactionType();
         this.date = t.getDate();
-        this.category = new CategoryDTO(t.getCategory());
+        this.category = t.getCategory() == null ? null : new CategoryDTO(t.getCategory());
     }
 
     public CategoryDTO getCategory() {
