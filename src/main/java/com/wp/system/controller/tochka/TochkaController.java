@@ -38,7 +38,7 @@ public class TochkaController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/submit-auth")
+    @PostMapping("/submit-auth")
     public ResponseEntity<ServiceResponse<TochkaIntegrationDTO>> submitAuth(
             @RequestBody
             @Valid
