@@ -1,9 +1,9 @@
 package com.wp.system.utils.tochka.response;
 
-public class TochkaStartGetTransactionRequest {
+public class TochkaStartGetTransactionResponse {
     private String request_id;
 
-    public TochkaStartGetTransactionRequest() {}
+    public TochkaStartGetTransactionResponse() {}
 
     public String getRequest_id() {
         return request_id;

@@ -7,12 +7,13 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.utils.BankSync;
 import com.wp.system.utils.WalletType;
 import com.wp.system.utils.tochka.request.TochkaAuthRequest;
-import com.wp.system.utils.tochka.response.TochkaAuthResponse;
-import com.wp.system.utils.tochka.response.TochkaCardResponse;
+import com.wp.system.utils.tochka.request.TochkaStartGetTransactionRequest;
+import com.wp.system.utils.tochka.response.*;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import com.wp.system.repository.tochkaa.*;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,11 +30,24 @@ public class TochkaSync implements BankSync {
 
     private TochkaCardRepository cardRepository;
 
+    private int transactionValidateCount = 0;
+
+    private String getTransactionRequestId;
+
     @Override
     public void sync() {
-        updateToken();
-        syncCards();
-        pushData();
+        try {
+            updateToken();
+            syncCards();
+
+            for (TochkaCard c : cards)
+                syncTransactions(c);
+
+            pushData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public TochkaSync(TochkaIntegration integration, TochkaCardRepository cardRepository) {
@@ -45,15 +59,59 @@ public class TochkaSync implements BankSync {
 //        ResponseEntity getTransactionResponse = restTemplate.exchange("https://enter.tochka.com/api/v1/statement", HttpMethod.GET,
 //                )
 //    }
+
 //
-//    private void syncTransactions() {
-//        new Timer().schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                syncTransactions();
-//            }
-//        }, 300L);
-//    }
+    private void syncTransactions(TochkaCard c) throws InterruptedException {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Authorization", "Bearer " + token);
+        if(transactionValidateCount == 0) {
+            TochkaStartGetTransactionRequest request = new TochkaStartGetTransactionRequest();
+
+            request.setBank_code(c.getBik());
+            request.setAccount_code(c.getCardNumber());
+            request.setDate_end(TochkaDateConverter.getStringByInstant(Instant.now()));
+            request.setDate_start(TochkaDateConverter.getStringByInstant(c.getIntegration().getLastOperationsSyncDate() == null ? c.getIntegration().getStartDate() :
+                    c.getIntegration().getLastOperationsSyncDate()));
+
+            HttpEntity startRequestData = new HttpEntity(request, headers);
+
+
+            ResponseEntity<TochkaStartGetTransactionResponse> startResponse =  restTemplate.exchange("https://enter.tochka.com/api/v1/statement",
+                    HttpMethod.POST,
+                    startRequestData,
+                    TochkaStartGetTransactionResponse.class);
+
+            if(startResponse.getBody().getRequest_id() == null)
+                throw new ServiceException("Invalid tochka response", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            getTransactionRequestId = startResponse.getBody().getRequest_id();
+
+            Thread.sleep(60 * 100);
+        }
+
+        if(transactionValidateCount > 3) {
+            throw new ServiceException("Get transactions timeout", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        ResponseEntity<TochkaStatusResponse> transactionStatusResponse = restTemplate.exchange("https://enter.tochka.com/api/v1/statement/status/" + getTransactionRequestId,
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                TochkaStatusResponse.class);
+
+        if(transactionStatusResponse.getBody().getStatus().equals("ready")) {
+            ResponseEntity<TochkaTransactionResultResponse> resultResponse = restTemplate.exchange("https://enter.tochka.com/api/v1/statement/result/" + getTransactionRequestId,
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    TochkaTransactionResultResponse.class);
+
+            System.out.println(resultResponse);
+        } else {
+            Thread.sleep(60 * 100);
+            transactionValidateCount++;
+            syncTransactions(c);
+        }
+    }
 
     private void syncCards() {
         HttpHeaders headers = new HttpHeaders();
@@ -76,10 +134,7 @@ public class TochkaSync implements BankSync {
 
             Optional<TochkaCard> duplicate = cardRepository.findByCardNumberAndIntegrationId(resp.getCode(), integration.getId());
 
-            if(duplicate.isPresent())
-                card = duplicate.get();
-            else
-                card = new TochkaCard();
+            card = duplicate.orElseGet(TochkaCard::new);
 
             card.setIntegration(integration);
             card.setCardNumber(resp.getCode());
