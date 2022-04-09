@@ -9,6 +9,7 @@ import com.wp.system.repository.tochkaa.*;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.request.tochka.CreateTochkaIntegrationRequest;
 import com.wp.system.utils.tochka.TochkaSync;
+import com.wp.system.utils.tochka.request.TochkaAuthCodeRequest;
 import com.wp.system.utils.tochka.request.TochkaAuthRequest;
 import com.wp.system.utils.tochka.response.TochkaAuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +53,10 @@ public class TochkaService {
             throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
         });
 
-        TochkaAuthRequest authRequest = new TochkaAuthRequest();
+        TochkaAuthCodeRequest authRequest = new TochkaAuthCodeRequest();
 
         authRequest.setClient_id("C1VLYt1nQC8QPtDPyVPf9pfNsRXXCrom");
-        authRequest.setRefresh_token(request.getCode());
+        authRequest.setCode(request.getCode());
         authRequest.setGrant_type("authorization_code");
         authRequest.setClient_secret("d4RRWOBeIo9nstgNuEEcy75LD9VJwzHn");
 
