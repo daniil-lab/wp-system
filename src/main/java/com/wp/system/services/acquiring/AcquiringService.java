@@ -1,5 +1,6 @@
 package com.wp.system.services.acquiring;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.entity.subscription.SubscriptionVariant;
 import com.wp.system.entity.user.User;
@@ -15,6 +16,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,9 +81,10 @@ public class AcquiringService {
                     new HttpEntity<>(mapper.writeValueAsString(request), headers),
                     String.class);
 
-            System.out.println(response.getBody());
+            HashMap<String, Object> responseData = new ObjectMapper().readValue(response.getBody(), new TypeReference<HashMap<String, Object>>() {
+            });
 
-            return "";
+            return responseData.get("PaymentURL").toString();
         } catch (Exception e) {
             e.printStackTrace();
 
