@@ -61,7 +61,7 @@ public class TochkaService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<TochkaAuthResponse> tochkaResponse = restTemplate.exchange("https:///enter.tochka.com/api/v1/oauth2/token",
+        ResponseEntity<TochkaAuthResponse> tochkaResponse = restTemplate.exchange("https://enter.tochka.com/api/v1/oauth2/token",
                 HttpMethod.POST,
                 new HttpEntity<>(authRequest, null),
                 TochkaAuthResponse.class);
