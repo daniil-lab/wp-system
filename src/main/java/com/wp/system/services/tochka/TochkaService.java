@@ -29,6 +29,7 @@ public class TochkaService {
     @Autowired
     private TochkaIntegrationRepository tochkaIntegrationRepository;
 
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
