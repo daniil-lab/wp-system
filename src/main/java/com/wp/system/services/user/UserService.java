@@ -169,7 +169,7 @@ public class UserService {
 
             writer.close();
 
-            return null;
+            return csvFile;
         } catch (Exception e) {
             throw new ServiceException("Error on ejecting data", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -200,6 +200,24 @@ public class UserService {
 
     public User cleanUserData(CleanUserRequest request) {
         User user = this.getUserById(request.getUserId());
+
+//        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
+//                request.getStart(),
+//                request.getEnd(),
+//                -1,
+//                request.getUserId(),
+//                null,
+//                null
+//        );
+//
+//        for (BillTransaction transaction : transactions)
+//            this.billTransactionService.removeTransaction(transaction.getId());
+
+        return user;
+    }
+
+    public User cleanAllUserData(UUID id) {
+        User user = this.getUserById(id);
 
 //        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
 //                request.getStart(),
