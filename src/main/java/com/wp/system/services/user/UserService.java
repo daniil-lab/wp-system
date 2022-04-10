@@ -4,12 +4,14 @@ import com.wp.system.config.security.UserAuthDetails;
 import com.wp.system.dto.bill.BillTransactionDTO;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.bill.Bill;
+import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.BaseCategory;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserEmail;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.bill.BillTransactionRepository;
 import com.wp.system.utils.CSVConverter;
 import com.wp.system.utils.CurrencySingleton;
 import com.wp.system.utils.CurrencySingletonCourse;
@@ -49,6 +51,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -105,6 +108,9 @@ public class UserService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private BillTransactionRepository billTransactionRepository;
+
     public User activateUserEmail(UUID userId) {
         User user = this.getUserById(userId);
 
@@ -122,14 +128,9 @@ public class UserService {
     public File exportCSVData(ExportDataRequest request) {
         User user = this.getUserById(request.getUserId());
 
-        PagingResponse<BillTransactionDTO> transactions = this.billTransactionService.getAllTransactionsByPeriod(
-                request.getStart(),
-                request.getEnd(),
-                0,
-                0,
-                user.getId(),
-                null,
-                null
+        List<BillTransaction> transactions = this.billTransactionRepository.getAllUserTransactionsByPeriod(
+                request.getUserId(), Timestamp.from(request.getStart()),
+                Timestamp.from(request.getEnd())
         );
 
         File csvFile = new File("data" + Instant.now() + user.getId() + ".csv");
@@ -147,9 +148,9 @@ public class UserService {
                 "Счет"
         });
 
-        for(BillTransactionDTO transaction : transactions.getPage())
+        for(BillTransaction transaction : transactions)
             dataLines.add(new String[] {
-                    formatter.format(Instant.parse(transaction.getCreateAt())),
+                    formatter.format(transaction.getCreateAt()),
                     (transaction.getGeocodedPlace() != null ?
                             transaction.getGeocodedPlace() : "Отсутствует"),
                     transaction.getAction().getPaymentType(),
