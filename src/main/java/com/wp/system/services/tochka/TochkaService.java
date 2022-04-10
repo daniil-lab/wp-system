@@ -13,10 +13,7 @@ import com.wp.system.utils.tochka.request.TochkaAuthCodeRequest;
 import com.wp.system.utils.tochka.request.TochkaAuthRequest;
 import com.wp.system.utils.tochka.response.TochkaAuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -53,6 +50,9 @@ public class TochkaService {
             throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
         });
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
         TochkaAuthCodeRequest authRequest = new TochkaAuthCodeRequest();
 
         authRequest.setClient_id("C1VLYt1nQC8QPtDPyVPf9pfNsRXXCrom");
@@ -64,7 +64,7 @@ public class TochkaService {
 
         ResponseEntity<TochkaAuthResponse> tochkaResponse = restTemplate.exchange("https://enter.tochka.com/api/v1/oauth2/token",
                 HttpMethod.POST,
-                new HttpEntity<>(authRequest, null),
+                new HttpEntity<>(authRequest, headers),
                 TochkaAuthResponse.class);
 
         TochkaIntegration integration = new TochkaIntegration();
