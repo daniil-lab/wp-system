@@ -50,6 +50,9 @@ public class TochkaService {
             throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
         });
 
+        if(tochkaIntegrationRepository.getTochkaIntegrationByUserId(request.getUserId()).isPresent())
+                throw new ServiceException("Integration already exist", HttpStatus.BAD_REQUEST);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
