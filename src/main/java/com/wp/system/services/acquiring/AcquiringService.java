@@ -48,6 +48,8 @@ public class AcquiringService {
             request.setOrderId(UUID.randomUUID().toString());
             request.setDescription(variant.getDescription());
             request.setTerminalKey("1648293941755DEMO");
+            request.setFailURL("http://localhost:3000/subs/" + subscriptionVariant);
+            request.setSuccessURL("http://localhost:3000/settings/");
 
             initPaymentData.setUserId(userId);
             initPaymentData.setSubVariantId(subscriptionVariant);
@@ -81,8 +83,8 @@ public class AcquiringService {
                     new HttpEntity<>(mapper.writeValueAsString(request), headers),
                     String.class);
 
-            System.out.println(response.getBody())
-            System.out.println(response.getStatusCodeValue())
+            System.out.println(response.getBody());
+            System.out.println(response.getStatusCodeValue());
 
             HashMap<String, Object> responseData = new ObjectMapper().readValue(response.getBody(), new TypeReference<HashMap<String, Object>>() {
             });

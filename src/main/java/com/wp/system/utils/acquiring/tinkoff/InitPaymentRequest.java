@@ -12,6 +12,12 @@ public class InitPaymentRequest {
     @JsonProperty("Description")
     private String Description;
 
+    @JsonProperty("SuccessURL")
+    private String SuccessURL;
+
+    @JsonProperty("FailURL")
+    private String FailURL;
+
     @JsonProperty("OrderId")
     private String OrderId;
 
@@ -22,6 +28,22 @@ public class InitPaymentRequest {
     private InitPaymentReceipt Receipt;
 
     public InitPaymentRequest() {}
+
+    public String getFailURL() {
+        return FailURL;
+    }
+
+    public void setFailURL(String failURL) {
+        FailURL = failURL;
+    }
+
+    public String getSuccessURL() {
+        return SuccessURL;
+    }
+
+    public void setSuccessURL(String successURL) {
+        SuccessURL = successURL;
+    }
 
     @Override
     public String toString() {
