@@ -45,6 +45,16 @@ public class SubscriptionVariantController extends DocumentedRestController {
     }
 
     @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_VARIANT_GET', 'SUBSCRIPTION_VARIANT_FULL')")
+    @Operation(summary = "Получение варианта подписки по ID")
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping(value = "/group/{groupId}")
+    public ResponseEntity<ServiceResponse<SubscriptionVariantGroupDTO>> getSubscriptionVariantGroupById(
+            @PathVariable
+                    UUID groupId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionVariantGroupDTO(subscriptionVariantService.getGroupById(groupId)), "Subscription variant returned"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_VARIANT_GET', 'SUBSCRIPTION_VARIANT_FULL')")
     @Operation(summary = "Получение группы вариантов подписки")
     @SecurityRequirement(name = "Bearer")
     @GetMapping(value = "/group")

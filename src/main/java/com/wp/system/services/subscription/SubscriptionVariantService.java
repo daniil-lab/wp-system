@@ -27,6 +27,14 @@ public class SubscriptionVariantService {
     @Autowired
     private SubscriptionVariantGroupRepository subscriptionVariantGroupRepository;
 
+    public SubscriptionVariantGroup getGroupById(UUID id) {
+        SubscriptionVariantGroup group = subscriptionVariantGroupRepository.findById(id).orElseThrow(() -> {
+            throw new ServiceException("Group not found", HttpStatus.NOT_FOUND);
+        });
+
+        return group;
+    }
+
     @Transactional
     public SubscriptionVariantGroup removeVariantGroup(UUID id) {
         SubscriptionVariantGroup group = subscriptionVariantGroupRepository.findById(id).orElseThrow(() -> {
