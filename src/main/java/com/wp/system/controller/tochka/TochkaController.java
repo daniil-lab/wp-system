@@ -70,4 +70,12 @@ public class TochkaController {
     ) {
         return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.getIntegration(userId)), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{integrationId}")
+    public ResponseEntity<ServiceResponse<TochkaIntegrationDTO>> removeIntegraiton(
+            @PathVariable
+                    UUID integrationId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.removeIntegration(integrationId)), HttpStatus.OK);
+    }
 }
