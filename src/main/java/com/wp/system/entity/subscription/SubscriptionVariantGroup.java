@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 public class SubscriptionVariantGroup {
     @Id
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     private String name;
 
