@@ -9,6 +9,7 @@ import com.wp.system.utils.WalletType;
 import com.wp.system.utils.tochka.request.TochkaAuthRequest;
 import com.wp.system.utils.tochka.request.TochkaStartGetTransactionRequest;
 import com.wp.system.utils.tochka.response.*;
+import okhttp3.Headers;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import com.wp.system.repository.tochkaa.*;
@@ -63,6 +64,7 @@ public class TochkaSync implements BankSync {
 //
     private void syncTransactions(TochkaCard c) throws InterruptedException {
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         headers.add("Authorization", "Bearer " + token);
         if(transactionValidateCount == 0) {
@@ -115,6 +117,7 @@ public class TochkaSync implements BankSync {
 
     private void syncCards() {
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         headers.add("Authorization", "Bearer " + token);
 
@@ -157,12 +160,15 @@ public class TochkaSync implements BankSync {
 
         TochkaAuthRequest request = new TochkaAuthRequest();
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
         request.setClient_id("C1VLYt1nQC8QPtDPyVPf9pfNsRXXCrom");
         request.setRefresh_token(integration.getRefreshToken());
         request.setGrant_type("refresh_token");
         request.setClient_secret("d4RRWOBeIo9nstgNuEEcy75LD9VJwzHn");
 
-        HttpEntity requestData = new HttpEntity(request, null);
+        HttpEntity requestData = new HttpEntity(request, headers);
 
         ResponseEntity<TochkaAuthResponse> updateTokenResponse = restTemplate.exchange("https://enter.tochka.com/api/v1/oauth2/token",
                 HttpMethod.POST,
