@@ -81,6 +81,9 @@ public class AcquiringService {
                     new HttpEntity<>(mapper.writeValueAsString(request), headers),
                     String.class);
 
+            System.out.println(response.getBody())
+            System.out.println(response.getStatusCodeValue())
+
             HashMap<String, Object> responseData = new ObjectMapper().readValue(response.getBody(), new TypeReference<HashMap<String, Object>>() {
             });
 
