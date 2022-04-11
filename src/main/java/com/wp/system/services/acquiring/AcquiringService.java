@@ -48,8 +48,8 @@ public class AcquiringService {
             request.setOrderId(UUID.randomUUID().toString());
             request.setDescription(variant.getDescription());
             request.setTerminalKey("1648293941755DEMO");
-            request.setFailURL("http://localhost:3000/subs/" + subscriptionVariant);
-            request.setSuccessURL("http://localhost:3000/settings/");
+            request.setFailURL("http://localhost:3000/settings?Success=false&message=Ошибка при оформлении подписки. Попробуйте снова или позже.");
+            request.setSuccessURL("http://localhost:3000/settings?Success=true");
 
             initPaymentData.setUserId(userId);
             initPaymentData.setSubVariantId(subscriptionVariant);
