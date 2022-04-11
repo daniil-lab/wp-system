@@ -21,14 +21,11 @@ import java.util.List;
 
 @Service
 public class NotificationService {
+    @Autowired
     private FirebaseMessaging firebaseMessaging;
 
     @Autowired
     private UserService userService;
-
-    public NotificationService(FirebaseMessaging firebaseMessaging) {
-        this.firebaseMessaging = firebaseMessaging;
-    }
 
     public SendNotificationToSomeUsersResponse sendNotificationToSomeUsers(SendNotificationToSomeUsersRequest request) {
         try {
