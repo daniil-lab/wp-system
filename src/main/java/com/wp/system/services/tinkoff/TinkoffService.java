@@ -211,18 +211,18 @@ public class TinkoffService {
                     tinkoffAuthChromeTab = r;
 
             if(tinkoffAuthChromeTab != null) {
-                tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+                tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 
                 tinkoffAuthChromeTab.getDriver().findElement(By.id("smsCode")).sendKeys(request.getCode());
 
-                tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+                tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 
                 tinkoffAuthChromeTab.getDriver().findElement(By.id("password")).sendKeys(tinkoffAuthChromeTab.getPassword() == null ?
                         request.getPassword() : tinkoffAuthChromeTab.getPassword());
 
                 tinkoffAuthChromeTab.getDriver().findElement(By.id("submit-button")).click();
 
-                tinkoffAuthChromeTab.getDriver().manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+                tinkoffAuthChromeTab.getDriver().manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
 
                 if(!tinkoffAuthChromeTab.getDriver().getCurrentUrl().contains("summary")) {
                     tinkoffAuthChromeTab.getDriver().quit();

@@ -1,5 +1,9 @@
-
 spring:
+  data:
+    rest:
+      basePath: /api
+      base-path: /api
+
   mvc:
     static-path-pattern: /images/**
   main:
