@@ -3,10 +3,12 @@ package com.wp.system.services.acquiring;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.entity.acquiring.Acquiring;
+import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.entity.subscription.SubscriptionVariant;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.acquiring.AcquiringRepository;
+import com.wp.system.repository.subscription.SubscriptionRepository;
 import com.wp.system.repository.subscription.SubscriptionVariantRepository;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRoleRepository;
@@ -19,6 +21,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +38,9 @@ public class AcquiringService {
 
     @Autowired
     private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
 
     @Autowired
     private SubscriptionVariantRepository subscriptionVariantRepository;
@@ -162,6 +169,17 @@ public class AcquiringService {
                         .orElseThrow(() -> {
                             throw new ServiceException("Subscription variant not found", HttpStatus.NOT_FOUND);
                         });
+
+                Subscription subscription = subscriptionRepository.getSubscriptionByUserId(user.getId()).orElseThrow(() -> {
+                    throw new ServiceException("Recreate user. Subscription not found.", HttpStatus.NOT_FOUND);
+                });
+
+                subscription.setActive(true);
+                subscription.setStartDate(Instant.now());
+                subscription.setEndDate(Instant.now().plus(variant.getExpiration(), ChronoUnit.DAYS));
+                subscription.setVariant(variant);
+
+                subscriptionRepository.save(subscription);
 
                 user.setRole(variant.getRole());
 
