@@ -12,6 +12,7 @@ import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
+import com.wp.system.services.acquiring.AcquiringService;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
 import com.wp.system.services.tinkoff.TinkoffService;
@@ -35,7 +36,18 @@ import java.util.stream.Collectors;
 @SecurityRequirement(name = "Bearer")
 public class TinkoffController {
     @Autowired
+    private AcquiringService acquiringService;
+
+    @Autowired
     private TinkoffService tinkoffService;
+
+    @GetMapping("acquiring/results/ok")
+    public ResponseEntity<Boolean> checkPayment(
+            @RequestParam(name = "OrderId")
+                    String orderId
+    ) {
+        return new ResponseEntity<>(acquiringService.checkPayment(orderId), HttpStatus.OK);
+    }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_CREATE', 'TINKOFF_FULL')")
     @PostMapping(value = "/connect/start")
