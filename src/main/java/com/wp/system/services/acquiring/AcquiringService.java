@@ -118,7 +118,7 @@ public class AcquiringService {
                 throw new ServiceException("Error. Payment not found", HttpStatus.NOT_FOUND);
             });
 
-            String stringForHash = acquiring.getAmount() + acquiring.getOrderId() + "g3inn4sodn0zzx03" + acquiring.getTerminalKey();
+            String stringForHash = "g3inn4sodn0zzx03" + acquiring.getBankPaymentId() + acquiring.getTerminalKey();
 
             System.out.println(stringForHash);
 
