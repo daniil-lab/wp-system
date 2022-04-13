@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Set;
 import java.util.UUID;
@@ -42,11 +43,17 @@ public class TinkoffController {
     private TinkoffService tinkoffService;
 
     @GetMapping("acquiring/results/ok")
-    public ResponseEntity<Boolean> checkPayment(
+    public RedirectView checkPayment(
             @RequestParam(name = "OrderId")
                     String orderId
     ) {
-        return new ResponseEntity<>(acquiringService.checkPayment(orderId), HttpStatus.OK);
+        RedirectView view = new RedirectView();
+        if(acquiringService.checkPayment(orderId))
+            view.setUrl("https://wallet-box-app.ru/settings?Success=true");
+        else
+            view.setUrl("https://wallet-box-app.ru/settings?Success=false&message=Ошибка при подключении подписки");
+
+        return view;
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_CREATE', 'TINKOFF_FULL')")

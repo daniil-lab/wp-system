@@ -9,6 +9,7 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.acquiring.AcquiringRepository;
 import com.wp.system.repository.subscription.SubscriptionVariantRepository;
 import com.wp.system.repository.user.UserRepository;
+import com.wp.system.repository.user.UserRoleRepository;
 import com.wp.system.utils.acquiring.tinkoff.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -30,6 +31,9 @@ public class AcquiringService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     @Autowired
     private SubscriptionVariantRepository subscriptionVariantRepository;
@@ -86,9 +90,6 @@ public class AcquiringService {
                     new HttpEntity<>(mapper.writeValueAsString(request), headers),
                     String.class);
 
-            System.out.println(response.getBody());
-            System.out.println(response.getStatusCodeValue());
-
             HashMap<String, Object> responseData = new ObjectMapper().readValue(response.getBody(), new TypeReference<HashMap<String, Object>>() {
             });
 
@@ -97,6 +98,8 @@ public class AcquiringService {
 
             Acquiring acquiring = new Acquiring();
 
+            acquiring.setVariantId(subscriptionVariant);
+            acquiring.setUserId(userId);
             acquiring.setBankPaymentId(Long.parseLong((String) responseData.get("PaymentId")));
             acquiring.setAmount(variant.getNewPrice().intValue() * 100L);
             acquiring.setOrderId(orderId);
@@ -144,11 +147,26 @@ public class AcquiringService {
                     new HttpEntity<>(mapper.writeValueAsString(request), headers),
                     String.class);
 
-            System.out.println(response.getBody());
-            System.out.println(response.getStatusCodeValue());
+            HashMap<String, Object> responseData = new ObjectMapper().readValue(response.getBody(), new TypeReference<HashMap<String, Object>>() {
+            });
 
-//            HashMap<String, Object> responseData = new ObjectMapper().readValue(response.getBody(), new TypeReference<HashMap<String, Object>>() {
-//            });
+            if(!(Boolean) responseData.get("Success"))
+                throw new ServiceException("Error response from Tinkoff", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            if(responseData.get("Status").equals("CONFIRMED")) {
+                User user = userRepository.findById(acquiring.getUserId()).orElseThrow(() -> {
+                    throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
+                });
+
+                SubscriptionVariant variant = subscriptionVariantRepository.findById(acquiring.getVariantId())
+                        .orElseThrow(() -> {
+                            throw new ServiceException("Subscription variant not found", HttpStatus.NOT_FOUND);
+                        });
+
+                user.setRole(variant.getRole());
+
+                userRepository.save(user);
+            }
 
             return true;
         } catch (Exception e) {

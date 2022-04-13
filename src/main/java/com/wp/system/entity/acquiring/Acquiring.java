@@ -13,11 +13,31 @@ public class Acquiring {
 
     private String terminalKey;
 
+    private UUID variantId;
+
+    private UUID userId;
+
     private Long amount;
 
     private String orderId;
 
     public Acquiring() {}
+
+    public UUID getVariantId() {
+        return variantId;
+    }
+
+    public void setVariantId(UUID variantId) {
+        this.variantId = variantId;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
 
     public UUID getId() {
         return id;
