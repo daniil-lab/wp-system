@@ -94,6 +94,8 @@ public class CategoryService {
     public Category removeCategory(UUID categoryId) {
         Category category = this.getCategoryById(categoryId);
 
+        category.setUser(null);
+        category.setIcon(null);
         this.categoryRepository.delete(category);
 
         return category;
