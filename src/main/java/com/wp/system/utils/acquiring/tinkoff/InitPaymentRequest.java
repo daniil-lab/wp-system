@@ -9,14 +9,11 @@ public class InitPaymentRequest {
     @JsonProperty("Amount")
     private Integer Amount;
 
-    @JsonProperty("Description")
-    private String Description;
-
-    @JsonProperty("SuccessURL")
-    private String SuccessURL;
-
-    @JsonProperty("FailURL")
-    private String FailURL;
+//    @JsonProperty("SuccessURL")
+//    private String SuccessURL;
+//
+//    @JsonProperty("FailURL")
+//    private String FailURL;
 
     @JsonProperty("OrderId")
     private String OrderId;
@@ -29,28 +26,27 @@ public class InitPaymentRequest {
 
     public InitPaymentRequest() {}
 
-    public String getFailURL() {
-        return FailURL;
-    }
-
-    public void setFailURL(String failURL) {
-        FailURL = failURL;
-    }
-
-    public String getSuccessURL() {
-        return SuccessURL;
-    }
-
-    public void setSuccessURL(String successURL) {
-        SuccessURL = successURL;
-    }
+//    public String getFailURL() {
+//        return FailURL;
+//    }
+//
+//    public void setFailURL(String failURL) {
+//        FailURL = failURL;
+//    }
+//
+//    public String getSuccessURL() {
+//        return SuccessURL;
+//    }
+//
+//    public void setSuccessURL(String successURL) {
+//        SuccessURL = successURL;
+//    }
 
     @Override
     public String toString() {
         return "InitPaymentRequest{" +
                 "TerminalKey='" + TerminalKey + '\'' +
                 ", Amount='" + Amount + '\'' +
-                ", Description='" + Description + '\'' +
                 ", OrderId='" + OrderId + '\'' +
                 ", DATA=" + DATA +
                 ", Receipt=" + Receipt +
@@ -87,14 +83,6 @@ public class InitPaymentRequest {
 
     public void setAmount(Integer amount) {
         Amount = amount;
-    }
-
-    public String getDescription() {
-        return Description;
-    }
-
-    public void setDescription(String description) {
-        Description = description;
     }
 
     public String getOrderId() {

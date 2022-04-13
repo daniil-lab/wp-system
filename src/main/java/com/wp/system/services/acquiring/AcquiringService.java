@@ -2,26 +2,32 @@ package com.wp.system.services.acquiring;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wp.system.entity.acquiring.Acquiring;
 import com.wp.system.entity.subscription.SubscriptionVariant;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.acquiring.AcquiringRepository;
 import com.wp.system.repository.subscription.SubscriptionVariantRepository;
 import com.wp.system.repository.user.UserRepository;
-import com.wp.system.utils.acquiring.tinkoff.InitPaymentData;
-import com.wp.system.utils.acquiring.tinkoff.InitPaymentItem;
-import com.wp.system.utils.acquiring.tinkoff.InitPaymentReceipt;
-import com.wp.system.utils.acquiring.tinkoff.InitPaymentRequest;
+import com.wp.system.utils.acquiring.tinkoff.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class AcquiringService {
+    @Autowired
+    private AcquiringRepository acquiringRepository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -44,12 +50,12 @@ public class AcquiringService {
             InitPaymentData initPaymentData = new InitPaymentData();
             InitPaymentReceipt initPaymentReceipt = new InitPaymentReceipt();
 
-            request.setAmount(variant.getNewPrice().intValue() * 100);
-            request.setOrderId(UUID.randomUUID().toString());
-            request.setDescription(variant.getDescription());
+            String orderId = UUID.randomUUID().toString();
+
+            request.setOrderId(orderId);
             request.setTerminalKey("1648293941755DEMO");
-            request.setFailURL("http://localhost:3000/settings?Success=false&message=Ошибка при оформлении подписки. Попробуйте снова или позже.");
-            request.setSuccessURL("http://localhost:3000/settings?Success=true");
+//            request.setFailURL("http://localhost:8080/api/v1/acquiring/tinkoff/fail");
+//            request.setSuccessURL("http://localhost:8080/api/v1/acquiring/tinkoff/success/?" + "orderId=" + orderId);
 
             initPaymentData.setUserId(userId);
             initPaymentData.setSubVariantId(subscriptionVariant);
@@ -66,8 +72,7 @@ public class AcquiringService {
             initPaymentReceipt.setEmail(user.getEmail().getAddress());
 
             request.setReceipt(initPaymentReceipt);
-
-            System.out.println(request);
+            request.setAmount(variant.getNewPrice().intValue() * 100);
 
             RestTemplate restTemplate = new RestTemplate();
 
@@ -75,8 +80,6 @@ public class AcquiringService {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             ObjectMapper mapper = new ObjectMapper();
-
-            System.out.println(mapper.writeValueAsString(request));
 
             ResponseEntity<String> response = restTemplate.exchange("https://securepay.tinkoff.ru/v2/Init",
                     HttpMethod.POST,
@@ -89,11 +92,85 @@ public class AcquiringService {
             HashMap<String, Object> responseData = new ObjectMapper().readValue(response.getBody(), new TypeReference<HashMap<String, Object>>() {
             });
 
+            if(!(Boolean) responseData.get("Success"))
+                throw new ServiceException("Error response from Tinkoff", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            Acquiring acquiring = new Acquiring();
+
+            acquiring.setBankPaymentId(Long.parseLong((String) responseData.get("PaymentId")));
+            acquiring.setAmount(variant.getNewPrice().intValue() * 100L);
+            acquiring.setOrderId(orderId);
+            acquiring.setTerminalKey("1648293941755DEMO");
+
+            acquiringRepository.save(acquiring);
+
             return responseData.get("PaymentURL").toString();
         } catch (Exception e) {
             e.printStackTrace();
 
             return null;
+        }
+    }
+
+    public boolean checkPayment(String orderId) {
+        try {
+            Acquiring acquiring = acquiringRepository.findByOrderId(orderId).orElseThrow(() -> {
+                throw new ServiceException("Error. Payment not found", HttpStatus.NOT_FOUND);
+            });
+
+            String stringForHash = acquiring.getAmount() + acquiring.getOrderId() + "g3inn4sodn0zzx03" + acquiring.getTerminalKey();
+
+            System.out.println(stringForHash);
+
+            String encodedhash = sha256(stringForHash);
+
+            System.out.println(encodedhash);
+
+            CheckPaymentRequest request = new CheckPaymentRequest();
+            request.setTerminalKey(acquiring.getTerminalKey());
+            request.setToken(encodedhash);
+            request.setPaymentId(acquiring.getBankPaymentId());
+
+            HttpHeaders headers = new HttpHeaders();
+
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<String> response = restTemplate.exchange("https://securepay.tinkoff.ru/v2/GetState",
+                    HttpMethod.POST,
+                    new HttpEntity<>(mapper.writeValueAsString(request), headers),
+                    String.class);
+
+            System.out.println(response.getBody());
+            System.out.println(response.getStatusCodeValue());
+
+//            HashMap<String, Object> responseData = new ObjectMapper().readValue(response.getBody(), new TypeReference<HashMap<String, Object>>() {
+//            });
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static String sha256(final String base) {
+        try{
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            final byte[] hash = digest.digest(base.getBytes("UTF-8"));
+            final StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < hash.length; i++) {
+                final String hex = Integer.toHexString(0xff & hash[i]);
+                if(hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch(Exception ex){
+            throw new RuntimeException(ex);
         }
     }
 }

@@ -36,4 +36,12 @@ public class AcquiringController {
                 subscriptionVariantId
         )), HttpStatus.OK);
     }
+
+    @GetMapping("/results/ok")
+    public ResponseEntity<Boolean> checkPayment(
+            @RequestParam(name = "OrderId")
+                    String orderId
+    ) {
+        return new ResponseEntity<>(acquiringService.checkPayment(orderId), HttpStatus.OK);
+    }
 }
