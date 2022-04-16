@@ -13,7 +13,7 @@ public class SubscriptionVariantGroup {
 
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST
