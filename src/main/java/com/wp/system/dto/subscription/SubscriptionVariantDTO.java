@@ -17,6 +17,8 @@ public class SubscriptionVariantDTO {
 
     private double newPrice;
 
+    private SubscriptionVariantRoleDTO role;
+
     public SubscriptionVariantDTO() {}
 
     public SubscriptionVariantDTO(SubscriptionVariant variant) {
@@ -29,6 +31,15 @@ public class SubscriptionVariantDTO {
         this.expiration = variant.getExpiration();
         this.price = variant.getPrice();
         this.newPrice = variant.getNewPrice();
+        this.role = variant.getRole() == null ? null : new SubscriptionVariantRoleDTO(variant.getRole());
+    }
+
+    public SubscriptionVariantRoleDTO getRole() {
+        return role;
+    }
+
+    public void setRole(SubscriptionVariantRoleDTO role) {
+        this.role = role;
     }
 
     public UUID getId() {
