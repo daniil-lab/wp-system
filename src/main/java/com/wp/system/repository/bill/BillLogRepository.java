@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface BillLogRepository extends CrudRepository<BillLog, UUID> {
-    List<BillLog> findByBillId(UUID billId)
+    List<BillLog> findByBillId(UUID billId);
 }
