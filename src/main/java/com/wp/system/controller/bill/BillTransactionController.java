@@ -63,6 +63,13 @@ public class BillTransactionController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billTransactionService.updateBillTransaction(request, transactionId)), "Bill Transactions updated"), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_UPDATE', 'BILL_TRANSACTION_FULL')")
+    @Operation(summary = "Удаление транзакции")
+    @DeleteMapping("/{transactionId}")
+    public ResponseEntity<ServiceResponse<BillTransactionDTO>> removeTransaction(@PathVariable UUID transactionId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billTransactionService.removeTransaction(transactionId)), "Bill Transactions removed"), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_FULL')")
     @Operation(summary = "Получение всех транзакций пользователя")
     @GetMapping("/user/{userId}")
