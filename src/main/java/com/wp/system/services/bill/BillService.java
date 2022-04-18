@@ -6,6 +6,7 @@ import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.bill.BillLogRepository;
 import com.wp.system.utils.Geocoder;
 import com.wp.system.utils.bill.BillBalanceFacade;
 import com.wp.system.utils.bill.BillBalanceFacadeFactory;
@@ -36,6 +37,9 @@ public class BillService {
 
     @Autowired
     private BillTransactionRepository billTransactionRepository;
+
+    @Autowired
+    private BillLogRepository billLogRepository;
 
     @Autowired
     private UserService userService;
@@ -161,6 +165,8 @@ public class BillService {
         Bill bill = this.getBillById(billId);
 
         bill.setUser(null);
+
+        billLogRepository.findByBillId(bill.getId()).forEach(billLogRepository::delete);
 
         this.billRepository.delete(bill);
 
