@@ -166,7 +166,12 @@ public class BillService {
 
         bill.setUser(null);
 
-        billLogRepository.findByBillId(bill.getId()).forEach(billLogRepository::delete);
+        billLogRepository.findByBillId(bill.getId()).forEach(b -> {
+            b.setBill(null);
+            b.setCategory(null);
+
+            billLogRepository.delete(b);
+        });
 
         this.billRepository.delete(bill);
 
