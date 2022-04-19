@@ -104,6 +104,10 @@ public class BillTransactionService {
     public BillTransaction removeTransaction(UUID transactionId) {
         BillTransaction transaction = this.getBillTransactionById(transactionId);
 
+        transaction.setBill(null);
+        transaction.setCategory(null);
+        transaction.setUser(null);
+
         billTransactionRepository.delete(transaction);
 
         return transaction;
