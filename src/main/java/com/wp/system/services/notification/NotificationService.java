@@ -6,6 +6,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.user.UserRepository;
 import com.wp.system.request.notification.SendNotificationToAllUserRequest;
 import com.wp.system.request.notification.SendNotificationToSomeUsersRequest;
 import com.wp.system.request.notification.SendNotificationToUserRequest;
@@ -26,6 +27,9 @@ public class NotificationService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public SendNotificationToSomeUsersResponse sendNotificationToSomeUsers(SendNotificationToSomeUsersRequest request) {
         try {
@@ -88,7 +92,7 @@ public class NotificationService {
 
     public SendNotificationResponse sendNotificationToAllUsers(SendNotificationToAllUserRequest request) {
         try {
-            List<User> users = this.userService.getAllUsers();
+            List<User> users = userRepository.findAll();
 
             Notification notification = Notification
                     .builder()
