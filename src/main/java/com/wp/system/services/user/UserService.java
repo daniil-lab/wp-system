@@ -12,10 +12,7 @@ import com.wp.system.entity.user.UserRole;
 import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.bill.BillTransactionRepository;
-import com.wp.system.utils.CSVConverter;
-import com.wp.system.utils.CurrencySingleton;
-import com.wp.system.utils.CurrencySingletonCourse;
-import com.wp.system.utils.PasswordValidator;
+import com.wp.system.utils.*;
 import com.wp.system.utils.user.UserType;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
@@ -111,6 +108,9 @@ public class UserService {
     @Autowired
     private BillTransactionRepository billTransactionRepository;
 
+    @Autowired
+    private AuthHelper authHelper;
+
     public User activateUserEmail(UUID userId) {
         User user = this.getUserById(userId);
 
@@ -126,10 +126,10 @@ public class UserService {
     }
 
     public File exportCSVData(ExportDataRequest request) {
-        User user = this.getUserById(request.getUserId());
+        User user = authHelper.getUserFromAuthCredentials();
 
         List<BillTransaction> transactions = this.billTransactionRepository.getAllUserTransactionsByPeriod(
-                request.getUserId(), Timestamp.from(request.getStart()),
+                user.getId(), Timestamp.from(request.getStart()),
                 Timestamp.from(request.getEnd())
         );
 
@@ -176,7 +176,7 @@ public class UserService {
     }
 
     public User addTokenToUser(AddUserDeviceTokenRequest request) {
-        User user = this.getUserById(request.getUserId());
+        User user = authHelper.getUserFromAuthCredentials();
 
         if(user.getDeviceTokens().contains(request.getToken()))
             throw new ServiceException("Device token already exist", HttpStatus.BAD_REQUEST);
@@ -188,8 +188,8 @@ public class UserService {
         return user;
     }
 
-    public User removeDeviceTokenFromUser(UUID userId, String token) {
-        User user = this.getUserById(userId);
+    public User removeDeviceTokenFromUser(String token) {
+        User user = authHelper.getUserFromAuthCredentials();
 
         user.removeDeviceToken(token);
 
@@ -199,25 +199,7 @@ public class UserService {
     }
 
     public User cleanUserData(CleanUserRequest request) {
-        User user = this.getUserById(request.getUserId());
-
-//        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
-//                request.getStart(),
-//                request.getEnd(),
-//                -1,
-//                request.getUserId(),
-//                null,
-//                null
-//        );
-//
-//        for (BillTransaction transaction : transactions)
-//            this.billTransactionService.removeTransaction(transaction.getId());
-
-        return user;
-    }
-
-    public User cleanAllUserData(UUID id) {
-        User user = this.getUserById(id);
+        User user = authHelper.getUserFromAuthCredentials();
 
 //        List<BillTransaction> transactions = this.billTransactionService.getAllTransactionsByPeriod(
 //                request.getStart(),
@@ -235,7 +217,7 @@ public class UserService {
     }
 
     public User setUserPincode(SetUserPincodeRequest request) {
-        User user = this.getUserById(request.getUserId());
+        User user = authHelper.getUserFromAuthCredentials();
 
         user.setPinCode(request.getCode());
 
@@ -244,8 +226,8 @@ public class UserService {
         return user;
     }
 
-    public User removeUserPincode(UUID userId) {
-        User user = this.getUserById(userId);
+    public User removeUserPincode() {
+        User user = authHelper.getUserFromAuthCredentials();
 
         user.setPinCode(null);
 
@@ -336,28 +318,10 @@ public class UserService {
         return foundUser.get();
     }
 
-    public PagingResponse<UserDTO> getUsersByPage(int page, int pageSize) {
-        return new PagingResponse<>(userRepository.findAll(PageRequest.of(page, pageSize)).stream().map(UserDTO::new).collect(Collectors.toList()), getAllUsers().size());
-    }
-
-    public List<User> getAllUsers() {
-        Iterable<User> foundUsers = this.userRepository.findAll();
-        List<User> users = new ArrayList<>();
-
-        foundUsers.forEach(users::add);
-
-        System.out.println(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString());
-
-        return users;
-    }
-
-    public User getUserById(UUID id) {
-        Optional<User> foundUser = this.userRepository.findById(id);
-
-        if(foundUser.isEmpty())
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId).orElseThrow(() -> {
             throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
-
-        return foundUser.get();
+        });
     }
 
     public List<User> findUser(
@@ -399,8 +363,8 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(EditUserRequest request, UUID userId) {
-        User user = this.getUserById(userId);
+    public User updateUser(EditUserRequest request) {
+        User user = authHelper.getUserFromAuthCredentials();
 
         if(request.getUsername() != null && !request.getUsername().equals(user.getUsername()))
             user.setUsername(request.getUsername());
@@ -417,7 +381,7 @@ public class UserService {
         }
 
         if(request.getWalletType() != null && !request.getWalletType().equals(user.getWallet())) {
-            List<Bill> bills = this.billService.getUserBills(user.getId());
+            List<Bill> bills = this.billService.getUserBills();
 
             for (Bill bill : bills) {
                 CurrencySingletonCourse baseCourse = this.currencySingleton.findCourse(user.getWallet());
@@ -484,8 +448,8 @@ public class UserService {
     }
 
     @Transactional
-    public User removeUser(UUID id) {
-        User user = this.getUserById(id);
+    public User removeUser() {
+        User user = authHelper.getUserFromAuthCredentials();
 
 //        SecurityContext context = SecurityContextHolder.getContext();
 

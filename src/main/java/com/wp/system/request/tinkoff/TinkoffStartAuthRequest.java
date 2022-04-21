@@ -7,8 +7,6 @@ import java.util.UUID;
 public class TinkoffStartAuthRequest {
     private String phone;
 
-    private UUID userId;
-
     @NotNull
     private boolean reAuth;
 
@@ -30,14 +28,6 @@ public class TinkoffStartAuthRequest {
 
     public void setReAuth(boolean reAuth) {
         this.reAuth = reAuth;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 
     public String getPhone() {

@@ -56,25 +56,4 @@ public class ActivityController {
     public ResponseEntity<ServiceResponse<ActivityDTO>> getActivityById(@PathVariable UUID activityId) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new ActivityDTO(this.activityService.getActivityById(activityId)), "Activity returned"), HttpStatus.OK);
     }
-
-    @PreAuthorize("hasAnyAuthority('ACTIVITY_GET', 'ACTIVITY_FULL')")
-    @Operation(summary = "Поиск активностей")
-    @GetMapping("/find")
-    public ResponseEntity<ServiceResponse<List<ActivityDTO>>> findActivities(
-            @RequestParam
-                    Instant startTime,
-            @RequestParam(required = false)
-                    Instant endTime,
-            @RequestParam(required = false)
-                    UUID subscriptionVariantId,
-            @RequestParam(required = false)
-                    UUID userId
-    ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.activityService.getActivitiesByPeriod(
-                startTime,
-                endTime,
-                subscriptionVariantId,
-                userId
-        ).stream().map(ActivityDTO::new).collect(Collectors.toList()), "Activity returned"), HttpStatus.OK);
-    }
 }

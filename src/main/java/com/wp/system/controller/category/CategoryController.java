@@ -61,8 +61,8 @@ public class CategoryController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('CATEGORY_GET', 'CATEGORY_FULL')")
     @Operation(summary = "Получение всех категорий пользователя")
     @GetMapping("/")
-    public ResponseEntity<ServiceResponse<List<CategoryDTO>>> getUserCategories(@RequestParam java.util.UUID userId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.categoryService.getUserCategories(userId).stream().map(CategoryDTO::new).collect(Collectors.toList()), "Categories returned"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<List<CategoryDTO>>> getUserCategories() {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.categoryService.getUserCategories().stream().map(CategoryDTO::new).collect(Collectors.toList()), "Categories returned"), HttpStatus.OK);
     }
 
     @Operation(summary = "Получение цветов категорий")

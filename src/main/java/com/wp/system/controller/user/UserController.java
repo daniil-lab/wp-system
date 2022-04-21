@@ -62,9 +62,9 @@ public class UserController extends DocumentedRestController {
     @SecurityRequirement(name = "Bearer")
     @PreAuthorize("hasAnyAuthority('USER_UPDATE', 'USER_FULL')")
     @Operation(summary = "Изменение пользователя")
-    @PatchMapping("/{userId}")
-    public ResponseEntity<ServiceResponse<UserDTO>> updateUser(@Valid @RequestBody EditUserRequest request, @PathVariable UUID userId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.updateUser(request, userId)), "User updated"), HttpStatus.OK);
+    @PatchMapping("/")
+    public ResponseEntity<ServiceResponse<UserDTO>> updateUser(@Valid @RequestBody EditUserRequest request) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.updateUser(request)), "User updated"), HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer")
@@ -94,25 +94,25 @@ public class UserController extends DocumentedRestController {
     @SecurityRequirement(name = "Bearer")
     @PreAuthorize("hasAnyAuthority('USER_UPDATE', 'USER_FULL')")
     @Operation(summary = "Открепление токена устройства к пользователю")
-    @DeleteMapping("/device-token/{userId}/{token}")
-    public ResponseEntity<ServiceResponse<UserDTO>> removeDeviceTokenFromUser(@PathVariable UUID userId, @PathVariable String token) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.removeDeviceTokenFromUser(userId, token)), "User updated"), HttpStatus.OK);
+    @DeleteMapping("/device-token/{token}")
+    public ResponseEntity<ServiceResponse<UserDTO>> removeDeviceTokenFromUser( @PathVariable String token) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.removeDeviceTokenFromUser(token)), "User updated"), HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer")
     @PreAuthorize("hasAnyAuthority('USER_UPDATE', 'USER_FULL')")
     @Operation(summary = "Удаление ПИН кода пользователя")
-    @DeleteMapping("/pin/{userId}")
-    public ResponseEntity<ServiceResponse<UserDTO>> removeUserPinCode(@PathVariable UUID userId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.removeUserPincode(userId)), "User updated"), HttpStatus.OK);
+    @DeleteMapping("/pin")
+    public ResponseEntity<ServiceResponse<UserDTO>> removeUserPinCode() {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.removeUserPincode()), "User updated"), HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer")
 //    @PreAuthorize("hasAnyAuthority('USER_DELETE', 'USER_FULL')")
     @Operation(summary = "Удаление пользователя")
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<ServiceResponse<UserDTO>> removeUser(@PathVariable UUID userId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.removeUser(userId)), "User removed"), HttpStatus.OK);
+    @DeleteMapping("/")
+    public ResponseEntity<ServiceResponse<UserDTO>> removeUser() {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(this.userService.removeUser()), "User removed"), HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "Bearer")
@@ -156,24 +156,5 @@ public class UserController extends DocumentedRestController {
             @RequestParam(required = false) Instant endDate
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.findUser(phone, email, type, startDate, endDate).stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
-    }
-
-    @SecurityRequirement(name = "Bearer")
-    @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
-    @Operation(summary = "Получение всех пользователей")
-    @GetMapping("/")
-    public ResponseEntity<ServiceResponse<List<UserDTO>>> getAllUsers() {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getAllUsers().stream().map(UserDTO::new).collect(Collectors.toList()), "Users returned"), HttpStatus.OK);
-    }
-
-    @SecurityRequirement(name = "Bearer")
-    @PreAuthorize("hasAnyAuthority('USER_GET', 'USER_FULL')")
-    @Operation(summary = "Получение пользователей постранично")
-    @GetMapping("/page")
-    public ResponseEntity<ServiceResponse<PagingResponse<UserDTO>>> getUsersByPage(
-            @RequestParam String page,
-            @RequestParam String pageSize
-    ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.userService.getUsersByPage(Integer.parseInt(page), Integer.parseInt(pageSize.replace("/", ""))), "Users returned"), HttpStatus.OK);
     }
 }

@@ -6,23 +6,12 @@ import java.util.UUID;
 
 public class CreateTochkaIntegrationRequest {
     @NotNull
-    private UUID userId;
-
-    @NotNull
     private Instant startDate;
 
     @NotNull
     private String code;
 
     public CreateTochkaIntegrationRequest() {}
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
 
     public Instant getStartDate() {
         return startDate;

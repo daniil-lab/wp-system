@@ -8,6 +8,7 @@ import com.wp.system.repository.loyalty.LoyaltyCardRepository;
 import com.wp.system.request.loyalty.CreateLoyaltyCardRequest;
 import com.wp.system.request.loyalty.UpdateLoyaltyCardRequest;
 import com.wp.system.services.user.UserService;
+import com.wp.system.utils.AuthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class LoyaltyCardService {
     @Autowired
     private LoyaltyBlankService loyaltyBlankService;
 
+    @Autowired
+    private AuthHelper authHelper;
+
     public LoyaltyCard createLoyaltyCard(CreateLoyaltyCardRequest request) {
         User user = this.userService.getUserById(request.getUserId());
 
@@ -48,28 +52,30 @@ public class LoyaltyCardService {
         if(card.isEmpty())
             throw new ServiceException("Loyalty Card not found", HttpStatus.NOT_FOUND);
 
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(!user.getId().equals(card.get().getUser().getId()))
+            throw new ServiceException("It`s not your card", HttpStatus.FORBIDDEN);
+
         return card.get();
     }
 
-    public List<LoyaltyCard> getAllLoyaltyCards() {
-        Iterable<LoyaltyCard> cards = loyaltyCardRepository.findAll();
+    public List<LoyaltyCard> getAllUserLoyaltyCards() {
+        User user = authHelper.getUserFromAuthCredentials();
 
-        List<LoyaltyCard> loyaltyCards = new ArrayList<>();
-
-        cards.forEach(loyaltyCards::add);
-
-        return loyaltyCards;
-    }
-
-    public List<LoyaltyCard> getAllUserLoyaltyCards(UUID userId) {
-        List<LoyaltyCard> cards = loyaltyCardRepository.getAllUserCards(userId);
+        List<LoyaltyCard> cards = loyaltyCardRepository.getAllUserCards(user.getId());
 
         return cards;
     }
 
     @Transactional
     public LoyaltyCard removeLoyaltyCard(UUID id) {
+        User user = authHelper.getUserFromAuthCredentials();
+
         LoyaltyCard card = this.getLoyaltyCardById(id);
+
+        if(!card.getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your card", HttpStatus.FORBIDDEN);
 
         loyaltyCardRepository.delete(card);
 

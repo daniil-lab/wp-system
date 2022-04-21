@@ -4,6 +4,7 @@ import com.wp.system.entity.category.Category;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.SystemImageTag;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.request.category.CreateCategoryRequest;
@@ -30,8 +31,13 @@ public class CategoryService {
     @Autowired
     private ImageService imageService;
 
-    public List<Category> getUserCategories(UUID userId) {
-        return categoryRepository.getAllUserCategories(userId);
+    @Autowired
+    private AuthHelper authHelper;
+
+    public List<Category> getUserCategories() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        return categoryRepository.getAllUserCategories(user.getId());
     }
 
     public Category createCategory(CreateCategoryRequest request) {
@@ -58,6 +64,11 @@ public class CategoryService {
     public Category editCategory(EditCategoryRequest request, UUID categoryId) {
         Category category = this.getCategoryById(categoryId);
 
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(!category.getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
+
         if(request.getDescription() != null && !category.getDescription().equals(request.getDescription()))
             category.setDescription(request.getDescription());
 
@@ -76,12 +87,6 @@ public class CategoryService {
             category.setIcon(image);
         }
 
-        if(request.getUserId() != null && !category.getUser().getId().equals(request.getUserId())) {
-            User user = userService.getUserById(request.getUserId());
-
-            category.setUser(user);
-        }
-
         if(request.getCategoryLimit() != null && category.getCategoryLimit() != request.getCategoryLimit())
             category.setCategoryLimit(request.getCategoryLimit());
 
@@ -94,6 +99,11 @@ public class CategoryService {
     public Category removeCategory(UUID categoryId) {
         Category category = this.getCategoryById(categoryId);
 
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(!category.getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
+
         category.setUser(null);
         category.setIcon(null);
         this.categoryRepository.delete(category);
@@ -103,9 +113,13 @@ public class CategoryService {
 
     public Category getCategoryById(UUID id) {
         Optional<Category> foundCategory = this.categoryRepository.findById(id);
+        User user = authHelper.getUserFromAuthCredentials();
 
         if(foundCategory.isEmpty())
             throw new ServiceException("Category not found", HttpStatus.BAD_REQUEST);
+
+        if(!foundCategory.get().getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
 
         return foundCategory.get();
     }

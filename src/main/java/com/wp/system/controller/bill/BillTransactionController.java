@@ -72,9 +72,9 @@ public class BillTransactionController extends DocumentedRestController {
 
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_FULL')")
     @Operation(summary = "Получение всех транзакций пользователя")
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getAllUserTransactions(@PathVariable UUID userId, @RequestParam int page, @RequestParam int pageSize) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllUserTransactions(userId, page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
+    @GetMapping("/user")
+    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getAllUserTransactions(@RequestParam int page, @RequestParam int pageSize) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllUserTransactions(page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")

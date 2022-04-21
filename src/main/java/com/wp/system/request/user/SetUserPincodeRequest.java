@@ -12,24 +12,7 @@ public class SetUserPincodeRequest {
     @Length(min = 4, max = 4, message = ValidationErrorMessages.PINCODE_VALIDATION_FAILED)
     private String code;
 
-    @Schema(required = true, description = "ID пользователя")
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    private UUID userId;
-
     public SetUserPincodeRequest() {};
-
-    public SetUserPincodeRequest(String code, UUID userId) {
-        this.code = code;
-        this.userId = userId;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
 
     public String getCode() {
         return code;

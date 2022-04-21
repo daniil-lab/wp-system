@@ -16,17 +16,7 @@ public class CleanUserRequest {
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private Instant end;
 
-    @Schema(required = true, description = "ID пользователя")
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    private UUID userId;
-
     public CleanUserRequest() {}
-
-    public CleanUserRequest(Instant start, Instant end, UUID userId) {
-        this.start = start;
-        this.end = end;
-        this.userId = userId;
-    }
 
     public Instant getStart() {
         return start;
@@ -42,13 +32,5 @@ public class CleanUserRequest {
 
     public void setEnd(Instant end) {
         this.end = end;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 }

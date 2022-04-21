@@ -48,22 +48,12 @@ public class LoyaltyCardController {
     }
 
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_GET', 'LOYALTY_CARD_FULL')")
-    @Operation(summary = "Получение всех карт лояльности")
-    @SecurityRequirement(name = "Bearer")
-    @GetMapping(value = "/")
-    public ResponseEntity<ServiceResponse<List<LoyaltyCardDTO>>> getAllLoyaltyCards() {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), loyaltyCardService.getAllLoyaltyCards().stream().map(LoyaltyCardDTO::new).collect(Collectors.toList()), "Loyalty Cards returned"), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_GET', 'LOYALTY_CARD_FULL')")
     @Operation(summary = "Получение всех карт лояльности одного пользователя")
     @SecurityRequirement(name = "Bearer")
     @GetMapping(value = "/user")
     public ResponseEntity<ServiceResponse<List<LoyaltyCardDTO>>> getAllLoyaltyCards(
-            @RequestParam
-                UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), loyaltyCardService.getAllUserLoyaltyCards(userId).stream().map(LoyaltyCardDTO::new).collect(Collectors.toList()), "Loyalty Cards returned"), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), loyaltyCardService.getAllUserLoyaltyCards().stream().map(LoyaltyCardDTO::new).collect(Collectors.toList()), "Loyalty Cards returned"), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_DELETE', 'LOYALTY_CARD_FULL')")

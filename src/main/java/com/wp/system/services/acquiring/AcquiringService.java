@@ -12,6 +12,7 @@ import com.wp.system.repository.subscription.SubscriptionRepository;
 import com.wp.system.repository.subscription.SubscriptionVariantRepository;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.repository.user.UserRoleRepository;
+import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.acquiring.tinkoff.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -45,11 +46,12 @@ public class AcquiringService {
     @Autowired
     private SubscriptionVariantRepository subscriptionVariantRepository;
 
-    public String generatePaymentUrl(UUID userId, UUID subscriptionVariant) {
+    @Autowired
+    private AuthHelper authHelper;
+
+    public String generatePaymentUrl(UUID subscriptionVariant) {
         try {
-            User user = userRepository.findById(userId).orElseThrow(() -> {
-                throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
-            });
+            User user = authHelper.getUserFromAuthCredentials();
 
             SubscriptionVariant variant = subscriptionVariantRepository.findById(subscriptionVariant)
                     .orElseThrow(() -> {
@@ -65,10 +67,8 @@ public class AcquiringService {
 
             request.setOrderId(orderId);
             request.setTerminalKey("1648293941755DEMO");
-//            request.setFailURL("http://localhost:8080/api/v1/acquiring/tinkoff/fail");
-//            request.setSuccessURL("http://localhost:8080/api/v1/acquiring/tinkoff/success/?" + "orderId=" + orderId);
 
-            initPaymentData.setUserId(userId);
+            initPaymentData.setUserId(user.getId());
             initPaymentData.setSubVariantId(subscriptionVariant);
             request.setDATA(initPaymentData);
 
@@ -106,7 +106,7 @@ public class AcquiringService {
             Acquiring acquiring = new Acquiring();
 
             acquiring.setVariantId(subscriptionVariant);
-            acquiring.setUserId(userId);
+            acquiring.setUserId(user.getId());
             acquiring.setBankPaymentId(Long.parseLong((String) responseData.get("PaymentId")));
             acquiring.setAmount(variant.getNewPrice().intValue() * 100L);
             acquiring.setOrderId(orderId);

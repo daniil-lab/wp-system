@@ -17,10 +17,6 @@ public class ExportDataRequest {
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private Instant end;
 
-    @Schema(required = true, description = "ID пользователя")
-    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    private UUID userId;
-
     public ExportDataRequest() {}
 
     public Instant getStart() {
@@ -37,13 +33,5 @@ public class ExportDataRequest {
 
     public void setEnd(Instant end) {
         this.end = end;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 }

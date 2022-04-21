@@ -16,7 +16,7 @@ import java.util.UUID;
 @Repository
 public interface BillTransactionRepository extends JpaRepository<BillTransaction, UUID> {
     @Query("SELECT t FROM BillTransaction t JOIN t.bill b JOIN b.user u WHERE u.id = ?1")
-    List<BillTransaction> getAllUserTransactions(UUID userId, Pageable pageable);
+    Page<BillTransaction> getAllUserTransactions(UUID userId, Pageable pageable);
 
     @Query("SELECT t FROM BillTransaction t JOIN t.bill b JOIN b.user u WHERE u.id = ?1")
     List<BillTransaction> getAllUserTransactions(UUID userId);

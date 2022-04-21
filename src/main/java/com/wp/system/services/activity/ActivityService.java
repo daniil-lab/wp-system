@@ -6,6 +6,7 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.activity.ActivityRepository;
 import com.wp.system.request.activity.CreateActivityRequest;
 import com.wp.system.services.user.UserService;
+import com.wp.system.utils.AuthHelper;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,9 +39,12 @@ public class ActivityService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private AuthHelper authHelper;
+
     @Transactional
     public Activity createActivity(CreateActivityRequest request) {
-        User user = userService.getUserById(request.getUserId());
+        User user = authHelper.getUserFromAuthCredentials();
 
         Activity activity = new Activity(request.getScreenName(), user, request.getStartTime(), request.getEndTime());
 
@@ -69,32 +73,32 @@ public class ActivityService {
 
         return activity;
     }
-
-    public List<Activity> getActivitiesByPeriod(
-            Instant startTime,
-            Instant endTime,
-            UUID subscriptionId,
-            UUID userId
-    ) {
-        if(startTime == null)
-            throw new ServiceException("Pass startTime to request", HttpStatus.BAD_REQUEST);
-
-        CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();;
-        CriteriaQuery<Activity> cr = cb.createQuery(Activity.class);
-        Root<Activity> root = cr.from(Activity.class);
-
-        List<Predicate> predicates = new ArrayList<>();
-
-        predicates.add(cb.greaterThan(root.get("startTime"), startTime));
-        predicates.add(cb.lessThan(root.get("endTime"), endTime == null ? Instant.now() : endTime));
-
-        if(subscriptionId != null)
-            predicates.add(cb.equal(root.join("subscription").join("variant").get("id"), subscriptionId));
-
-        if(userId != null)
-            predicates.add(cb.equal(root.join("user").get("id"), userId));
-
-        return entityManager.createQuery(cr.select(root).where(predicates.toArray(new Predicate[0]))).getResultList();
-    }
+//
+//    public List<Activity> getActivitiesByPeriod(
+//            Instant startTime,
+//            Instant endTime,
+//            UUID subscriptionId,
+//            UUID userId
+//    ) {
+//        if(startTime == null)
+//            throw new ServiceException("Pass startTime to request", HttpStatus.BAD_REQUEST);
+//
+//        CriteriaBuilder cb = sessionFactory.getCriteriaBuilder();;
+//        CriteriaQuery<Activity> cr = cb.createQuery(Activity.class);
+//        Root<Activity> root = cr.from(Activity.class);
+//
+//        List<Predicate> predicates = new ArrayList<>();
+//
+//        predicates.add(cb.greaterThan(root.get("startTime"), startTime));
+//        predicates.add(cb.lessThan(root.get("endTime"), endTime == null ? Instant.now() : endTime));
+//
+//        if(subscriptionId != null)
+//            predicates.add(cb.equal(root.join("subscription").join("variant").get("id"), subscriptionId));
+//
+//        if(userId != null)
+//            predicates.add(cb.equal(root.join("user").get("id"), userId));
+//
+//        return entityManager.createQuery(cr.select(root).where(predicates.toArray(new Predicate[0]))).getResultList();
+//    }
 
 }

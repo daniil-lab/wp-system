@@ -7,6 +7,7 @@ import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.bill.BillLogRepository;
+import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.Geocoder;
 import com.wp.system.utils.bill.BillBalanceFacade;
 import com.wp.system.utils.bill.BillBalanceFacadeFactory;
@@ -53,8 +54,15 @@ public class BillService {
     @Autowired
     private BillBalanceFacadeFactory billBalanceFacadeFactory;
 
+    @Autowired
+    private AuthHelper authHelper;
+
     public Bill updateBill(EditBillRequest request, UUID billId) {
         Bill bill = this.getBillById(billId);
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(!bill.getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your bill", HttpStatus.FORBIDDEN);
 
         if(request.getName() != null && !bill.getName().equals(request.getName()))
             bill.setName(request.getName());
@@ -66,7 +74,7 @@ public class BillService {
 
     @Transactional
     public Bill createBill(CreateBillRequest request) {
-        User user = this.userService.getUserById(request.getUserId());
+        User user = authHelper.getUserFromAuthCredentials();
 
         Bill bill = new Bill(request.getName(), user);
         BillBalance balance = new BillBalance(bill);
@@ -79,26 +87,24 @@ public class BillService {
         return bill;
     }
 
-    public List<Bill> getAllBills() {
-        Iterable<Bill> foundBills = this.billRepository.findAll();
-        List<Bill> bills = new ArrayList<>();
-
-        foundBills.forEach(bills::add);
-
-        return bills;
-    }
-
     public Bill getBillById(UUID id) {
         Optional<Bill> bill = this.billRepository.findById(id);
 
         if(bill.isEmpty())
             throw new ServiceException("Bill not found.", HttpStatus.NOT_FOUND);
 
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(!bill.get().getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your bill", HttpStatus.FORBIDDEN);
+
         return bill.get();
     }
 
-    public List<Bill> getUserBills(UUID userId) {
-        List<Bill> bills = this.billRepository.getAllUserBills(userId);
+    public List<Bill> getUserBills() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        List<Bill> bills = this.billRepository.getAllUserBills(user.getId());
 
         return bills;
     }
@@ -137,6 +143,11 @@ public class BillService {
     @Transactional
     public Bill updateBillBalance(UUID billId, int amount, int cents) {
         Bill bill = this.getBillById(billId);
+
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(!bill.getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your bill", HttpStatus.FORBIDDEN);
 
         bill.getBalance().setAmount(amount);
         bill.getBalance().setCents(cents);

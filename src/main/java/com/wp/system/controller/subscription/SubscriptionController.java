@@ -31,78 +31,10 @@ public class SubscriptionController extends DocumentedRestController {
     private SubscriptionService subscriptionService;
 
     @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_GET', 'SUBSCRIPTION_FULL')")
-    @Operation(summary = "Получение данных подписки по ID")
-    @SecurityRequirement(name = "Bearer")
-    @GetMapping(value = "/{subId}")
-    public ResponseEntity<ServiceResponse<SubscriptionDTO>> getSubscriptionById(
-            @PathVariable
-                    UUID subId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.getSubscriptionById(subId)), "Subscription returned"), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_GET', 'SUBSCRIPTION_FULL')")
     @Operation(summary = "Получение данных подписки по ID пользователя")
     @SecurityRequirement(name = "Bearer")
-    @GetMapping(value = "/user/{userId}")
-    public ResponseEntity<ServiceResponse<SubscriptionDTO>> getSubscriptionByUserId(
-            @PathVariable
-                    UUID userId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.getSubscriptionByUserId(userId)), "Subscription returned"), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_UPDATE', 'SUBSCRIPTION_FULL')")
-    @Operation(summary = "Сброс подписки пользователя")
-    @SecurityRequirement(name = "Bearer")
-    @PatchMapping(value = "/reset/{subscriptionId}")
-    public ResponseEntity<ServiceResponse<SubscriptionDTO>> resetSubscription(
-            @PathVariable
-                    UUID subscriptionId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.resetSubscription(subscriptionId)), "Subscription returned"), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_UPDATE', 'SUBSCRIPTION_FULL')")
-    @Operation(summary = "Применение варианта подписки на пользователя")
-    @SecurityRequirement(name = "Bearer")
-    @PatchMapping(value = "/use")
-    public ResponseEntity<ServiceResponse<SubscriptionDTO>> useVariantOnUser(
-            @RequestBody
-            @Valid
-                    UseVariantOnUserRequest request) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.useVariantOnUser(request)), "Subscription returned"), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_UPDATE', 'SUBSCRIPTION_FULL')")
-    @Operation(summary = "Продление подписки пользователя")
-    @SecurityRequirement(name = "Bearer")
-    @PatchMapping(value = "/extend/{subscriptionId}")
-    public ResponseEntity<ServiceResponse<SubscriptionDTO>> extendSubscription(
-            @RequestBody
-            @Valid
-                    ExtendSubscriptionRequest request,
-            @PathVariable
-                    UUID subscriptionId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.extendSubscription(request, subscriptionId)), "Subscription returned"), HttpStatus.OK);
-    }
-
-
-    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_GET', 'SUBSCRIPTION_FULL')")
-    @Operation(summary = "Получение всех подписок")
-    @SecurityRequirement(name = "Bearer")
     @GetMapping(value = "/")
-    public ResponseEntity<ServiceResponse<List<SubscriptionDTO>>> getAllSubscriptions() {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), subscriptionService.getAllSubscription().stream().map(SubscriptionDTO::new).collect(Collectors.toList()), "Subscriptions returned"), HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_GET', 'SUBSCRIPTION_FULL')")
-    @Operation(summary = "Получение всех подписок постранично")
-    @SecurityRequirement(name = "Bearer")
-    @GetMapping(value = "/page")
-    public ResponseEntity<ServiceResponse<List<SubscriptionDTO>>> getAllSubscriptionsByPages(
-            @RequestParam
-                int pageSize,
-            @RequestParam
-                int page
-    ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), subscriptionService.getSubscriptionsByPage(pageSize, page).stream().map(SubscriptionDTO::new).collect(Collectors.toList()), "Subscriptions returned"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<SubscriptionDTO>> getSubscriptionByUserId() {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(subscriptionService.getSubscriptionByUserId()), "Subscription returned"), HttpStatus.OK);
     }
 }

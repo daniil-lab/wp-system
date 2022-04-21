@@ -47,35 +47,27 @@ public class TochkaController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TochkaIntegrationDTO(tochkaService.submitCreate(request))), HttpStatus.OK);
     }
 
-    @GetMapping("/sync/{userId}")
+    @GetMapping("/sync/")
     public ResponseEntity<ServiceResponse<Boolean>> sync(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tochkaService.sync(userId)), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tochkaService.sync()), HttpStatus.OK);
     }
 
-    @GetMapping("/cards/{userId}")
+    @GetMapping("/cards")
     public ResponseEntity<ServiceResponse<List<TochkaCardDTO>>> getCards(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.getCards(userId).stream().map(TochkaCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.getCards().stream().map(TochkaCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/")
     public ResponseEntity<ServiceResponse<TochkaIntegrationDTO>> getIntegration(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.getIntegration(userId)), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.getIntegration()), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{integrationId}")
+    @DeleteMapping("/")
     public ResponseEntity<ServiceResponse<TochkaIntegrationDTO>> removeIntegraiton(
-            @PathVariable
-                    UUID integrationId
     ) {
-        return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.removeIntegration(integrationId)), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.removeIntegration()), HttpStatus.OK);
     }
 }

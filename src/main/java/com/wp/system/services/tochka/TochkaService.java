@@ -8,6 +8,7 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.tochkaa.*;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.request.tochka.CreateTochkaIntegrationRequest;
+import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.tochka.TochkaSync;
 import com.wp.system.utils.tochka.request.TochkaAuthCodeRequest;
 import com.wp.system.utils.tochka.request.TochkaAuthRequest;
@@ -33,9 +34,14 @@ public class TochkaService {
     @Autowired
     private TochkaCardRepository tochkaCardRepository;
 
+    @Autowired
+    private AuthHelper authHelper;
+
     @Transactional
-    public TochkaIntegration removeIntegration(UUID userId) {
-        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(userId).orElseThrow(() -> {
+    public TochkaIntegration removeIntegration() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(user.getId()).orElseThrow(() -> {
             throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
         integration.setUser(null);
@@ -46,11 +52,9 @@ public class TochkaService {
     }
 
     public TochkaIntegration submitCreate(CreateTochkaIntegrationRequest request) {
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> {
-            throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
-        });
+        User user = authHelper.getUserFromAuthCredentials();
 
-        if(tochkaIntegrationRepository.getTochkaIntegrationByUserId(request.getUserId()).isPresent())
+        if(tochkaIntegrationRepository.getTochkaIntegrationByUserId(user.getId()).isPresent())
                 throw new ServiceException("Integration already exist", HttpStatus.BAD_REQUEST);
 
         HttpHeaders headers = new HttpHeaders();
@@ -81,8 +85,10 @@ public class TochkaService {
         return integration;
     }
 
-    public Boolean sync(UUID userId) {
-        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(userId).orElseThrow(() -> {
+    public Boolean sync() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(user.getId()).orElseThrow(() -> {
             throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
 
@@ -93,16 +99,21 @@ public class TochkaService {
         return true;
     }
 
-    public TochkaIntegration getIntegration(UUID userId) {
-        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(userId).orElseThrow(() -> {
+    public TochkaIntegration getIntegration() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+
+        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(user.getId()).orElseThrow(() -> {
             throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
 
         return integration;
     }
 
-    public Set<TochkaCard> getCards(UUID userId) {
-        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(userId).orElseThrow(() -> {
+    public Set<TochkaCard> getCards() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        TochkaIntegration integration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(user.getId()).orElseThrow(() -> {
             throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
 

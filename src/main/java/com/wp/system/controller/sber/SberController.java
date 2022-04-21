@@ -79,18 +79,16 @@ public class SberController {
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_SYNC', 'SBER_FULL')")
-    @GetMapping(value = "/sync/{userId}")
+    @GetMapping(value = "/sync/")
     @Operation(summary = "Синхронизация Sber")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<Boolean>> syncSber(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.syncSber(userId), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.syncSber(), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_GET', 'SBER_FULL')")
-    @GetMapping(value = "/{userId}")
+    @GetMapping(value = "/")
     @Operation(summary = "Получить Sber интеграцию")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<SberIntegrationDTO>> getSberIntegration(
@@ -101,14 +99,12 @@ public class SberController {
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_GET', 'SBER_FULL')")
-    @GetMapping(value = "/cards/{userId}")
+    @GetMapping(value = "/cards/")
     @Operation(summary = "Получить Sber карты")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<List<SberCardDTO>>> getSberCards(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.getUserSberCards(userId).stream().map(SberCardDTO::new).collect(Collectors.toList()), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.getUserSberCards().stream().map(SberCardDTO::new).collect(Collectors.toList()), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_GET', 'SBER_FULL')")
@@ -127,13 +123,11 @@ public class SberController {
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_REMOVE', 'SBER_FULL')")
-    @DeleteMapping(value = "/{userId}")
+    @DeleteMapping(value = "/")
     @Operation(summary = "Удаление Sber интеграции")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<Boolean>> removeSber(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.removeSberIntegration(userId), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.removeSberIntegration(), ""), HttpStatus.OK);
     }
 }

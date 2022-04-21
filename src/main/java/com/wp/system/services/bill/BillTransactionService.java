@@ -5,6 +5,7 @@ import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.transaction.Transaction;
+import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.bill.BillRepository;
 import com.wp.system.repository.bill.BillTransactionRepository;
@@ -13,6 +14,7 @@ import com.wp.system.request.bill.UpdateBillTransactionRequest;
 import com.wp.system.request.bill.WithdrawBillRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.services.category.CategoryService;
+import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.Geocoder;
 import com.wp.system.utils.bill.BillBalanceFacade;
 import org.hibernate.SessionFactory;
@@ -54,11 +56,19 @@ public class BillTransactionService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private AuthHelper authHelper;
+
     @Transactional
     public BillTransaction updateBillTransaction(UpdateBillTransactionRequest request, UUID id) {
         BillTransaction transaction = billTransactionRepository.findById(id).orElseThrow(() -> {
             throw new ServiceException("Transaction not found", HttpStatus.NOT_FOUND);
         });
+
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(!transaction.getBill().getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your transaction", HttpStatus.FORBIDDEN);
 
         if(request.getAction() != null)
             transaction.setAction(request.getAction());
@@ -104,6 +114,7 @@ public class BillTransactionService {
     public BillTransaction removeTransaction(UUID transactionId) {
         BillTransaction transaction = this.getBillTransactionById(transactionId);
 
+
         transaction.setBill(null);
         transaction.setCategory(null);
         transaction.setUser(null);
@@ -119,6 +130,11 @@ public class BillTransactionService {
         if(foundTransaction.isEmpty())
             throw new ServiceException("Bill Transaction not found", HttpStatus.NOT_FOUND);
 
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(!foundTransaction.get().getBill().getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your transaction", HttpStatus.FORBIDDEN);
+
         return foundTransaction.get();
     }
 
@@ -132,6 +148,22 @@ public class BillTransactionService {
         if (userId == null && billId == null)
             throw new ServiceException("Pass to Request Params userId or billId", HttpStatus.BAD_REQUEST);
 
+        User user = authHelper.getUserFromAuthCredentials();
+
+        if(userId != null) {
+            if(!userId.equals(user.getId()))
+                throw new ServiceException("It`s not your transaction", HttpStatus.FORBIDDEN);
+        }
+
+        if(billId != null) {
+            Bill bill = billRepository.findById(billId).orElseThrow(() -> {
+                throw new ServiceException("Bill not found", HttpStatus.NOT_FOUND);
+            });
+
+            if(!bill.getUser().getId().equals(user.getId()))
+                throw new ServiceException("It`s not your transaction", HttpStatus.FORBIDDEN);
+        }
+
         Page<BillTransaction> transactions = userId != null ? billTransactionRepository.getAllUserTransactionsByPeriod(userId, Timestamp.from(start),
                 Timestamp.from(end), PageRequest.of(page, pageSize)) :
                 billTransactionRepository.getBillTransactionsByPeriod(billId, Timestamp.from(start),
@@ -142,20 +174,40 @@ public class BillTransactionService {
     }
 
     public PagingResponse<BillTransactionDTO> getAllCategoryTransactions(UUID categoryId, int page, int pageSize) {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> {
+            throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
+        });
+
+        if(!category.getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your transaction", HttpStatus.FORBIDDEN);
+
         List<BillTransaction> transactions = this.billTransactionRepository.getAllCategoryTransactions(categoryId, PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(transactions.stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
                 this.billTransactionRepository.findAll().size());
     }
 
-    public PagingResponse<BillTransactionDTO> getAllUserTransactions(UUID userId, int page, int pageSize) {
-        List<BillTransaction> transactions = this.billTransactionRepository.getAllUserTransactions(userId, PageRequest.of(page, pageSize));
+    public PagingResponse<BillTransactionDTO> getAllUserTransactions(int page, int pageSize) {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        Page<BillTransaction> transactions = this.billTransactionRepository.getAllUserTransactions(user.getId(), PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(transactions.stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
-                this.billTransactionRepository.getAllUserTransactions(userId).size());
+                transactions.getTotalElements(), transactions.getTotalPages());
     }
 
     public PagingResponse<BillTransactionDTO> getAllTransactionsByBillId(UUID billId, int page, int pageSize) {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        Bill bill = billRepository.findById(billId).orElseThrow(() -> {
+            throw new ServiceException("Bill not found", HttpStatus.NOT_FOUND);
+        });
+
+        if(!bill.getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your transaction", HttpStatus.FORBIDDEN);
+
         List<BillTransaction> transactions = this.billTransactionRepository.getAllBillTransactions(billId, PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(transactions.stream().map(BillTransactionDTO::new).collect(Collectors.toList()),

@@ -81,14 +81,12 @@ public class TinkoffController {
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_SYNC', 'TINKOFF_FULL')")
-    @GetMapping(value = "/sync/{userId}")
+    @GetMapping(value = "/sync/")
     @Operation(summary = "Синхронизация")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<Boolean>> syncCards(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.sync(userId), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.sync(), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_GET', 'TINKOFF_FULL')")
@@ -107,36 +105,30 @@ public class TinkoffController {
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_GET', 'TINKOFF_FULL')")
-    @GetMapping(value = "/{userId}")
+    @GetMapping(value = "/")
     @Operation(summary = "Получить интеграцию по ID пользователя")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<TinkoffIntegrationDTO>> getIntegrationByUserId(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffIntegrationDTO(tinkoffService.getIntegrationByUserId(userId)), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffIntegrationDTO(tinkoffService.getIntegrationByUserId()), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_REMOVE', 'TINKOFF_FULL')")
-    @DeleteMapping(value = "/{userId}")
+    @DeleteMapping(value = "/")
     @Operation(summary = "Отключить интеграцию по ID пользователя")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<TinkoffIntegrationDTO>> removeIntegration(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffIntegrationDTO(tinkoffService.removeIntegration(userId)), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffIntegrationDTO(tinkoffService.removeIntegration()), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_GET', 'TINKOFF_FULL')")
-    @GetMapping(value = "/cards/{userId}")
+    @GetMapping(value = "/cards")
     @Operation(summary = "Получение карт")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<Set<TinkoffCardDTO>>> getCards(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getCards(userId).stream().map(TinkoffCardDTO::new).collect(Collectors.toSet()), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getCards().stream().map(TinkoffCardDTO::new).collect(Collectors.toSet()), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_CREATE', 'TINKOFF_FULL')")

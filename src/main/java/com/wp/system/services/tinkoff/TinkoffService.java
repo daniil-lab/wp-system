@@ -7,6 +7,7 @@ import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
+import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
@@ -17,6 +18,7 @@ import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
 import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.services.user.UserService;
+import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.tinkoff.TinkoffSync;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
@@ -56,10 +58,15 @@ public class TinkoffService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthHelper authHelper;
+
     private List<TinkoffAuthChromeTab> tinkoffChromeTabs = new ArrayList<>();
 
-    public TinkoffIntegration getIntegrationByUserId(UUID userId) {
-        return tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId).orElseThrow(() -> {
+    public TinkoffIntegration getIntegrationByUserId() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        return tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId()).orElseThrow(() -> {
             throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
         });
     }
@@ -72,8 +79,10 @@ public class TinkoffService {
     }
 
     @Transactional
-    public TinkoffIntegration removeIntegration(UUID userId) {
-        TinkoffIntegration integration = getIntegrationByUserId(userId);
+    public TinkoffIntegration removeIntegration() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        TinkoffIntegration integration = getIntegrationByUserId();
 
         integration.setUser(null);
 
@@ -83,13 +92,21 @@ public class TinkoffService {
     }
 
     public TinkoffTransaction updateTinkoffTransaction(UpdateTinkoffTransactionRequest request, UUID transactionId) {
+        User user = authHelper.getUserFromAuthCredentials();
+
         TinkoffTransaction transaction = tinkoffTransactionRepository.findById(transactionId).orElseThrow(() -> {
             throw new ServiceException("Tinkoff transaction not found", HttpStatus.NOT_FOUND);
         });
 
+        if(!transaction.getCard().getIntegration().getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your transactions", HttpStatus.FORBIDDEN);
+
         Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
             throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
         });
+
+        if(!category.getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
 
         transaction.setCategory(category);
 
@@ -103,32 +120,24 @@ public class TinkoffService {
         tinkoffChromeTabs.removeIf(tab -> tab.getExpiredAt().isBefore(Instant.now()));
     }
 
-    public TinkoffSyncStage getSyncStage(UUID userId) {
-        TinkoffIntegration integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId).orElseThrow(() -> {
-            throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
-        });
-
-        return integration.getStage();
-    }
-
     public TinkoffAuthChromeTab startTinkoffConnect(TinkoffStartAuthRequest request) {
-        userService.getUserById(request.getUserId());
+        User user = authHelper.getUserFromAuthCredentials();
+
+        userService.getUserById(user.getId());
 
         String phone = null;
-        UUID userId = null;
         Instant startExportDate = null;
         String password = null;
 
-        tinkoffChromeTabs.removeIf((val) -> val.getId().equals(request.getUserId()));
+        tinkoffChromeTabs.removeIf((val) -> val.getId().equals(user.getId()));
 
-        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(request.getUserId());
+        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
 
         if(request.isReAuth()) {
             if(integration.isEmpty())
                 throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
 
             phone = integration.get().getUsername();
-            userId = integration.get().getUser().getId();
             startExportDate = integration.get().getStartDate();
             password = integration.get().getPassword();
         } else {
@@ -138,14 +147,10 @@ public class TinkoffService {
             if(request.getPhone() == null)
                 throw new ServiceException("Pass phone to request body", HttpStatus.BAD_REQUEST);
 
-            if(request.getUserId() == null)
-                throw new ServiceException("Pass userId to request body", HttpStatus.BAD_REQUEST);
-
             if(request.getExportStartDate() == null)
                 throw new ServiceException("Pass exportStartDate to request body", HttpStatus.BAD_REQUEST);
 
             phone = request.getPhone();
-            userId = request.getUserId();
             startExportDate = request.getExportStartDate();
         }
         WebDriver driver = WebDriverCreator.create();
@@ -161,7 +166,7 @@ public class TinkoffService {
 
         TinkoffAuthChromeTab tab = new TinkoffAuthChromeTab(driver);
         tab.setPhone(phone);
-        tab.setUserId(userId);
+        tab.setUserId(user.getId());
         tab.setExportStartDate(startExportDate);
         tab.setPassword(password);
 
@@ -170,8 +175,10 @@ public class TinkoffService {
         return tab;
     }
 
-    public Set<TinkoffCard> getCards(UUID userId) {
-        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId);
+    public Set<TinkoffCard> getCards() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
 
         if(integration.isPresent())
             return integration.get().getCards();
@@ -180,8 +187,10 @@ public class TinkoffService {
     }
 
     @Transactional
-    public Boolean sync(UUID userId) {
-        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(userId);
+    public Boolean sync() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
 
         if(integration.isPresent()) {
             integration.get().setStage(TinkoffSyncStage.IN_SYNC);

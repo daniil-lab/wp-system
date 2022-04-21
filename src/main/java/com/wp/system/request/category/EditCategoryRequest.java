@@ -22,9 +22,6 @@ public class EditCategoryRequest {
     @Schema(required = false, description = "Цвет категории")
     private CategoryColor color;
 
-    @Schema(required = false, description = "Пользователь, к которому будет относится категория")
-    private UUID userId;
-
     @Schema(required = false, description = "Лимит категории")
     @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
     private int categoryLimit;
@@ -76,13 +73,5 @@ public class EditCategoryRequest {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 }

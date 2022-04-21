@@ -83,7 +83,7 @@ public class BillController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('BILL_GET', 'BILL_FULL')")
     @Operation(summary = "Получение всех счетов пользователя")
     @GetMapping("/")
-    public ResponseEntity<ServiceResponse<List<BillDTO>>> getUserBills(@RequestParam UUID userId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billService.getUserBills(userId).stream().map(BillDTO::new).collect(Collectors.toList()), "Bills returned"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<List<BillDTO>>> getUserBills() {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billService.getUserBills().stream().map(BillDTO::new).collect(Collectors.toList()), "Bills returned"), HttpStatus.OK);
     }
 }

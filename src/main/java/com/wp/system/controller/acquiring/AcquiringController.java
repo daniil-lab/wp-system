@@ -27,12 +27,9 @@ public class AcquiringController {
     @GetMapping("/tinkoff/payment-url")
     public ResponseEntity<ServiceResponse<String>> getPaymentUrl(
             @RequestParam
-                    UUID subscriptionVariantId,
-            @RequestParam
-                    UUID userId
+                    UUID subscriptionVariantId
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), acquiringService.generatePaymentUrl(
-                userId,
                 subscriptionVariantId
         )), HttpStatus.OK);
     }
