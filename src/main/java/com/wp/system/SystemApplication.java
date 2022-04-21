@@ -140,7 +140,7 @@ public class SystemApplication implements CommandLineRunner {
 		if(!user.getRole().getId().equals(role.getId())) {
 			EditUserRequest request = new EditUserRequest();
 			request.setRoleName(role.getName());
-			userService.updateUser(request, user.getId());
+			userService.updateUser(request);
 		}
 	}
 }
