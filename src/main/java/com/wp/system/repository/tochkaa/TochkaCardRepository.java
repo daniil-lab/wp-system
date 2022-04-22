@@ -1,9 +1,11 @@
 package com.wp.system.repository.tochkaa;
 
+import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tochka.TochkaCard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,4 +19,6 @@ public interface TochkaCardRepository extends JpaRepository<TochkaCard, UUID> {
 //    List<TochkaCard> findByIntegrationUserId(UUID userId);
 
     Optional<TochkaCard> findByCardNumberAndIntegrationId(String cardNumber, UUID integrationId);
+
+    List<TochkaCard> findByIntegrationUserId(UUID id);
 }

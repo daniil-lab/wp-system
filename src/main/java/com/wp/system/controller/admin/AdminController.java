@@ -1,7 +1,11 @@
 package com.wp.system.controller.admin;
 
+import com.wp.system.dto.activity.ActivityDTO;
 import com.wp.system.dto.bill.BillDTO;
 import com.wp.system.dto.category.CategoryDTO;
+import com.wp.system.dto.sber.SberCardDTO;
+import com.wp.system.dto.tinkoff.TinkoffCardDTO;
+import com.wp.system.dto.tochka.TochkaCardDTO;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.request.user.EditUserRequest;
 import com.wp.system.response.PagingResponse;
@@ -15,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -70,5 +75,41 @@ public class AdminController {
                     UUID userId
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserCategories(userId).stream().map(CategoryDTO::new).collect(Collectors.toList())), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/tochka-cards/{userId}")
+    public ResponseEntity<ServiceResponse<List<TochkaCardDTO>>> getUserTochkaCards(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserTochkaCards(userId).stream().map(TochkaCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/sber-cards/{userId}")
+    public ResponseEntity<ServiceResponse<List<SberCardDTO>>> getUserSberCards(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserSberCards(userId).stream().map(SberCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/tinkoff-cards/{userId}")
+    public ResponseEntity<ServiceResponse<List<TinkoffCardDTO>>> getUserTinkoffCards(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserTinkoffCards(userId).stream().map(TinkoffCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/activity/{userId}")
+    public ResponseEntity<ServiceResponse<List<ActivityDTO>>> getUserActivitiesByPeriod(
+            @PathVariable
+                    UUID userId,
+            @RequestParam
+                    Instant startTime,
+            @RequestParam
+                    Instant endTime
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserActivityByPeriod(userId, startTime, endTime).stream().map(ActivityDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 }

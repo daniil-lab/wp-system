@@ -6,14 +6,19 @@ import com.wp.system.entity.activity.Activity;
 import com.wp.system.entity.bill.Bill;
 import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
+import com.wp.system.entity.loyalty.LoyaltyCard;
+import com.wp.system.entity.sber.SberCard;
 import com.wp.system.entity.tinkoff.TinkoffCard;
+import com.wp.system.entity.tochka.TochkaCard;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserEmail;
 import com.wp.system.entity.user.UserRole;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.activity.ActivityRepository;
 import com.wp.system.repository.bill.BillRepository;
 import com.wp.system.repository.bill.BillTransactionRepository;
 import com.wp.system.repository.category.CategoryRepository;
+import com.wp.system.repository.loyalty.LoyaltyCardRepository;
 import com.wp.system.repository.sber.SberCardRepository;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tochkaa.TochkaCardRepository;
@@ -36,6 +41,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -72,6 +79,12 @@ public class AdminService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private LoyaltyCardRepository loyaltyCardRepository;
+
+    @Autowired
+    private ActivityRepository activityRepository;
 
     public PagingResponse<UserDTO> getPagedUsers(int page, int pageSize) {
         Page<User> pagedUsers = userRepository.findAll(PageRequest.of(page, pageSize));
@@ -167,5 +180,25 @@ public class AdminService {
 
     public List<Category> getUserCategories(UUID userId) {
         return categoryRepository.getAllUserCategories(userId);
+    }
+
+    public List<SberCard> getUserSberCards(UUID userId) {
+        return sberCardRepository.findByIntegrationUserId(userId);
+    }
+
+    public List<TinkoffCard> getUserTinkoffCards(UUID userId) {
+        return tinkoffCardRepository.findByIntegrationUserId(userId);
+    }
+
+    public List<TochkaCard> getUserTochkaCards(UUID userId) {
+        return tochkaCardRepository.findByIntegrationUserId(userId);
+    }
+
+    public List<LoyaltyCard> getUserLoyaltyCards(UUID userId) {
+        return loyaltyCardRepository.getAllUserCards(userId);
+    }
+
+    public List<Activity> getUserActivityByPeriod(UUID userId, Instant startTime, Instant endTime) {
+        return activityRepository.getUserActivityByPeriod(userId, Timestamp.from(startTime), Timestamp.from(endTime));
     }
 }
