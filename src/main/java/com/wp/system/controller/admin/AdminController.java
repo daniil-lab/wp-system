@@ -45,7 +45,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getPagedUsers(page, pageSize)), HttpStatus.OK);
     }
 
-    @GetMapping("/user/bill-transactions/{userid}")
+    @GetMapping("/user/bill-transactions/{userId}")
     public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getUserBillTransactions(
             @PathVariable
                     UUID userId,
