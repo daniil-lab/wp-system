@@ -167,7 +167,8 @@ public class TinkoffService {
                 new HttpEntity<>(body, null),
                 TinkoffSessionResponse.class);
 
-        System.out.println(sessionResponse);
+        System.out.println(sessionResponse.getStatusCode());
+        System.out.println(sessionResponse.getBody().getSessionid());
 
         return null;
 
