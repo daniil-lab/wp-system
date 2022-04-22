@@ -112,4 +112,12 @@ public class AdminController {
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserActivityByPeriod(userId, startTime, endTime).stream().map(ActivityDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ServiceResponse<UserDTO>> getUserById(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(adminService.getUserById(userId))), HttpStatus.OK);
+    }
 }

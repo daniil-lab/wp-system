@@ -201,4 +201,10 @@ public class AdminService {
     public List<Activity> getUserActivityByPeriod(UUID userId, Instant startTime, Instant endTime) {
         return activityRepository.getUserActivityByPeriod(userId, Timestamp.from(startTime), Timestamp.from(endTime));
     }
+
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId).orElseThrow(() -> {
+            throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
+        });
+    }
 }
