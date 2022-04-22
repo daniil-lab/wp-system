@@ -26,6 +26,7 @@ import com.wp.system.repository.subscription.SubscriptionRepository;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tochkaa.TochkaCardRepository;
 import com.wp.system.repository.user.UserRepository;
+import com.wp.system.request.admin.ExtendSubscriptionRequest;
 import com.wp.system.request.logging.CreateAdminLogRequest;
 import com.wp.system.request.user.EditUserRequest;
 import com.wp.system.response.PagingResponse;
@@ -46,6 +47,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -225,5 +227,33 @@ public class AdminService {
 
         return new PagingResponse<>(pagedBill.getContent().stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
                 pagedBill.getTotalElements(), pagedBill.getTotalPages());
+    }
+
+    public Subscription resetSubscription(UUID userId) {
+        Subscription subscription = subscriptionRepository.getSubscriptionByUserId(userId).orElseThrow(() -> {
+            throw new ServiceException("Subscription not found", HttpStatus.NOT_FOUND);
+        });
+
+        subscription.setActive(false);
+        subscription.setEndDate(null);
+        subscription.setStartDate(null);
+
+        subscriptionRepository.save(subscription);
+
+        return subscription;
+    }
+
+    public Subscription updateSubscription(ExtendSubscriptionRequest request, UUID userId) {
+        Subscription subscription = subscriptionRepository.getSubscriptionByUserId(userId).orElseThrow(() -> {
+            throw new ServiceException("Subscription not found", HttpStatus.NOT_FOUND);
+        });
+
+        subscription.setActive(true);
+        subscription.setStartDate(Instant.now());
+        subscription.setEndDate(Instant.now().plus(request.getDays(), ChronoUnit.DAYS));
+
+        subscriptionRepository.save(subscription);
+
+        return subscription;
     }
 }

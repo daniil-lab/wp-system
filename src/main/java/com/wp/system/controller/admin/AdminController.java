@@ -10,6 +10,7 @@ import com.wp.system.dto.subscription.SubscriptionDTO;
 import com.wp.system.dto.tinkoff.TinkoffCardDTO;
 import com.wp.system.dto.tochka.TochkaCardDTO;
 import com.wp.system.dto.user.UserDTO;
+import com.wp.system.request.admin.ExtendSubscriptionRequest;
 import com.wp.system.request.user.EditUserRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
@@ -142,6 +143,25 @@ public class AdminController {
                     UUID userId
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(adminService.getUserSubscription(userId))), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/subscription/reset/{userId}")
+    public ResponseEntity<ServiceResponse<SubscriptionDTO>> resetUserSubscription(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(adminService.resetSubscription(userId))), HttpStatus.OK);
+    }
+
+    @PostMapping("/user/subscription/extend/{userId}")
+    public ResponseEntity<ServiceResponse<SubscriptionDTO>> extendUserSubscription(
+            @RequestBody
+            @Valid
+                    ExtendSubscriptionRequest request,
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(adminService.updateSubscription(request, userId))), HttpStatus.OK);
     }
 
     @GetMapping("/user/loyalty-cards/{userId}")

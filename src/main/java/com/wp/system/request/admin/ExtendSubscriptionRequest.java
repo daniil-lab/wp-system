@@ -1,4 +1,4 @@
-package com.wp.system.request.subscription;
+package com.wp.system.request.admin;
 
 import javax.validation.constraints.PositiveOrZero;
 
