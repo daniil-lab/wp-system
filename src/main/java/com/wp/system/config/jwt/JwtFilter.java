@@ -9,18 +9,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static io.jsonwebtoken.lang.Strings.hasText;
 
 @Component
-public class JwtFilter extends GenericFilterBean {
+public class JwtFilter extends OncePerRequestFilter {
     public static final String AUTHORIZATION = "Authorization";
 
     @Autowired
@@ -30,8 +32,8 @@ public class JwtFilter extends GenericFilterBean {
     private UserAuthDetailsService customUserDetailsService;
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        String token = getTokenFromRequest((HttpServletRequest) servletRequest);
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        String token = getTokenFromRequest(request);
         if (token != null && jwtProvider.validateToken(token)) {
             Claims userData = jwtProvider.getDataFromToken(token);
 
@@ -42,10 +44,10 @@ public class JwtFilter extends GenericFilterBean {
             else
                 customUserDetails = customUserDetailsService.loadUserByUsername((String) userData.get("username"));
 
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUserDetails, new AuthCredentials(customUserDetails.getId(), customUserDetails.getUsername(), customUserDetails.getPassword()), customUserDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
-        filterChain.doFilter(servletRequest, servletResponse);
+        filterChain.doFilter(request, response);
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {

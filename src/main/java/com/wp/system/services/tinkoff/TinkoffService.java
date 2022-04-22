@@ -1,5 +1,6 @@
 package com.wp.system.services.tinkoff;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
 import com.wp.system.entity.BankTransactionType;
 import com.wp.system.entity.category.Category;
@@ -20,6 +21,7 @@ import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.services.user.UserService;
 import com.wp.system.utils.AuthHelper;
+import com.wp.system.utils.ObjectToUrlEncodedMapper;
 import com.wp.system.utils.tinkoff.TinkoffAuthRequest;
 import com.wp.system.utils.tinkoff.TinkoffSync;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
@@ -33,10 +35,7 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -145,28 +144,24 @@ public class TinkoffService {
     public TinkoffAuthChromeTab startTinkoffConnect(TinkoffStartAuthRequest request) {
         User user = authHelper.getUserFromAuthCredentials();
 
-        Map<String, Object> defaultParams = new HashMap<>();
-        defaultParams.put("appVersion", "5.5.1");
-        defaultParams.put("connectionSubtype", "4G");
-        defaultParams.put("appName", "mobile");
-        defaultParams.put("origin", "mobile,ib5,loyalty,platform");
-        defaultParams.put("connectionType", "Cellular");
-        defaultParams.put("platform", "android");
-
         RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
 
-        UUID deviceId = UUID.randomUUID();
+        restTemplate.getMessageConverters().add(new ObjectToUrlEncodedMapper(mapper));
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("deviceId", deviceId);
+        HttpHeaders headers = new HttpHeaders();
 
-        ResponseEntity<TinkoffSessionResponse> sessionResponse = restTemplate.exchange("https://api.tinkoff.ru/api/v1/session",
-                HttpMethod.POST,
-                new HttpEntity<>(body, null),
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        ResponseEntity<TinkoffSessionResponse> sessionResponse = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/session?appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+                HttpMethod.GET,
+                new HttpEntity<>(null, headers),
                 TinkoffSessionResponse.class);
 
-        System.out.println(sessionResponse.getStatusCode());
-        System.out.println(sessionResponse.getBody().getSessionid());
+        if(sessionResponse.getStatusCodeValue() == 200) {
+
+        }
+        System.out.println(sessionResponse.getStatusCodeValue());
 
         return null;
 

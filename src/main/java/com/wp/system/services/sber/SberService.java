@@ -164,8 +164,11 @@ public class SberService {
         return integration;
     }
 
-    public SberIntegration getSberIntegrationByUserId(UUID id) {
-        return sberIntegrationRepository.getSberIntegrationByUserId(id).orElseThrow(() -> {
+    public SberIntegration getSberIntegrationByUserId() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+
+        return sberIntegrationRepository.getSberIntegrationByUserId(user.getId()).orElseThrow(() -> {
             throw new ServiceException("Sber integration not found", HttpStatus.BAD_REQUEST);
         });
     }
@@ -173,7 +176,7 @@ public class SberService {
     public boolean syncSber() {
         User user = authHelper.getUserFromAuthCredentials();
 
-        SberAuth sberAuth = new SberAuth(sberIntegrationRepository, getSberIntegrationByUserId(user.getId()));
+        SberAuth sberAuth = new SberAuth(sberIntegrationRepository, getSberIntegrationByUserId());
 
         sberAuth.auth();
 

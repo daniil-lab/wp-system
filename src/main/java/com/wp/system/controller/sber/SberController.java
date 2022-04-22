@@ -92,10 +92,8 @@ public class SberController {
     @Operation(summary = "Получить Sber интеграцию")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<SberIntegrationDTO>> getSberIntegration(
-            @PathVariable
-                    UUID userId
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SberIntegrationDTO(sberService.getSberIntegrationByUserId(userId)), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SberIntegrationDTO(sberService.getSberIntegrationByUserId()), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_GET', 'SBER_FULL')")
