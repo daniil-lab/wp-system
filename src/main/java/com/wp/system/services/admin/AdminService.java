@@ -94,6 +94,16 @@ public class AdminService {
     @Autowired
     private ActivityRepository activityRepository;
 
+    public User resetPin(UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
+        });
+
+        user.setPinCode(null);
+
+        return user;
+    }
+
     public PagingResponse<UserDTO> getPagedUsers(int page, int pageSize) {
         Page<User> pagedUsers = userRepository.findAll(PageRequest.of(page, pageSize));
         return new PagingResponse<>(pagedUsers.stream().map(UserDTO::new).collect(Collectors.toList()), pagedUsers.getTotalElements(),

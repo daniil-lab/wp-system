@@ -164,6 +164,14 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(adminService.updateSubscription(request, userId))), HttpStatus.OK);
     }
 
+    @PostMapping("/user/reset-pin/{userId}")
+    public ResponseEntity<ServiceResponse<UserDTO>> resetUserPin(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(adminService.resetPin(userId))), HttpStatus.OK);
+    }
+
     @GetMapping("/user/loyalty-cards/{userId}")
     public ResponseEntity<ServiceResponse<List<LoyaltyCardDTO>>> getUserLoyaltyCards(
             @PathVariable
