@@ -5,6 +5,7 @@ import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
@@ -26,6 +27,10 @@ public class EditCategoryRequest {
     @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
     private int categoryLimit;
 
+    @Schema(required = false, description = "Указатель, что категория только для пополнений")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private Boolean onlyForEarn;
+
     public EditCategoryRequest() {}
 
     public EditCategoryRequest(String name, String description, CategoryColor color, UUID UUID) {
@@ -33,6 +38,14 @@ public class EditCategoryRequest {
         this.description = description;
         this.color = color;
         this.icon = UUID;
+    }
+
+    public Boolean getOnlyForEarn() {
+        return onlyForEarn;
+    }
+
+    public void setOnlyForEarn(Boolean onlyForEarn) {
+        this.onlyForEarn = onlyForEarn;
     }
 
     public UUID getIcon() {

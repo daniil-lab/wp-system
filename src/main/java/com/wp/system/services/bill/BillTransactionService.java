@@ -16,6 +16,7 @@ import com.wp.system.response.PagingResponse;
 import com.wp.system.services.category.CategoryService;
 import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.Geocoder;
+import com.wp.system.utils.bill.BillBalanceAction;
 import com.wp.system.utils.bill.BillBalanceFacade;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,7 @@ public class BillTransactionService {
         });
 
         User user = authHelper.getUserFromAuthCredentials();
+        Double transactionAmount = Double.parseDouble(request.getAmount() + "." + request.getCents());
 
         if(!transaction.getBill().getUser().getId().equals(user.getId()))
             throw new ServiceException("It`s not your transaction", HttpStatus.FORBIDDEN);
@@ -78,10 +80,26 @@ public class BillTransactionService {
                 throw new ServiceException("Bill not found", HttpStatus.NOT_FOUND);
             }));
 
-        if(request.getBillId() != null)
-            transaction.setCategory(categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
+        if(request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
                 throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
-            }));
+            });
+
+            if(category.isOnlyForEarn() && request.getAction() == BillBalanceAction.WITHDRAW)
+                throw new ServiceException("Given category only for earn", HttpStatus.BAD_REQUEST);
+
+            if(request.getAction() == BillBalanceAction.WITHDRAW) {
+                category.setCategorySpend(category.getCategorySpend() + transactionAmount);
+
+                if(category.getCategoryLimit() != 0) {
+                    category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                }
+            } else {
+                category.setCategoryEarn(category.getCategoryEarn() + transactionAmount);
+            }
+
+            transaction.setCategory(category);
+        }
 
         if(request.getCurrency() != null)
             transaction.setCurrency(request.getCurrency());

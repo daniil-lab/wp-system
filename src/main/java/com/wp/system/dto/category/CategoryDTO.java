@@ -34,10 +34,16 @@ public class CategoryDTO {
     @Schema(description = "Пользователь, к которому прикреплена категория")
     private UserDTO user;
 
+    private Boolean onlyForEarn;
+
+    private Double percentsFromLimit;
+
     public CategoryDTO(Category category) {
         if(category == null)
             return;
 
+        this.percentsFromLimit = category.getPercentsFromLimit();
+        this.onlyForEarn = category.isOnlyForEarn();
         this.id = category.getId();
         this.name = category.getName();
         this.color = new CategoryDTOColor(category.getColor());
@@ -45,6 +51,22 @@ public class CategoryDTO {
         this.description = category.getDescription();
         this.user = new UserDTO(category.getUser());
         this.categoryLimit = category.getCategoryLimit();
+    }
+
+    public Boolean getOnlyForEarn() {
+        return onlyForEarn;
+    }
+
+    public void setOnlyForEarn(Boolean onlyForEarn) {
+        this.onlyForEarn = onlyForEarn;
+    }
+
+    public Double getPercentsFromLimit() {
+        return percentsFromLimit;
+    }
+
+    public void setPercentsFromLimit(Double percentsFromLimit) {
+        this.percentsFromLimit = percentsFromLimit;
     }
 
     public UUID getId() {

@@ -34,6 +34,10 @@ public class CreateCategoryRequest {
     @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
     private int categoryLimit;
 
+    @Schema(required = true, description = "Указатель, что категория только для пополнений")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private Boolean onlyForEarn;
+
     public CreateCategoryRequest() {}
 
     public CreateCategoryRequest(String name, String description, UUID UUID, CategoryColor categoryColor, java.util.UUID userId) {
@@ -50,6 +54,14 @@ public class CreateCategoryRequest {
         this.description = category.getDescription();
         this.icon = category.getIcon() != null ? category.getIcon().getId() : null;
         this.userId = userId;
+    }
+
+    public Boolean getOnlyForEarn() {
+        return onlyForEarn;
+    }
+
+    public void setOnlyForEarn(Boolean onlyForEarn) {
+        this.onlyForEarn = onlyForEarn;
     }
 
     public int getCategoryLimit() {

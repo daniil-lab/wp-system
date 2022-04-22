@@ -9,6 +9,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class Category {
@@ -23,6 +24,8 @@ public class Category {
 
     private int categoryLimit;
 
+    private boolean onlyForEarn = false;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="user_id")
     private User user;
@@ -34,6 +37,12 @@ public class Category {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "category")
     @Fetch(FetchMode.SUBSELECT)
     private Set<BillLog> billLogs;
+
+    private Double categorySpend = 0.0;
+
+    private Double categoryEarn = 0.0;
+
+    private Double percentsFromLimit = 0.0;
 
     public Category() {};
 
@@ -50,6 +59,50 @@ public class Category {
         this.description = description;
         this.user = user;
         this.icon = icon;
+    }
+
+    public Set<BillLog> getBillLogs() {
+        return billLogs;
+    }
+
+    public void setBillLogs(Set<BillLog> billLogs) {
+        this.billLogs = billLogs;
+    }
+
+    public Double getCategorySpend() {
+        return categorySpend;
+    }
+
+    public void setCategorySpend(Double categorySpend) {
+        this.categorySpend = categorySpend;
+    }
+
+    public Double getCategoryEarn() {
+        return categoryEarn;
+    }
+
+    public void setCategoryEarn(Double categoryEarn) {
+        this.categoryEarn = categoryEarn;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public boolean isOnlyForEarn() {
+        return onlyForEarn;
+    }
+
+    public void setOnlyForEarn(boolean onlyForEarn) {
+        this.onlyForEarn = onlyForEarn;
+    }
+
+    public Double getPercentsFromLimit() {
+        return percentsFromLimit;
+    }
+
+    public void setPercentsFromLimit(Double percentsFromLimit) {
+        this.percentsFromLimit = percentsFromLimit;
     }
 
     public SystemImage getIcon() {

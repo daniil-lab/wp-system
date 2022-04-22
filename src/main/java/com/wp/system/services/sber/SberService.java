@@ -2,6 +2,7 @@ package com.wp.system.services.sber;
 
 import com.wp.system.dto.sber.SberTransactionDTO;
 import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
+import com.wp.system.entity.BankTransactionType;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.sber.SberCard;
 import com.wp.system.entity.sber.SberIntegration;
@@ -21,6 +22,7 @@ import com.wp.system.request.sber.UpdateSberTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.services.user.UserService;
 import com.wp.system.utils.AuthHelper;
+import com.wp.system.utils.bill.BillBalanceAction;
 import com.wp.system.utils.sber.SberAuth;
 import com.wp.system.utils.sber.SberRegister;
 import com.wp.system.utils.sber.SberSync;
@@ -65,15 +67,34 @@ public class SberService {
         });
 
         User user = authHelper.getUserFromAuthCredentials();
+        Double transactionAmount = Double.parseDouble(transaction.getAmount().getAmount() + "." + transaction.getAmount().getCents());
 
         if(!transaction.getCard().getIntegration().getUser().getId().equals(user.getId()))
             throw new ServiceException("No your object", HttpStatus.FORBIDDEN);
 
-        Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
-            throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
-        });
+        if(request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
+                throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
+            });
 
-        transaction.setCategory(category);
+            if(!category.getUser().getId().equals(user.getId()))
+                throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
+
+            if(category.isOnlyForEarn() && transaction.getTransactionType() == BankTransactionType.SPEND)
+                throw new ServiceException("Given category only for earn", HttpStatus.BAD_REQUEST);
+
+            if(transaction.getTransactionType() == BankTransactionType.SPEND) {
+                category.setCategorySpend(category.getCategorySpend() + transactionAmount);
+
+                if(category.getCategoryLimit() != 0) {
+                    category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                }
+            } else {
+                category.setCategoryEarn(category.getCategoryEarn() + transactionAmount);
+            }
+
+            transaction.setCategory(category);
+        }
 
         sberTransactionRepository.save(transaction);
 

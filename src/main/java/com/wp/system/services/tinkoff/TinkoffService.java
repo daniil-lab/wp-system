@@ -1,6 +1,7 @@
 package com.wp.system.services.tinkoff;
 
 import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
+import com.wp.system.entity.BankTransactionType;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.sber.SberTransaction;
 import com.wp.system.entity.tinkoff.TinkoffCard;
@@ -19,10 +20,12 @@ import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.services.user.UserService;
 import com.wp.system.utils.AuthHelper;
+import com.wp.system.utils.tinkoff.TinkoffAuthRequest;
 import com.wp.system.utils.tinkoff.TinkoffSync;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
 import com.wp.system.utils.tinkoff.WebDriverCreator;
+import com.wp.system.utils.tinkoff.response.TinkoffSessionResponse;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -30,9 +33,13 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -80,8 +87,6 @@ public class TinkoffService {
 
     @Transactional
     public TinkoffIntegration removeIntegration() {
-        User user = authHelper.getUserFromAuthCredentials();
-
         TinkoffIntegration integration = getIntegrationByUserId();
 
         integration.setUser(null);
@@ -98,17 +103,34 @@ public class TinkoffService {
             throw new ServiceException("Tinkoff transaction not found", HttpStatus.NOT_FOUND);
         });
 
+        Double transactionAmount = Double.parseDouble(transaction.getAmount().getAmount() + "." + transaction.getAmount().getCents());
+
         if(!transaction.getCard().getIntegration().getUser().getId().equals(user.getId()))
             throw new ServiceException("It`s not your transactions", HttpStatus.FORBIDDEN);
 
-        Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
-            throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
-        });
+        if(request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
+                throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
+            });
 
-        if(!category.getUser().getId().equals(user.getId()))
-            throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
+            if(!category.getUser().getId().equals(user.getId()))
+                throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
 
-        transaction.setCategory(category);
+            if(category.isOnlyForEarn() && transaction.getTransactionType() == BankTransactionType.SPEND)
+                throw new ServiceException("Given category only for earn", HttpStatus.BAD_REQUEST);
+
+            if(transaction.getTransactionType() == BankTransactionType.SPEND) {
+                category.setCategorySpend(category.getCategorySpend() + transactionAmount);
+
+                if(category.getCategoryLimit() != 0) {
+                    category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                }
+            } else {
+                category.setCategoryEarn(category.getCategoryEarn() + transactionAmount);
+            }
+
+            transaction.setCategory(category);
+        }
 
         tinkoffTransactionRepository.save(transaction);
 
@@ -125,54 +147,78 @@ public class TinkoffService {
 
         userService.getUserById(user.getId());
 
-        String phone = null;
-        Instant startExportDate = null;
-        String password = null;
+        Map<String, Object> defaultParams = new HashMap<>();
+        defaultParams.put("appVersion", "5.5.1");
+        defaultParams.put("connectionSubtype", "4G");
+        defaultParams.put("appName", "mobile");
+        defaultParams.put("origin", "mobile,ib5,loyalty,platform");
+        defaultParams.put("connectionType", "Cellular");
+        defaultParams.put("platform", "android");
 
-        tinkoffChromeTabs.removeIf((val) -> val.getId().equals(user.getId()));
+        RestTemplate restTemplate = new RestTemplate();
 
-        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
+        UUID deviceId = UUID.randomUUID();
 
-        if(request.isReAuth()) {
-            if(integration.isEmpty())
-                throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
+        Map<String, Object> body = new HashMap<>();
+        body.put("deviceId", deviceId);
 
-            phone = integration.get().getUsername();
-            startExportDate = integration.get().getStartDate();
-            password = integration.get().getPassword();
-        } else {
-            if (integration.isPresent())
-                throw new ServiceException("Integration already exist", HttpStatus.BAD_REQUEST);
+        ResponseEntity<TinkoffSessionResponse> sessionResponse = restTemplate.exchange("https://api.tinkoff.ru/api/v1/session",
+                HttpMethod.POST,
+                new HttpEntity<>(body, null),
+                TinkoffSessionResponse.class);
 
-            if(request.getPhone() == null)
-                throw new ServiceException("Pass phone to request body", HttpStatus.BAD_REQUEST);
+        System.out.println(sessionResponse);
 
-            if(request.getExportStartDate() == null)
-                throw new ServiceException("Pass exportStartDate to request body", HttpStatus.BAD_REQUEST);
+        return null;
 
-            phone = request.getPhone();
-            startExportDate = request.getExportStartDate();
-        }
-        WebDriver driver = WebDriverCreator.create();
-
-        driver.get("https://www.tinkoff.ru/login/");
-
-        WebElement phoneInput = driver.findElement(By.id("phoneNumber"));
-        phoneInput.sendKeys(phone);
-
-        WebElement button = driver.findElement(By.id("submit-button"));
-
-        button.click();
-
-        TinkoffAuthChromeTab tab = new TinkoffAuthChromeTab(driver);
-        tab.setPhone(phone);
-        tab.setUserId(user.getId());
-        tab.setExportStartDate(startExportDate);
-        tab.setPassword(password);
-
-        this.tinkoffChromeTabs.add(tab);
-
-        return tab;
+//        String phone = null;
+//        Instant startExportDate = null;
+//        String password = null;
+//
+//        tinkoffChromeTabs.removeIf((val) -> val.getId().equals(user.getId()));
+//
+//        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
+//
+//        if(request.isReAuth()) {
+//            if(integration.isEmpty())
+//                throw new ServiceException("Integration not found", HttpStatus.NOT_FOUND);
+//
+//            phone = integration.get().getUsername();
+//            startExportDate = integration.get().getStartDate();
+//            password = integration.get().getPassword();
+//        } else {
+//            if (integration.isPresent())
+//                throw new ServiceException("Integration already exist", HttpStatus.BAD_REQUEST);
+//
+//            if(request.getPhone() == null)
+//                throw new ServiceException("Pass phone to request body", HttpStatus.BAD_REQUEST);
+//
+//            if(request.getExportStartDate() == null)
+//                throw new ServiceException("Pass exportStartDate to request body", HttpStatus.BAD_REQUEST);
+//
+//            phone = request.getPhone();
+//            startExportDate = request.getExportStartDate();
+//        }
+//        WebDriver driver = WebDriverCreator.create();
+//
+//        driver.get("https://www.tinkoff.ru/login/");
+//
+//        WebElement phoneInput = driver.findElement(By.id("phoneNumber"));
+//        phoneInput.sendKeys(phone);
+//
+//        WebElement button = driver.findElement(By.id("submit-button"));
+//
+//        button.click();
+//
+//        TinkoffAuthChromeTab tab = new TinkoffAuthChromeTab(driver);
+//        tab.setPhone(phone);
+//        tab.setUserId(user.getId());
+//        tab.setExportStartDate(startExportDate);
+//        tab.setPassword(password);
+//
+//        this.tinkoffChromeTabs.add(tab);
+//
+//        return tab;
     }
 
     public Set<TinkoffCard> getCards() {

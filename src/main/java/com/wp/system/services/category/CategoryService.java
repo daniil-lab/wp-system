@@ -54,6 +54,7 @@ public class CategoryService {
 
         Category category = new Category(request.getName(), request.getColor(), request.getDescription(), user, image);
 
+        category.setOnlyForEarn(request.getOnlyForEarn());
         category.setCategoryLimit(request.getCategoryLimit());
 
         categoryRepository.save(category);
@@ -77,6 +78,10 @@ public class CategoryService {
 
         if(request.getColor() != null && !category.getColor().equals(request.getColor()))
             category.setColor(request.getColor());
+
+        if(request.getOnlyForEarn() != null) {
+            category.setOnlyForEarn(request.getOnlyForEarn());
+        }
 
         if(request.getIcon() != null) {
             SystemImage image = this.imageService.getImageById(request.getIcon());
