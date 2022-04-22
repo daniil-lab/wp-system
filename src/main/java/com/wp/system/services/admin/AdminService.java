@@ -240,7 +240,7 @@ public class AdminService {
     }
 
     public Subscription resetSubscription(UUID userId) {
-        Subscription subscription = subscriptionRepository.getSubscriptionByUserId(userId).orElseThrow(() -> {
+        Subscription subscription = subscriptionRepository.findById(userId).orElseThrow(() -> {
             throw new ServiceException("Subscription not found", HttpStatus.NOT_FOUND);
         });
 
@@ -254,7 +254,7 @@ public class AdminService {
     }
 
     public Subscription updateSubscription(ExtendSubscriptionRequest request, UUID userId) {
-        Subscription subscription = subscriptionRepository.getSubscriptionByUserId(userId).orElseThrow(() -> {
+        Subscription subscription = subscriptionRepository.findById(userId).orElseThrow(() -> {
             throw new ServiceException("Subscription not found", HttpStatus.NOT_FOUND);
         });
 
