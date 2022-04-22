@@ -13,6 +13,7 @@ import org.apache.naming.ServiceRef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -38,6 +39,7 @@ public class TochkaController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('TOCHKA_CREATE', 'TOCHKA_FULL')")
     @PostMapping("/submit-auth")
     public ResponseEntity<ServiceResponse<TochkaIntegrationDTO>> submitAuth(
             @RequestBody
@@ -47,24 +49,28 @@ public class TochkaController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TochkaIntegrationDTO(tochkaService.submitCreate(request))), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TOCHKA_SYNC', 'TOCHKA_FULL')")
     @GetMapping("/sync/")
     public ResponseEntity<ServiceResponse<Boolean>> sync(
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tochkaService.sync()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TOCHKA_GET', 'TOCHKA_FULL')")
     @GetMapping("/cards")
     public ResponseEntity<ServiceResponse<List<TochkaCardDTO>>> getCards(
     ) {
         return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.getCards().stream().map(TochkaCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TOCHKA_GET', 'TOCHKA_FULL')")
     @GetMapping("/")
     public ResponseEntity<ServiceResponse<TochkaIntegrationDTO>> getIntegration(
     ) {
         return new ResponseEntity<>(new ServiceResponse(HttpStatus.OK.value(), tochkaService.getIntegration()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('TOCHKA_DELETE', 'TOCHKA_FULL')")
     @DeleteMapping("/")
     public ResponseEntity<ServiceResponse<TochkaIntegrationDTO>> removeIntegraiton(
     ) {

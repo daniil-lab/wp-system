@@ -2,6 +2,7 @@ package com.wp.system.permissions;
 
 import com.wp.system.entity.subscription.SubscriptionVariant;
 import com.wp.system.permissions.activity.ActivityPermissions;
+import com.wp.system.permissions.admin.AdminPermissions;
 import com.wp.system.permissions.advertising.AdvertisingPermissions;
 import com.wp.system.permissions.bill.BillPermissions;
 import com.wp.system.permissions.bill.BillTransactionPermissions;
@@ -20,6 +21,7 @@ import com.wp.system.permissions.subscription.SubscriptionPermissions;
 import com.wp.system.permissions.subscription.SubscriptionVariantPermissions;
 import com.wp.system.permissions.system.SystemPermissions;
 import com.wp.system.permissions.tinkoff.TinkoffPermissions;
+import com.wp.system.permissions.tochka.TochkaPermissions;
 import com.wp.system.permissions.user.UserPermissions;
 import com.wp.system.permissions.user.UserRolePermissionPermissions;
 import com.wp.system.permissions.user.UserRolePermissions;
@@ -34,6 +36,7 @@ public class PermissionManager {
     private List<Permission> permissionList = new ArrayList<>();
 
     public PermissionManager() {
+        permissionList.addAll(Arrays.stream(AdminPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(UserPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(UserRolePermissions.values()).toList());
         permissionList.addAll(Arrays.stream(UserRolePermissionPermissions.values()).toList());
@@ -56,6 +59,7 @@ public class PermissionManager {
         permissionList.addAll(Arrays.stream(TinkoffPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(SystemPermissions.values()).toList());
         permissionList.addAll(Arrays.stream(SberPermissions.values()).toList());
+        permissionList.addAll(Arrays.stream(TochkaPermissions.values()).toList());
     }
 
     public Permission getPermissionBySystemName(String systemName) {

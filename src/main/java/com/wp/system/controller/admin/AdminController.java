@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,6 +40,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_GET_USER', 'ADMIN_FULL')")
     @GetMapping("/user")
     public ResponseEntity<ServiceResponse<PagingResponse<UserDTO>>> getUsers(
             @RequestParam
@@ -49,6 +51,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getPagedUsers(page, pageSize)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_BILL_TRANSACTIONS', 'ADMIN_FULL')")
     @GetMapping("/user/bill-transactions/{userId}")
     public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getUserBillTransactions(
             @PathVariable
@@ -61,6 +64,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserBillTransactions(userId, page, pageSize)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_SBER_TRANSACTIONS', 'ADMIN_FULL')")
     @GetMapping("/user/sber-transactions/{userId}")
     public ResponseEntity<ServiceResponse<PagingResponse<SberTransactionDTO>>> getUserSberTransactions(
             @PathVariable
@@ -73,6 +77,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserSberTransactions(userId, page, pageSize)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_TOCHKA_TRANSACTIONS', 'ADMIN_FULL')")
     @GetMapping("/user/tochka-transactions/{userId}")
     public ResponseEntity<ServiceResponse<PagingResponse<TochkaTransactionDTO>>> getUserTochkaTransactions(
             @PathVariable
@@ -85,6 +90,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserTochkaTransactions(userId, page, pageSize)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_TINKOFF_TRANSACTIONS', 'ADMIN_FULL')")
     @GetMapping("/user/tinkoff-transactions/{userId}")
     public ResponseEntity<ServiceResponse<PagingResponse<TinkoffTransactionDTO>>> getUserTinkoffTransactions(
             @PathVariable
@@ -97,6 +103,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserTinkoffTransactions(userId, page, pageSize)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_REMOVE_USER', 'ADMIN_FULL')")
     @DeleteMapping("/user/{userId}")
     public ResponseEntity<ServiceResponse<UserDTO>> removeUser(
             @PathVariable
@@ -105,6 +112,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(adminService.removeUser(userId))), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_BILLS', 'ADMIN_FULL')")
     @GetMapping("/user/bills/{userId}")
     public ResponseEntity<ServiceResponse<List<BillDTO>>> getUserBills(
             @PathVariable
@@ -113,6 +121,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserBills(userId).stream().map(BillDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_BILLS', 'ADMIN_FULL')")
     @PatchMapping("/user/{userId}")
     public ResponseEntity<ServiceResponse<UserDTO>> updateUser(
             @RequestBody
@@ -124,6 +133,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(adminService.updateUser(request, userId))), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_CATEGORIES', 'ADMIN_FULL')")
     @GetMapping("/user/categories/{userId}")
     public ResponseEntity<ServiceResponse<List<CategoryDTO>>> getUserCategories(
             @PathVariable
@@ -132,6 +142,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserCategories(userId).stream().map(CategoryDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_TOCHKA_CARDS', 'ADMIN_FULL')")
     @GetMapping("/user/tochka-cards/{userId}")
     public ResponseEntity<ServiceResponse<List<TochkaCardDTO>>> getUserTochkaCards(
             @PathVariable
@@ -140,6 +151,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserTochkaCards(userId).stream().map(TochkaCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_SBER_CARDS', 'ADMIN_FULL')")
     @GetMapping("/user/sber-cards/{userId}")
     public ResponseEntity<ServiceResponse<List<SberCardDTO>>> getUserSberCards(
             @PathVariable
@@ -148,6 +160,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserSberCards(userId).stream().map(SberCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_TINKOFF_CARDS', 'ADMIN_FULL')")
     @GetMapping("/user/tinkoff-cards/{userId}")
     public ResponseEntity<ServiceResponse<List<TinkoffCardDTO>>> getUserTinkoffCards(
             @PathVariable
@@ -156,6 +169,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserTinkoffCards(userId).stream().map(TinkoffCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_ACTIVITY_GET', 'ADMIN_FULL')")
     @GetMapping("/user/activity/{userId}")
     public ResponseEntity<ServiceResponse<List<ActivityDTO>>> getUserActivitiesByPeriod(
             @PathVariable
@@ -168,6 +182,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserActivityByPeriod(userId, startTime, endTime).stream().map(ActivityDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_GET_USER', 'ADMIN_FULL')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<ServiceResponse<UserDTO>> getUserById(
             @PathVariable
@@ -176,6 +191,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(adminService.getUserById(userId))), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_SUBSCRIPTION_GET', 'ADMIN_FULL')")
     @GetMapping("/user/subscription/{userId}")
     public ResponseEntity<ServiceResponse<SubscriptionDTO>> getUserSubscription(
             @PathVariable
@@ -184,6 +200,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(adminService.getUserSubscription(userId))), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_SUBSCRIPTION_RESET', 'ADMIN_FULL')")
     @GetMapping("/user/subscription/reset/{userId}")
     public ResponseEntity<ServiceResponse<SubscriptionDTO>> resetUserSubscription(
             @PathVariable
@@ -192,6 +209,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(adminService.resetSubscription(userId))), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_SUBSCRIPTION_EXTEND', 'ADMIN_FULL')")
     @PostMapping("/user/subscription/extend/{userId}")
     public ResponseEntity<ServiceResponse<SubscriptionDTO>> extendUserSubscription(
             @RequestBody
@@ -203,6 +221,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(adminService.updateSubscription(request, userId))), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_RESET_PIN', 'ADMIN_FULL')")
     @PostMapping("/user/reset-pin/{userId}")
     public ResponseEntity<ServiceResponse<UserDTO>> resetUserPin(
             @PathVariable
@@ -211,6 +230,7 @@ public class AdminController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new UserDTO(adminService.resetPin(userId))), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN_USER_LOYALTY_CARDS', 'ADMIN_FULL')")
     @GetMapping("/user/loyalty-cards/{userId}")
     public ResponseEntity<ServiceResponse<List<LoyaltyCardDTO>>> getUserLoyaltyCards(
             @PathVariable
