@@ -8,6 +8,7 @@ import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.loyalty.LoyaltyCard;
 import com.wp.system.entity.sber.SberCard;
+import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tochka.TochkaCard;
 import com.wp.system.entity.user.User;
@@ -20,6 +21,7 @@ import com.wp.system.repository.bill.BillTransactionRepository;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.loyalty.LoyaltyCardRepository;
 import com.wp.system.repository.sber.SberCardRepository;
+import com.wp.system.repository.subscription.SubscriptionRepository;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tochkaa.TochkaCardRepository;
 import com.wp.system.repository.user.UserRepository;
@@ -76,6 +78,9 @@ public class AdminService {
 
     @Autowired
     private UserRoleService userRoleService;
+
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -205,6 +210,12 @@ public class AdminService {
     public User getUserById(UUID userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
             throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
+        });
+    }
+
+    public Subscription getUserSubscription(UUID userId) {
+        return subscriptionRepository.getSubscriptionByUserId(userId).orElseThrow(() -> {
+            throw new ServiceException("Subscription not found", HttpStatus.NOT_FOUND);
         });
     }
 }
