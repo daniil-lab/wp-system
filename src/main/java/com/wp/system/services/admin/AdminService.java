@@ -1,6 +1,7 @@
 package com.wp.system.services.admin;
 
 import com.wp.system.config.security.UserAuthDetails;
+import com.wp.system.dto.bill.BillTransactionDTO;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.activity.Activity;
 import com.wp.system.entity.bill.Bill;
@@ -217,5 +218,12 @@ public class AdminService {
         return subscriptionRepository.getSubscriptionByUserId(userId).orElseThrow(() -> {
             throw new ServiceException("Subscription not found", HttpStatus.NOT_FOUND);
         });
+    }
+
+    public PagingResponse<BillTransactionDTO> getUserBillTransactions(UUID userId, int page, int pageSize) {
+        Page<BillTransaction> pagedBill = billTransactionRepository.getAllUserTransactions(userId, PageRequest.of(page, pageSize));
+
+        return new PagingResponse<>(pagedBill.getContent().stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
+                pagedBill.getTotalElements(), pagedBill.getTotalPages());
     }
 }

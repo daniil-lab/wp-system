@@ -2,6 +2,7 @@ package com.wp.system.controller.admin;
 
 import com.wp.system.dto.activity.ActivityDTO;
 import com.wp.system.dto.bill.BillDTO;
+import com.wp.system.dto.bill.BillTransactionDTO;
 import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.dto.loyalty.LoyaltyCardDTO;
 import com.wp.system.dto.sber.SberCardDTO;
@@ -42,6 +43,18 @@ public class AdminController {
                 int pageSize
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getPagedUsers(page, pageSize)), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/bill-transactions/{userid}")
+    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getUserBillTransactions(
+            @PathVariable
+                    UUID userId,
+            @RequestParam
+                    int page,
+            @RequestParam
+                    int pageSize
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserBillTransactions(userId, page, pageSize)), HttpStatus.OK);
     }
 
     @DeleteMapping("/user/{userId}")
