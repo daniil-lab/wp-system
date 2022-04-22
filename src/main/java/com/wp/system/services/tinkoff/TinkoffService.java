@@ -145,8 +145,6 @@ public class TinkoffService {
     public TinkoffAuthChromeTab startTinkoffConnect(TinkoffStartAuthRequest request) {
         User user = authHelper.getUserFromAuthCredentials();
 
-        userService.getUserById(user.getId());
-
         Map<String, Object> defaultParams = new HashMap<>();
         defaultParams.put("appVersion", "5.5.1");
         defaultParams.put("connectionSubtype", "4G");

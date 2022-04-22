@@ -29,6 +29,7 @@ public class AuthHelper {
 
     public User getUserFromAuthCredentials() {
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof AuthCredentials) {
+            System.out.println(((AuthCredentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
             return userRepository.findById(((AuthCredentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()).orElseThrow(() -> {
                 throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
             });
