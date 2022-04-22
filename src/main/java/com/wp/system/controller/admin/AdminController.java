@@ -3,6 +3,7 @@ package com.wp.system.controller.admin;
 import com.wp.system.dto.activity.ActivityDTO;
 import com.wp.system.dto.bill.BillDTO;
 import com.wp.system.dto.category.CategoryDTO;
+import com.wp.system.dto.loyalty.LoyaltyCardDTO;
 import com.wp.system.dto.sber.SberCardDTO;
 import com.wp.system.dto.subscription.SubscriptionDTO;
 import com.wp.system.dto.tinkoff.TinkoffCardDTO;
@@ -128,5 +129,13 @@ public class AdminController {
                     UUID userId
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SubscriptionDTO(adminService.getUserSubscription(userId))), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/loyalty-cards/{userId}")
+    public ResponseEntity<ServiceResponse<List<LoyaltyCardDTO>>> getUserLoyaltyCards(
+            @PathVariable
+                    UUID userId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserLoyaltyCards(userId).stream().map(LoyaltyCardDTO::new).collect(Collectors.toList())), HttpStatus.OK);
     }
 }
