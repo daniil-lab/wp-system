@@ -1,6 +1,9 @@
 package com.wp.system.repository.tochkaa;
 
+import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.entity.tochka.TochkaTransaction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +16,5 @@ public interface TochkaTransactionRepository extends JpaRepository<TochkaTransac
 //
 //    List<SberTransaction> findByCardId(UUID id);
 //
-//    Page<SberTransaction> findByCardId(UUID id, Pageable pageable);
+    Page<TochkaTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
 }

@@ -2,6 +2,7 @@ package com.wp.system.repository.sber;
 
 import com.wp.system.entity.sber.SberCard;
 import com.wp.system.entity.sber.SberTransaction;
+import com.wp.system.entity.tochka.TochkaTransaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,6 @@ public interface SberTransactionRepository extends JpaRepository<SberTransaction
     List<SberTransaction> findByCardId(UUID id);
 
     Page<SberTransaction> findByCardId(UUID id, Pageable pageable);
+
+    Page<SberTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
 }

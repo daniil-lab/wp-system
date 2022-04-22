@@ -2,6 +2,9 @@ package com.wp.system.services.admin;
 
 import com.wp.system.config.security.UserAuthDetails;
 import com.wp.system.dto.bill.BillTransactionDTO;
+import com.wp.system.dto.sber.SberTransactionDTO;
+import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
+import com.wp.system.dto.tochka.TochkaTransactionDTO;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.entity.activity.Activity;
 import com.wp.system.entity.bill.Bill;
@@ -9,9 +12,12 @@ import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.loyalty.LoyaltyCard;
 import com.wp.system.entity.sber.SberCard;
+import com.wp.system.entity.sber.SberTransaction;
 import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.entity.tinkoff.TinkoffCard;
+import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.entity.tochka.TochkaCard;
+import com.wp.system.entity.tochka.TochkaTransaction;
 import com.wp.system.entity.user.User;
 import com.wp.system.entity.user.UserEmail;
 import com.wp.system.entity.user.UserRole;
@@ -22,9 +28,12 @@ import com.wp.system.repository.bill.BillTransactionRepository;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.loyalty.LoyaltyCardRepository;
 import com.wp.system.repository.sber.SberCardRepository;
+import com.wp.system.repository.sber.SberTransactionRepository;
 import com.wp.system.repository.subscription.SubscriptionRepository;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
+import com.wp.system.repository.tinkoff.TinkoffTransactionRepository;
 import com.wp.system.repository.tochkaa.TochkaCardRepository;
+import com.wp.system.repository.tochkaa.TochkaTransactionRepository;
 import com.wp.system.repository.user.UserRepository;
 import com.wp.system.request.admin.ExtendSubscriptionRequest;
 import com.wp.system.request.logging.CreateAdminLogRequest;
@@ -93,6 +102,15 @@ public class AdminService {
 
     @Autowired
     private ActivityRepository activityRepository;
+
+    @Autowired
+    private TinkoffTransactionRepository tinkoffTransactionRepository;
+
+    @Autowired
+    private SberTransactionRepository sberTransactionRepository;
+
+    @Autowired
+    private TochkaTransactionRepository tochkaTransactionRepository;
 
     public User resetPin(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> {
@@ -230,6 +248,27 @@ public class AdminService {
         return subscriptionRepository.getSubscriptionByUserId(userId).orElseThrow(() -> {
             throw new ServiceException("Subscription not found", HttpStatus.NOT_FOUND);
         });
+    }
+
+    public PagingResponse<TinkoffTransactionDTO> getUserTinkoffTransactions(UUID userId, int page, int pageSize) {
+        Page<TinkoffTransaction> pagedBill = tinkoffTransactionRepository.findByCardIntegrationUserId(userId, PageRequest.of(page, pageSize));
+
+        return new PagingResponse<>(pagedBill.getContent().stream().map(TinkoffTransactionDTO::new).collect(Collectors.toList()),
+                pagedBill.getTotalElements(), pagedBill.getTotalPages());
+    }
+
+    public PagingResponse<SberTransactionDTO> getUserSberTransactions(UUID userId, int page, int pageSize) {
+        Page<SberTransaction> pagedBill = sberTransactionRepository.findByCardIntegrationUserId(userId, PageRequest.of(page, pageSize));
+
+        return new PagingResponse<>(pagedBill.getContent().stream().map(SberTransactionDTO::new).collect(Collectors.toList()),
+                pagedBill.getTotalElements(), pagedBill.getTotalPages());
+    }
+
+    public PagingResponse<TochkaTransactionDTO> getUserTochkaTransactions(UUID userId, int page, int pageSize) {
+        Page<TochkaTransaction> pagedBill = tochkaTransactionRepository.findByCardIntegrationUserId(userId, PageRequest.of(page, pageSize));
+
+        return new PagingResponse<>(pagedBill.getContent().stream().map(TochkaTransactionDTO::new).collect(Collectors.toList()),
+                pagedBill.getTotalElements(), pagedBill.getTotalPages());
     }
 
     public PagingResponse<BillTransactionDTO> getUserBillTransactions(UUID userId, int page, int pageSize) {

@@ -6,9 +6,12 @@ import com.wp.system.dto.bill.BillTransactionDTO;
 import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.dto.loyalty.LoyaltyCardDTO;
 import com.wp.system.dto.sber.SberCardDTO;
+import com.wp.system.dto.sber.SberTransactionDTO;
 import com.wp.system.dto.subscription.SubscriptionDTO;
 import com.wp.system.dto.tinkoff.TinkoffCardDTO;
+import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
 import com.wp.system.dto.tochka.TochkaCardDTO;
+import com.wp.system.dto.tochka.TochkaTransactionDTO;
 import com.wp.system.dto.user.UserDTO;
 import com.wp.system.request.admin.ExtendSubscriptionRequest;
 import com.wp.system.request.user.EditUserRequest;
@@ -56,6 +59,42 @@ public class AdminController {
                     int pageSize
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserBillTransactions(userId, page, pageSize)), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/sber-transactions/{userId}")
+    public ResponseEntity<ServiceResponse<PagingResponse<SberTransactionDTO>>> getUserSberTransactions(
+            @PathVariable
+                    UUID userId,
+            @RequestParam
+                    int page,
+            @RequestParam
+                    int pageSize
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserSberTransactions(userId, page, pageSize)), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/tochka-transactions/{userId}")
+    public ResponseEntity<ServiceResponse<PagingResponse<TochkaTransactionDTO>>> getUserTochkaTransactions(
+            @PathVariable
+                    UUID userId,
+            @RequestParam
+                    int page,
+            @RequestParam
+                    int pageSize
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserTochkaTransactions(userId, page, pageSize)), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/tinkoff-transactions/{userId}")
+    public ResponseEntity<ServiceResponse<PagingResponse<TinkoffTransactionDTO>>> getUserTinkoffTransactions(
+            @PathVariable
+                    UUID userId,
+            @RequestParam
+                    int page,
+            @RequestParam
+                    int pageSize
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), adminService.getUserTinkoffTransactions(userId, page, pageSize)), HttpStatus.OK);
     }
 
     @DeleteMapping("/user/{userId}")

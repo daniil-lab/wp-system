@@ -18,4 +18,6 @@ public interface TinkoffTransactionRepository extends JpaRepository<TinkoffTrans
     Optional<TinkoffTransaction> getTinkoffTransactionByTinkoffId(String id, UUID cardId);
 
     Page<TinkoffTransaction> findByCardId(UUID id, Pageable pageable);
+
+    Page<TinkoffTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
 }
