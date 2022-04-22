@@ -35,6 +35,8 @@ public class AuthHelper {
             });
         }
 
+        System.out.println("tut");
+
         throw new ServiceException("User not found", HttpStatus.NOT_FOUND);
     }
 }
