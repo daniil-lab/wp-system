@@ -149,8 +149,7 @@ public class TinkoffService {
         User user = authHelper.getUserFromAuthCredentials();
 
         RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
         TinkoffAuthRequest authRequest = new TinkoffAuthRequest();
 
@@ -336,9 +335,7 @@ public class TinkoffService {
             if(authRequest != null) {
 //                Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
 
-                ObjectMapper mapper = new ObjectMapper();
-
-                mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+                ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
                 try {
                     OkHttpClient client = new OkHttpClient().newBuilder()
