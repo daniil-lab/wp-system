@@ -1,18 +1,18 @@
 package com.wp.system.utils.tinkoff.request;
 
 public class TinkoffSmsRequest {
-    private String phone;
+    private String username;
 
     private String password;
 
     public TinkoffSmsRequest() {}
 
-    public String getPhone() {
-        return phone;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

@@ -162,7 +162,7 @@ public class TinkoffService {
 
             System.out.println(sessionResponse.getBody().getPayload());
 
-            body.setPhone(request.getPhone());
+            body.setUsername(request.getPhone());
             body.setPassword(request.getPassword());
 
             ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/sign_up?sessionid=" + sessionResponse.getBody().getPayload() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
