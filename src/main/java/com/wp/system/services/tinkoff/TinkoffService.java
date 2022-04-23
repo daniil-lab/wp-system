@@ -303,14 +303,14 @@ public class TinkoffService {
 
                 HttpEntity<TinkoffSmsSubmitRequest> requestData = new HttpEntity<>(smsSubmitRequest, headers);
 
-                ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/confirm?sessionid=" + authRequest.getSessionId() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+                ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/confirm?sessionid=" + authRequest.getSessionId() + "&origin=web%2Cib5%2Cplatform",
                         HttpMethod.POST,
                         requestData,
                         String.class);
 
                 System.out.println(signUpResponse.getBody());
 
-                ResponseEntity<String> levelUp = restTemplate.exchange("https://api.tinkoff.ru/v1/level_up?sessionid=" + authRequest.getSessionId() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+                ResponseEntity<String> levelUp = restTemplate.exchange("https://api.tinkoff.ru/v1/level_up?sessionid=" + authRequest.getSessionId() + "&origin=web%2Cib5%2Cplatform",
                         HttpMethod.POST,
                         new HttpEntity<>(null, null),
                         String.class);
