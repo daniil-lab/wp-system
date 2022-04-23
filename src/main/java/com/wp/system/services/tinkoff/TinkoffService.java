@@ -24,10 +24,15 @@ import com.wp.system.utils.tinkoff.TinkoffAuthRequest;
 import com.wp.system.utils.tinkoff.TinkoffSync;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
+import com.wp.system.utils.tinkoff.request.TinkoffSmsDataRequest;
 import com.wp.system.utils.tinkoff.request.TinkoffSmsRequest;
 import com.wp.system.utils.tinkoff.request.TinkoffSmsSubmitRequest;
 import com.wp.system.utils.tinkoff.response.TinkoffAuthResponse;
 import com.wp.system.utils.tinkoff.response.TinkoffSessionResponse;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.openqa.selenium.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -151,39 +156,82 @@ public class TinkoffService {
 
         HttpHeaders headers = new HttpHeaders();
 
+        headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         ResponseEntity<TinkoffSessionResponse> sessionResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/session?appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
                 HttpMethod.GET,
-                new HttpEntity<>(null, null),
+                new HttpEntity<>(null, headers),
                 TinkoffSessionResponse.class);
 
         if(sessionResponse.getStatusCodeValue() == 200) {
-            TinkoffSmsRequest body = new TinkoffSmsRequest();
+            try {
+                OkHttpClient client = new OkHttpClient().newBuilder()
+                        .build();
+                okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/x-www-form-urlencoded");
+                RequestBody body = RequestBody.create(mediaType, "phone=" + request.getPhone());
+                Request signRequest = new Request.Builder()
+                        .url("https://api.tinkoff.ru/v1/sign_up?sessionid=" + sessionResponse.getBody() + "&origin=web%2Cib5%2Cplatform")
+                        .method("POST", body)
+                        .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                        .build();
+                Response response = client.newCall(signRequest).execute();
 
-            System.out.println(sessionResponse.getBody().getPayload());
+                String data = response.body().string();
 
-            body.setPhone(request.getPhone());
-            body.setPassword(request.getPassword());
+                TinkoffAuthResponse tinkoffAuthResponse = mapper.readValue(data, TinkoffAuthResponse.class);
 
-            ResponseEntity<TinkoffAuthResponse> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/sign_up?sessionid=" + sessionResponse.getBody().getPayload() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
-                    HttpMethod.POST,
-                    new HttpEntity<>(body, headers),
-                    TinkoffAuthResponse.class);
+                authRequest.setPassword(request.getPassword());
+                authRequest.setPhone(request.getPhone());
+                authRequest.setOperationTicket(tinkoffAuthResponse.getOperationTicket());
+                authRequest.setInitialOperation(tinkoffAuthResponse.getInitialOperation());
+                authRequest.setSessionId(sessionResponse.getBody().getPayload());
+                authRequest.setReAuth(request.isReAuth());
+                authRequest.setStartDate(request.getExportStartDate());
 
-            System.out.println(signUpResponse.getStatusCodeValue());
-            System.out.println(signUpResponse.getBody());
+                authRequests.add(authRequest);
 
-            authRequest.setPassword(request.getPassword());
-            authRequest.setPhone(request.getPhone());
-            authRequest.setOperationTicket(signUpResponse.getBody().getOperationTicket());
-            authRequest.setInitialOperation(signUpResponse.getBody().getInitialOperation());
-            authRequest.setSessionId(sessionResponse.getBody().getPayload());
-            authRequest.setReAuth(request.isReAuth());
+                return authRequest;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            authRequests.add(authRequest);
 
-            return authRequest;
+
+
+
+
+
+
+
+
+
+
+
+//            System.out.println(sessionResponse.getBody().getPayload());
+//            HashMap<String, Object> body = new HashMap<>();
+//            body.put("phone", request.getPhone());
+//
+//            ResponseEntity<TinkoffAuthResponse> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/sign_up?sessionid=" + sessionResponse.getBody().getPayload() + "&origin=web,ib5,platform",
+//                    HttpMethod.POST,
+//                    new HttpEntity<>(body, headers),
+//                    TinkoffAuthResponse.class);
+//
+//            System.out.println(signUpResponse.getStatusCodeValue());
+//            System.out.println(signUpResponse.getBody());
+//            System.out.println(signUpResponse.getBody().getOperationTicket());
+//
+//            authRequest.setPassword(request.getPassword());
+//            authRequest.setPhone(request.getPhone());
+//            authRequest.setOperationTicket(signUpResponse.getBody().getOperationTicket());
+//            authRequest.setInitialOperation(signUpResponse.getBody().getInitialOperation());
+//            authRequest.setSessionId(sessionResponse.getBody().getPayload());
+//            authRequest.setReAuth(request.isReAuth());
+//            authRequest.setStartDate(request.getExportStartDate());
+//
+//            authRequests.add(authRequest);
+//
+//            return authRequest;
         }
 
         return null;
@@ -287,63 +335,104 @@ public class TinkoffService {
 //                Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
 
                 ObjectMapper mapper = new ObjectMapper();
-                RestTemplate restTemplate = new RestTemplate();
 
-                restTemplate.getMessageConverters().add(new ObjectToUrlEncodedMapper(mapper));
+                try {
+                    OkHttpClient client = new OkHttpClient().newBuilder()
+                            .build();
+                    okhttp3.MediaType mediaType = okhttp3.MediaType.parse("application/x-www-form-urlencoded");
+                    RequestBody body = RequestBody.create(mediaType, "initialOperation=sign_up&initialOperationTicket=" + authRequest.getOperationTicket() + "&confirmationData={\"SMSBYID\": " + Integer.parseInt(request.getCode()) + "}");
+                    Request confirmRequest = new Request.Builder()
+                            .url("https://api.tinkoff.ru/v1/confirm?sessionid=" + authRequest.getSessionId() + "&origin=web%2Cib5%2Cplatform")
+                            .method("POST", body)
+                            .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                            .build();
+                    Response response = client.newCall(confirmRequest).execute();
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    System.out.println(response.body().string());
 
-                System.out.println(authRequest.getPassword());
-                System.out.println(authRequest.getPhone());
-                System.out.println(authRequest.getOperationTicket());
-                TinkoffSmsSubmitRequest smsSubmitRequest = new TinkoffSmsSubmitRequest();
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                smsSubmitRequest.setInitialOperation("sign_up");
-                smsSubmitRequest.setInitialOperationTicket(authRequest.getOperationTicket());
-                smsSubmitRequest.setConfirmationData("{\"SMSBYID\":" + Integer.parseInt(request.getCode()) + "}");
-
-                HttpEntity<TinkoffSmsSubmitRequest> requestData = new HttpEntity<>(smsSubmitRequest, headers);
-
-                ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/confirm?sessionid=" + authRequest.getSessionId() + "&origin=web%2Cib5%2Cplatform",
-                        HttpMethod.POST,
-                        requestData,
-                        String.class);
-
-                System.out.println(signUpResponse.getBody());
-
-                ResponseEntity<String> levelUp = restTemplate.exchange("https://api.tinkoff.ru/v1/level_up?sessionid=" + authRequest.getSessionId() + "&origin=web%2Cib5%2Cplatform",
-                        HttpMethod.POST,
-                        new HttpEntity<>(null, null),
-                        String.class);
-
-                System.out.println(levelUp.getBody());
-
-//                if(integration.isPresent()) {
-////                    integration.get().setToken(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue());
-////                    integration.get().setWuid(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
+//                RestTemplate restTemplate = new RestTemplate();
 //
-////                if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
-////                    return false;
+//                restTemplate.getMessageConverters().add(new ObjectToUrlEncodedMapper(mapper));
 //
-//                    tinkoffIntegrationRepository.save(integration.get());
-//                } else {
-////                    TinkoffIntegration newIntegration = new TinkoffIntegration(userService.getUserById(tinkoffAuthChromeTab.getUserId()),
-////                            tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue(),
-////                            tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
-////
-////                    newIntegration.setPassword(request.getPassword());
-////                    newIntegration.setUsername(tinkoffAuthChromeTab.getPhone());
-////                    newIntegration.setStartDate(tinkoffAuthChromeTab.getExportStartDate());
-////
-////                    tinkoffIntegrationRepository.save(newIntegration);
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
+//                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//                HashMap<String, Object> body = new HashMap<>();
+//                body.put("initialOperation", "sign_up");
+//                body.put("initialOperationTicket", authRequest.getOperationTicket());
+//
+//                try {
+//                    body.put("confirmationData", mapper.writeValueAsString(new TinkoffSmsDataRequest(Integer.parseInt(request.getCode()))));
+//                    System.out.println(mapper.writeValueAsString(new TinkoffSmsDataRequest(Integer.parseInt(request.getCode()))));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
 //                }
 //
-//                tinkoffAuthChromeTab.getDriver().quit();
+//                System.out.println(authRequest.getPassword());
+//                System.out.println(authRequest.getPhone());
+//                System.out.println(authRequest.getOperationTicket());
+//                System.out.println(authRequest.getSessionId());
+//                TinkoffSmsSubmitRequest smsSubmitRequest = new TinkoffSmsSubmitRequest();
 //
-//                tinkoffChromeTabs.remove(tinkoffAuthChromeTab);
+//                smsSubmitRequest.setInitialOperation("sign_up");
+//                smsSubmitRequest.setInitialOperationTicket(authRequest.getOperationTicket());
+//                smsSubmitRequest.setConfirmationData("{\"SMSBYID\":" + Integer.parseInt(request.getCode()) + "}");
 //
-//                return true;
+//                HttpEntity requestData = new HttpEntity<>(body, headers);
+//
+//                ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/confirm?sessionid=" + authRequest.getSessionId() + "&origin=web%2Cib5%2Cplatform",
+//                        HttpMethod.POST,
+//                        requestData,
+//                        String.class);
+//
+//                System.out.println(signUpResponse.getBody());
+//
+//                if(signUpResponse.getStatusCodeValue() == 200 && !signUpResponse.getBody().contains("error")) {
+//                    HashMap<String, Object> submitBody = new HashMap<>();
+//                    body.put("username", authRequest.getPhone());
+//                    body.put("password", authRequest.getPassword());
+//
+//                    ResponseEntity<TinkoffAuthResponse> submitResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/sign_up?sessionid=" + authRequest.getSessionId() + "&origin=web,ib5,platform",
+//                            HttpMethod.POST,
+//                            new HttpEntity<>(submitBody, headers),
+//                            TinkoffAuthResponse.class);
+//
+//                    ResponseEntity<String> levelUp = restTemplate.exchange("https://api.tinkoff.ru/v1/level_up?sessionid=" + authRequest.getSessionId() + "&origin=web%2Cib5%2Cplatform",
+//                            HttpMethod.POST,
+//                            new HttpEntity<>(null, null),
+//                            String.class);
+//
+//                    if(levelUp.getStatusCodeValue() == 200 && !levelUp.getBody().contains("error")) {
+//                        Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
+//
+//                        if(integration.isPresent()) {
+//                            integration.get().setToken(authRequest.getSessionId());
+//
+//                            tinkoffIntegrationRepository.save(integration.get());
+//                        } else {
+//                            TinkoffIntegration newIntegration = new TinkoffIntegration(user,
+//                                    authRequest.getSessionId());
+//
+//                            newIntegration.setPassword(request.getPassword());
+//                            newIntegration.setUsername(authRequest.getPhone());
+//                            newIntegration.setStartDate(authRequest.getStartDate());
+//
+//                            tinkoffIntegrationRepository.save(newIntegration);
+//                        }
+//
+//                        return true;
+//                    }
+//
+//                    return false;
+//                }
+
+                return false;
             }
         } catch (NoSuchElementException e) {
             e.printStackTrace();

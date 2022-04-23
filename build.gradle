@@ -25,6 +25,10 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 	implementation 'org.springframework.boot:spring-boot-starter-mail:2.5.6'
 
+	implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
+	implementation("com.squareup.okhttp3:okhttp")
+	implementation("com.squareup.okhttp3:logging-interceptor")
+
 	implementation 'org.seleniumhq.selenium:selenium-java:4.0.0'
 	implementation 'io.github.bonigarcia:webdrivermanager:5.1.0'
 

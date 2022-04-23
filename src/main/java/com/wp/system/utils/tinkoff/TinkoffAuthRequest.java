@@ -1,5 +1,6 @@
 package com.wp.system.utils.tinkoff;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class TinkoffAuthRequest {
@@ -19,7 +20,17 @@ public class TinkoffAuthRequest {
 
     private String initialOperation;
 
+    private Instant startDate;
+
     public TinkoffAuthRequest() {}
+
+    public Instant getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Instant startDate) {
+        this.startDate = startDate;
+    }
 
     public String getOperationTicket() {
         return operationTicket;

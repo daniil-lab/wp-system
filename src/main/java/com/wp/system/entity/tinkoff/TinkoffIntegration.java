@@ -36,9 +36,6 @@ public class TinkoffIntegration {
     @JsonIgnore
     private String token;
 
-    @JsonIgnore
-    private String wuid;
-
     private TinkoffSyncStage stage = TinkoffSyncStage.NONE;
 
     @JsonIgnore
@@ -94,11 +91,10 @@ public class TinkoffIntegration {
         this.stage = stage;
     }
 
-    public TinkoffIntegration(User user, String token, String wuid) {
+    public TinkoffIntegration(User user, String token) {
         this.startDate = Instant.now();
         this.user = user;
         this.token = token;
-        this.wuid = wuid;
     }
 
     public String getToken() {
@@ -107,14 +103,6 @@ public class TinkoffIntegration {
 
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public String getWuid() {
-        return wuid;
-    }
-
-    public void setWuid(String wuid) {
-        this.wuid = wuid;
     }
 
     public UUID getId() {
