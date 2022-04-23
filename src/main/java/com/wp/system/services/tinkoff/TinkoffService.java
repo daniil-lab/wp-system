@@ -299,7 +299,7 @@ public class TinkoffService {
 
                 smsSubmitRequest.setInitialOperation("sign_up");
                 smsSubmitRequest.setInitialOperationTicket(authRequest.getOperationTicket());
-                smsSubmitRequest.setConfirmationData("{\"SMSBYID\":" + request.getCode() + "}");
+                smsSubmitRequest.setConfirmationData("{\"SMSBYID\":" + Integer.parseInt(request.getCode()) + "}");
 
                 HttpEntity<TinkoffSmsSubmitRequest> requestData = new HttpEntity<>(smsSubmitRequest, headers);
 
