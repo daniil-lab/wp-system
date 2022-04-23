@@ -1,5 +1,6 @@
 package com.wp.system.services.tinkoff;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
 import com.wp.system.entity.BankTransactionType;
@@ -149,6 +150,7 @@ public class TinkoffService {
 
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
         TinkoffAuthRequest authRequest = new TinkoffAuthRequest();
 
@@ -335,6 +337,8 @@ public class TinkoffService {
 //                Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
 
                 ObjectMapper mapper = new ObjectMapper();
+
+                mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
 
                 try {
                     OkHttpClient client = new OkHttpClient().newBuilder()
