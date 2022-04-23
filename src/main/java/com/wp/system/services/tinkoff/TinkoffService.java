@@ -26,6 +26,7 @@ import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
 import com.wp.system.utils.tinkoff.request.TinkoffSmsRequest;
 import com.wp.system.utils.tinkoff.request.TinkoffSmsSubmitRequest;
+import com.wp.system.utils.tinkoff.response.TinkoffAuthResponse;
 import com.wp.system.utils.tinkoff.response.TinkoffSessionResponse;
 import org.openqa.selenium.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,20 +165,20 @@ public class TinkoffService {
 
             body.setPhone(request.getPhone());
 
-            ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/sign_up?sessionid=" + sessionResponse.getBody().getPayload() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+            ResponseEntity<TinkoffAuthResponse> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/sign_up?sessionid=" + sessionResponse.getBody().getPayload() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
                     HttpMethod.POST,
                     new HttpEntity<>(body, headers),
-                    String.class);
+                    TinkoffAuthResponse.class);
 
             System.out.println(signUpResponse.getStatusCodeValue());
             System.out.println(signUpResponse.getBody());
 
-//            authRequest.setPassword(request.getPassword());
-//            authRequest.setPhone(request.getPhone());
-//            authRequest.setOperationTicket(signUpResponse.getBody().getOperationTicket());
-//            authRequest.setInitialOperation(signUpResponse.getBody().getInitialOperation());
-//            authRequest.setSessionId(sessionResponse.getBody().getPayload());
-//            authRequest.setReAuth(request.isReAuth());
+            authRequest.setPassword(request.getPassword());
+            authRequest.setPhone(request.getPhone());
+            authRequest.setOperationTicket(signUpResponse.getBody().getOperationTicket());
+            authRequest.setInitialOperation(signUpResponse.getBody().getInitialOperation());
+            authRequest.setSessionId(sessionResponse.getBody().getPayload());
+            authRequest.setReAuth(request.isReAuth());
 
             authRequests.add(authRequest);
 
