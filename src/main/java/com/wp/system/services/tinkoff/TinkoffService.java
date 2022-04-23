@@ -297,7 +297,7 @@ public class TinkoffService {
                 System.out.println(authRequest.getOperationTicket());
                 TinkoffSmsSubmitRequest smsSubmitRequest = new TinkoffSmsSubmitRequest();
 
-                smsSubmitRequest.setInitialOperation(authRequest.getInitialOperation());
+                smsSubmitRequest.setInitialOperation("sign_up");
                 smsSubmitRequest.setInitialOperationTicket(authRequest.getOperationTicket());
                 smsSubmitRequest.setConfirmationData("{\"SMSBYID\":" + request.getCode() + "}");
 
