@@ -1,9 +1,6 @@
 package com.wp.system.controller.tinkoff;
 
-import com.wp.system.dto.tinkoff.TinkoffAuthChromeTabDTO;
-import com.wp.system.dto.tinkoff.TinkoffCardDTO;
-import com.wp.system.dto.tinkoff.TinkoffIntegrationDTO;
-import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
+import com.wp.system.dto.tinkoff.*;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
@@ -60,11 +57,11 @@ public class TinkoffController {
     @PostMapping(value = "/connect/start")
     @Operation(summary = "Старт авторизации Tinkoff")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<ServiceResponse<TinkoffAuthChromeTabDTO>> startAuth(
+    public ResponseEntity<ServiceResponse<TinkoffAuthRequestDTO>> startAuth(
             @RequestBody
                 TinkoffStartAuthRequest request
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffAuthChromeTabDTO(tinkoffService.startTinkoffConnect(request)), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffAuthRequestDTO(tinkoffService.startTinkoffConnect(request)), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_UPDATE', 'TINKOFF_FULL')")

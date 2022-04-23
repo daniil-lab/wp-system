@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
 import com.wp.system.entity.BankTransactionType;
 import com.wp.system.entity.category.Category;
-import com.wp.system.entity.sber.SberTransaction;
 import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
@@ -14,7 +13,6 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tinkoff.TinkoffTransactionRepository;
-import com.wp.system.request.sber.UpdateSberTransactionRequest;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
 import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
@@ -26,12 +24,10 @@ import com.wp.system.utils.tinkoff.TinkoffAuthRequest;
 import com.wp.system.utils.tinkoff.TinkoffSync;
 import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.repository.tinkoff.TinkoffIntegrationRepository;
-import com.wp.system.utils.tinkoff.WebDriverCreator;
+import com.wp.system.utils.tinkoff.request.TinkoffSmsRequest;
+import com.wp.system.utils.tinkoff.request.TinkoffSmsSubmitRequest;
 import com.wp.system.utils.tinkoff.response.TinkoffSessionResponse;
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +39,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,6 +63,8 @@ public class TinkoffService {
     private AuthHelper authHelper;
 
     private List<TinkoffAuthChromeTab> tinkoffChromeTabs = new ArrayList<>();
+
+    private List<TinkoffAuthRequest> authRequests = new ArrayList<>();
 
     public TinkoffIntegration getIntegrationByUserId() {
         User user = authHelper.getUserFromAuthCredentials();
@@ -141,11 +138,13 @@ public class TinkoffService {
         tinkoffChromeTabs.removeIf(tab -> tab.getExpiredAt().isBefore(Instant.now()));
     }
 
-    public TinkoffAuthChromeTab startTinkoffConnect(TinkoffStartAuthRequest request) {
+    public TinkoffAuthRequest startTinkoffConnect(TinkoffStartAuthRequest request) {
         User user = authHelper.getUserFromAuthCredentials();
 
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
+
+        TinkoffAuthRequest authRequest = new TinkoffAuthRequest();
 
         restTemplate.getMessageConverters().add(new ObjectToUrlEncodedMapper(mapper));
 
@@ -153,18 +152,40 @@ public class TinkoffService {
 
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        ResponseEntity<TinkoffSessionResponse> sessionResponse = restTemplate.exchange("https://www.tinkoff.ru/api/common/v1/session?appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+        ResponseEntity<TinkoffSessionResponse> sessionResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/session?appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
                 HttpMethod.GET,
-                new HttpEntity<>(null, headers),
+                new HttpEntity<>(null, null),
                 TinkoffSessionResponse.class);
 
         if(sessionResponse.getStatusCodeValue() == 200) {
+            TinkoffSmsRequest body = new TinkoffSmsRequest();
 
+            System.out.println(sessionResponse.getBody().getPayload());
+
+            body.setPhone(request.getPhone());
+            body.setPassword(request.getPassword());
+
+            ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/sign_up?sessionid=" + sessionResponse.getBody().getPayload() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+                    HttpMethod.POST,
+                    new HttpEntity<>(body, headers),
+                    String.class);
+
+            System.out.println(signUpResponse.getStatusCodeValue());
+            System.out.println(signUpResponse.getBody());
+
+//            authRequest.setPassword(request.getPassword());
+//            authRequest.setPhone(request.getPhone());
+//            authRequest.setOperationTicket(signUpResponse.getBody().getOperationTicket());
+//            authRequest.setInitialOperation(signUpResponse.getBody().getInitialOperation());
+//            authRequest.setSessionId(sessionResponse.getBody().getPayload());
+//            authRequest.setReAuth(request.isReAuth());
+
+            authRequests.add(authRequest);
+
+            return authRequest;
         }
-        System.out.println(sessionResponse.getStatusCodeValue());
 
         return null;
-
 //        String phone = null;
 //        Instant startExportDate = null;
 //        String password = null;
@@ -253,61 +274,75 @@ public class TinkoffService {
 
     public Boolean submitTinkoffConnect(TinkoffSubmitAuthRequest request) {
         try {
-            TinkoffAuthChromeTab tinkoffAuthChromeTab = null;
+            User user = authHelper.getUserFromAuthCredentials();
 
-            for (TinkoffAuthChromeTab r : this.tinkoffChromeTabs)
+            TinkoffAuthRequest authRequest = null;
+
+            for (TinkoffAuthRequest r : this.authRequests)
                 if(r.getId().equals(request.getId()))
-                    tinkoffAuthChromeTab = r;
+                    authRequest = r;
 
-            if(tinkoffAuthChromeTab != null) {
-                tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+            if(authRequest != null) {
+//                Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
 
-                tinkoffAuthChromeTab.getDriver().findElement(By.id("smsCode")).sendKeys(request.getCode());
+                ObjectMapper mapper = new ObjectMapper();
+                RestTemplate restTemplate = new RestTemplate();
 
-                tinkoffAuthChromeTab.getDriver().manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+                restTemplate.getMessageConverters().add(new ObjectToUrlEncodedMapper(mapper));
 
-                tinkoffAuthChromeTab.getDriver().findElement(By.id("password")).sendKeys(tinkoffAuthChromeTab.getPassword() == null ?
-                        request.getPassword() : tinkoffAuthChromeTab.getPassword());
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-                tinkoffAuthChromeTab.getDriver().findElement(By.id("submit-button")).click();
+                System.out.println(authRequest.getPassword());
+                System.out.println(authRequest.getPhone());
 
-                tinkoffAuthChromeTab.getDriver().manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+                TinkoffSmsSubmitRequest smsSubmitRequest = new TinkoffSmsSubmitRequest();
 
-                if(!tinkoffAuthChromeTab.getDriver().getCurrentUrl().contains("summary")) {
-                    tinkoffAuthChromeTab.getDriver().quit();
+                smsSubmitRequest.setInitialOperation(authRequest.getInitialOperation());
+                smsSubmitRequest.setInitialOperationTicket(authRequest.getOperationTicket());
+                smsSubmitRequest.setConfirmationData("{\"SMSBYID\":" + request.getCode() + "}");
 
-                    tinkoffChromeTabs.remove(tinkoffAuthChromeTab);
+                HttpEntity<TinkoffSmsSubmitRequest> requestData = new HttpEntity<>(smsSubmitRequest, headers);
 
-                    throw new ServiceException("Error on submit auth step, let`s try more or later", HttpStatus.INTERNAL_SERVER_ERROR);
-                }
+                ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/confirm?username=" + authRequest.getPhone() + "&password=" + authRequest.getPassword() + "&sessionid=" + authRequest.getSessionId() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+                        HttpMethod.POST,
+                        requestData,
+                        String.class);
 
-                Optional<TinkoffIntegration> integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(tinkoffAuthChromeTab.getUserId());
+                System.out.println(signUpResponse.getBody());
 
-                if(integration.isPresent()) {
-                    integration.get().setToken(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue());
-                    integration.get().setWuid(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
+                ResponseEntity<String> levelUp = restTemplate.exchange("https://api.tinkoff.ru/v1/level_up?sessionid=" + authRequest.getSessionId() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+                        HttpMethod.POST,
+                        new HttpEntity<>(null, null),
+                        String.class);
 
-//                if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
-//                    return false;
+                System.out.println(levelUp.getBody());
 
-                    tinkoffIntegrationRepository.save(integration.get());
-                } else {
-                    TinkoffIntegration newIntegration = new TinkoffIntegration(userService.getUserById(tinkoffAuthChromeTab.getUserId()),
-                            tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue(),
-                            tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
-
-                    newIntegration.setPassword(request.getPassword());
-                    newIntegration.setUsername(tinkoffAuthChromeTab.getPhone());
-                    newIntegration.setStartDate(tinkoffAuthChromeTab.getExportStartDate());
-
-                    tinkoffIntegrationRepository.save(newIntegration);
-                }
-
-                tinkoffAuthChromeTab.getDriver().quit();
-
-                tinkoffChromeTabs.remove(tinkoffAuthChromeTab);
-
-                return true;
+//                if(integration.isPresent()) {
+////                    integration.get().setToken(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue());
+////                    integration.get().setWuid(tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
+//
+////                if(integration.get().getStage().equals(TinkoffSyncStage.IN_SYNC))
+////                    return false;
+//
+//                    tinkoffIntegrationRepository.save(integration.get());
+//                } else {
+////                    TinkoffIntegration newIntegration = new TinkoffIntegration(userService.getUserById(tinkoffAuthChromeTab.getUserId()),
+////                            tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("api_session").getValue(),
+////                            tinkoffAuthChromeTab.getDriver().manage().getCookieNamed("__P__wuid").getValue());
+////
+////                    newIntegration.setPassword(request.getPassword());
+////                    newIntegration.setUsername(tinkoffAuthChromeTab.getPhone());
+////                    newIntegration.setStartDate(tinkoffAuthChromeTab.getExportStartDate());
+////
+////                    tinkoffIntegrationRepository.save(newIntegration);
+//                }
+//
+//                tinkoffAuthChromeTab.getDriver().quit();
+//
+//                tinkoffChromeTabs.remove(tinkoffAuthChromeTab);
+//
+//                return true;
             }
         } catch (NoSuchElementException e) {
             e.printStackTrace();

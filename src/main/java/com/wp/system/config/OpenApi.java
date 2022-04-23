@@ -9,10 +9,10 @@ import java.util.List;
 
 @Configuration
 public class OpenApi {
-//    @Bean
-//    public OpenAPI customOpenAPI() {
-//        Server server = new Server();
-//        server.setUrl("https://wallet-box-app.ru:8888/");
-//        return new OpenAPI().servers(List.of(server));
-//    }
+    @Bean
+    public OpenAPI customOpenAPI() {
+        Server server = new Server();
+        server.setUrl("https://wallet-box-app.ru:8888/");
+        return new OpenAPI().servers(List.of(server));
+    }
 }

@@ -2,15 +2,15 @@ package com.wp.system.utils.tinkoff.response;
 
 public class TinkoffSessionResponse {
 
-    private String sessionid;
+    private String payload;
 
     public TinkoffSessionResponse() {}
 
-    public String getSessionid() {
-        return sessionid;
+    public String getPayload() {
+        return payload;
     }
 
-    public void setSessionid(String sessionid) {
-        this.sessionid = sessionid;
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 }

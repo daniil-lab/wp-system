@@ -3,6 +3,8 @@ package com.wp.system.utils.tinkoff;
 import java.util.UUID;
 
 public class TinkoffAuthRequest {
+    private UUID id = UUID.randomUUID();
+
     private String phone;
 
     private String password;
@@ -11,7 +13,45 @@ public class TinkoffAuthRequest {
 
     private String sessionId;
 
+    private Boolean reAuth;
+
+    private String operationTicket;
+
+    private String initialOperation;
+
     public TinkoffAuthRequest() {}
+
+    public String getOperationTicket() {
+        return operationTicket;
+    }
+
+    public void setOperationTicket(String operationTicket) {
+        this.operationTicket = operationTicket;
+    }
+
+    public String getInitialOperation() {
+        return initialOperation;
+    }
+
+    public void setInitialOperation(String initialOperation) {
+        this.initialOperation = initialOperation;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Boolean getReAuth() {
+        return reAuth;
+    }
+
+    public void setReAuth(Boolean reAuth) {
+        this.reAuth = reAuth;
+    }
 
     public String getSessionId() {
         return sessionId;
