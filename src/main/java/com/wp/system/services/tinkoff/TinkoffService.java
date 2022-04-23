@@ -162,8 +162,7 @@ public class TinkoffService {
 
             System.out.println(sessionResponse.getBody().getPayload());
 
-            body.setUsername(request.getPhone());
-            body.setPassword(request.getPassword());
+            body.setPhone(request.getPhone());
 
             ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/sign_up?sessionid=" + sessionResponse.getBody().getPayload() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
                     HttpMethod.POST,
@@ -295,7 +294,7 @@ public class TinkoffService {
 
                 System.out.println(authRequest.getPassword());
                 System.out.println(authRequest.getPhone());
-
+                System.out.println(authRequest.getOperationTicket());
                 TinkoffSmsSubmitRequest smsSubmitRequest = new TinkoffSmsSubmitRequest();
 
                 smsSubmitRequest.setInitialOperation(authRequest.getInitialOperation());
@@ -304,7 +303,7 @@ public class TinkoffService {
 
                 HttpEntity<TinkoffSmsSubmitRequest> requestData = new HttpEntity<>(smsSubmitRequest, headers);
 
-                ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/confirm?username=" + authRequest.getPhone() + "&password=" + authRequest.getPassword() + "&sessionid=" + authRequest.getSessionId() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
+                ResponseEntity<String> signUpResponse = restTemplate.exchange("https://api.tinkoff.ru/v1/confirm?sessionid=" + authRequest.getSessionId() + "&appName=pfphome&appVersion=pfphome-prod-v0.30.4&origin=web%2Cib5%2Cplatform",
                         HttpMethod.POST,
                         requestData,
                         String.class);
