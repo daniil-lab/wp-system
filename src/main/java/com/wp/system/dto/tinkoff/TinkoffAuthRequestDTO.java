@@ -1,5 +1,6 @@
 package com.wp.system.dto.tinkoff;
 
+import com.wp.system.utils.tinkoff.TinkoffAuthChromeTab;
 import com.wp.system.utils.tinkoff.TinkoffAuthRequest;
 import com.wp.system.utils.tinkoff.request.TinkoffSmsRequest;
 
@@ -15,6 +16,13 @@ public class TinkoffAuthRequestDTO {
             return;
 
         this.id = r.getId();
+    }
+
+    public TinkoffAuthRequestDTO(TinkoffAuthChromeTab t) {
+        if(t == null)
+            return;
+
+        this.id = t.getId();
     }
 
     public UUID getId() {
