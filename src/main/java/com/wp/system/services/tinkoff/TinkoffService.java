@@ -507,6 +507,6 @@ public class TinkoffService {
 //            throw new ServiceException("Auth page element not found", HttpStatus.BAD_REQUEST);
 //        }
 
-        throw new ServiceException("Start auth stage not found", HttpStatus.NOT_FOUND);
+//        throw new ServiceException("Start auth stage not found", HttpStatus.NOT_FOUND);
     }
 }
