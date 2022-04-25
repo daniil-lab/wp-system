@@ -51,6 +51,7 @@ public class CreateCategoryRequest {
     public CreateCategoryRequest(BaseCategory category, UUID userId) {
         this.name = category.getName();
         this.color = category.getColor();
+        this.onlyForEarn = false;
         this.description = category.getDescription();
         this.icon = category.getIcon() != null ? category.getIcon().getId() : null;
         this.userId = userId;
