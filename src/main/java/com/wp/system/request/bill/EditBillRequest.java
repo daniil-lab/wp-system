@@ -10,11 +10,28 @@ public class EditBillRequest {
     @Length(min = 4, max = 64, message = ValidationErrorMessages.INVALID_BILL_NAME)
     private String name;
 
+    private Integer newAmount;
+
+    private Integer newCents;
+
     public EditBillRequest() {}
 
-    public EditBillRequest(String name) {
-        this.name = name;
+    public Integer getNewAmount() {
+        return newAmount;
     }
+
+    public void setNewAmount(Integer newAmount) {
+        this.newAmount = newAmount;
+    }
+
+    public Integer getNewCents() {
+        return newCents;
+    }
+
+    public void setNewCents(Integer newCents) {
+        this.newCents = newCents;
+    }
+
 
     public String getName() {
         return name;

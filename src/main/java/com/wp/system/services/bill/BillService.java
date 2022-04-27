@@ -67,6 +67,13 @@ public class BillService {
         if(request.getName() != null && !bill.getName().equals(request.getName()))
             bill.setName(request.getName());
 
+        if(request.getNewCents() != null) {
+            bill.getBalance().setCents(request.getNewCents());
+        }
+
+        if(request.getNewAmount() != null)
+            bill.getBalance().setAmount(request.getNewAmount());
+
         this.billRepository.save(bill);
 
         return bill;
