@@ -16,6 +16,8 @@ public class LoyaltyCardDTO {
 
     private String data;
 
+    private LoyaltyCardCustomImageDTO customImage;
+
     public LoyaltyCardDTO() {}
 
     public LoyaltyCardDTO(LoyaltyCard card) {
@@ -23,6 +25,7 @@ public class LoyaltyCardDTO {
         this.user = card.getUser() == null ? null : new UserDTO(card.getUser());
         this.blank = card.getBlank() == null ? null : new LoyaltyBlankDTO(card.getBlank());
         this.data = card.getData();
+        this.customImage = card.getCustomImage() == null ? null : new LoyaltyCardCustomImageDTO(card.getCustomImage());
     }
 
     public UUID getId() {
