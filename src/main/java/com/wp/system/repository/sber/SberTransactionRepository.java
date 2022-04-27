@@ -1,5 +1,6 @@
 package com.wp.system.repository.sber;
 
+import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.sber.SberCard;
 import com.wp.system.entity.sber.SberTransaction;
 import com.wp.system.entity.tochka.TochkaTransaction;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,4 +24,6 @@ public interface SberTransactionRepository extends JpaRepository<SberTransaction
     Page<SberTransaction> findByCardId(UUID id, Pageable pageable);
 
     Page<SberTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
+
+    List<SberTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Timestamp date);
 }

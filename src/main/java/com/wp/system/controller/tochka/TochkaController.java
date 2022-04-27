@@ -1,12 +1,18 @@
 package com.wp.system.controller.tochka;
 
+import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
 import com.wp.system.dto.tochka.TochkaCardDTO;
 import com.wp.system.dto.tochka.TochkaIntegrationDTO;
+import com.wp.system.dto.tochka.TochkaTransactionDTO;
 import com.wp.system.entity.tochka.TochkaIntegration;
+import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.request.tochka.CreateTochkaIntegrationRequest;
+import com.wp.system.request.tochka.UpdateTochkaTransactionRequest;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.tochka.TochkaService;
 import com.wp.system.utils.tochka.TochkaAuthSubmit;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.naming.ServiceRef;
@@ -37,6 +43,34 @@ public class TochkaController {
                     String code
     ) {
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAnyAuthority('TOCHKA_UPDATE', 'TOCHKA_FULL')")
+    @GetMapping(value = "/transactions/{cardId}")
+    @Operation(summary = "Получить транзакции по карте")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<PagingResponse<TochkaTransactionDTO>>> getTransactions(
+            @PathVariable
+                    UUID cardId,
+            @RequestParam
+                    int page,
+            @RequestParam
+                    int pageSize
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tochkaService.getTransactionsByCardId(cardId, page, pageSize), ""), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('TOCHKA_UPDATE', 'TOCHKA_FULL')")
+    @PatchMapping(value = "/transaction/{transactionId}")
+    @Operation(summary = "Обновление транзакции Tochka")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<TochkaTransactionDTO>> updateTransaction(
+            @RequestBody
+                    UpdateTochkaTransactionRequest request,
+            @PathVariable
+                    UUID transactionId
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TochkaTransactionDTO(tochkaService.updateTochkaTransaction(request, transactionId)), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TOCHKA_CREATE', 'TOCHKA_FULL')")

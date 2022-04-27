@@ -1,9 +1,14 @@
 package com.wp.system.services.category;
 
+import com.wp.system.entity.BankTransactionType;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.image.SystemImage;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.bill.BillTransactionRepository;
+import com.wp.system.repository.sber.SberTransactionRepository;
+import com.wp.system.repository.tinkoff.TinkoffTransactionRepository;
+import com.wp.system.repository.tochkaa.TochkaTransactionRepository;
 import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.SystemImageTag;
 import com.wp.system.repository.category.CategoryRepository;
@@ -11,11 +16,17 @@ import com.wp.system.request.category.CreateCategoryRequest;
 import com.wp.system.request.category.EditCategoryRequest;
 import com.wp.system.services.image.ImageService;
 import com.wp.system.services.user.UserService;
+import com.wp.system.utils.bill.BillBalanceAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,6 +44,18 @@ public class CategoryService {
 
     @Autowired
     private AuthHelper authHelper;
+
+    @Autowired
+    private BillTransactionRepository billTransactionRepository;
+
+    @Autowired
+    private SberTransactionRepository sberTransactionRepository;
+
+    @Autowired
+    private TochkaTransactionRepository tochkaTransactionRepository;
+
+    @Autowired
+    private TinkoffTransactionRepository tinkoffTransactionRepository;
 
     public List<Category> getUserCategories() {
         User user = authHelper.getUserFromAuthCredentials();
@@ -60,6 +83,15 @@ public class CategoryService {
         categoryRepository.save(category);
 
         return category;
+    }
+
+    @Scheduled(cron="0 0 0 * * *", zone="Europe/Istanbul")
+    public void cleanLimits() {
+        categoryRepository.findByResetDataDateGreaterThanEqual(Timestamp.from(Instant.now())).forEach((item) -> {
+            item.setCategorySpend(0.0);
+            item.setCategoryEarn(0.0);
+            item.setPercentsFromLimit(0.0);
+        });
     }
 
     public Category editCategory(EditCategoryRequest request, UUID categoryId) {
@@ -92,8 +124,58 @@ public class CategoryService {
             category.setIcon(image);
         }
 
-        if(request.getCategoryLimit() != null && category.getCategoryLimit() != request.getCategoryLimit())
+        if(request.getCategoryLimit() != null && category.getCategoryLimit() != request.getCategoryLimit()) {
+            if(request.getCategoryLimit() != 0) {
+                category.setCategorySpend(0.0);
+                category.setPercentsFromLimit(0.0);
+
+                category.setResetDataDate(
+                        Instant.from(Instant.now()
+                                .atZone(ZoneId.systemDefault())
+                                .plus(1, ChronoUnit.MONTHS)
+                                .minus(
+                                        Instant.now().atZone(ZoneId.systemDefault()).getDayOfMonth() - 1, ChronoUnit.DAYS
+                                )).truncatedTo(ChronoUnit.DAYS));
+
+                Instant transactionsDate = category.getResetDataDate().minus(1, ChronoUnit.MONTHS);
+
+                billTransactionRepository.findByCategoryIdAndCreateAtGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
+                        .forEach((item) -> {
+                            if(item.getAction() == BillBalanceAction.WITHDRAW) {
+                                category.setCategorySpend(category.getCategorySpend() + item.getSum());
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                            }
+                        });
+
+                sberTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
+                        .forEach((item) -> {
+                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+                                category.setCategorySpend(category.getCategorySpend() +
+                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                            }
+                        });
+
+                tinkoffTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
+                        .forEach((item) -> {
+                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+                                category.setCategorySpend(category.getCategorySpend() +
+                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                            }
+                        });
+
+                tochkaTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
+                        .forEach((item) -> {
+                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+                                category.setCategorySpend(category.getCategorySpend() +
+                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                            }
+                        });
+            }
             category.setCategoryLimit(request.getCategoryLimit());
+        }
 
         categoryRepository.save(category);
 

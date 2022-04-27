@@ -1,5 +1,6 @@
 package com.wp.system.repository.tochkaa;
 
+import com.wp.system.entity.bill.BillTransaction;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.entity.tochka.TochkaTransaction;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -17,4 +20,8 @@ public interface TochkaTransactionRepository extends JpaRepository<TochkaTransac
 //    List<SberTransaction> findByCardId(UUID id);
 //
     Page<TochkaTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
+
+    Page<TochkaTransaction> findByCardId(UUID id, Pageable pageable);
+
+    List<TochkaTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Timestamp date);
 }

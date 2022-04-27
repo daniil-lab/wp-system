@@ -184,6 +184,8 @@ public class BillService {
             billLogRepository.delete(b);
         });
 
+        bill.setLogs(new ArrayList<>());
+
         this.billRepository.delete(bill);
 
         return bill;

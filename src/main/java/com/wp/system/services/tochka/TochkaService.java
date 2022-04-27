@@ -1,19 +1,31 @@
 package com.wp.system.services.tochka;
 
+import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
+import com.wp.system.dto.tochka.TochkaTransactionDTO;
+import com.wp.system.entity.BankTransactionType;
+import com.wp.system.entity.category.Category;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
+import com.wp.system.entity.tinkoff.TinkoffTransaction;
 import com.wp.system.entity.tochka.TochkaCard;
 import com.wp.system.entity.tochka.TochkaIntegration;
+import com.wp.system.entity.tochka.TochkaTransaction;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
+import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.tochkaa.*;
 import com.wp.system.repository.user.UserRepository;
+import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.request.tochka.CreateTochkaIntegrationRequest;
+import com.wp.system.request.tochka.UpdateTochkaTransactionRequest;
+import com.wp.system.response.PagingResponse;
 import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.tochka.TochkaSync;
 import com.wp.system.utils.tochka.request.TochkaAuthCodeRequest;
 import com.wp.system.utils.tochka.request.TochkaAuthRequest;
 import com.wp.system.utils.tochka.response.TochkaAuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.transaction.Transactional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TochkaService {
@@ -35,7 +48,13 @@ public class TochkaService {
     private TochkaCardRepository tochkaCardRepository;
 
     @Autowired
+    private TochkaTransactionRepository tochkaTransactionRepository;
+
+    @Autowired
     private AuthHelper authHelper;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Transactional
     public TochkaIntegration removeIntegration() {
@@ -118,5 +137,53 @@ public class TochkaService {
         });
 
         return integration.getCards();
+    }
+
+    public PagingResponse<TochkaTransactionDTO> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
+        Page<TochkaTransaction> transactions = tochkaTransactionRepository.findByCardId(cardId, PageRequest.of(page, pageSize));
+
+        return new PagingResponse<>(transactions.getContent().stream().map(TochkaTransactionDTO::new).collect(Collectors.toList()),
+                transactions.getTotalElements(), transactions.getTotalPages());
+    }
+
+    public TochkaTransaction updateTochkaTransaction(UpdateTochkaTransactionRequest request, UUID transactionId) {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        TochkaTransaction transaction = tochkaTransactionRepository.findById(transactionId).orElseThrow(() -> {
+            throw new ServiceException("Tinkoff transaction not found", HttpStatus.NOT_FOUND);
+        });
+
+        Double transactionAmount = Double.parseDouble(transaction.getAmount().getAmount() + "." + transaction.getAmount().getCents());
+
+        if(!transaction.getCard().getIntegration().getUser().getId().equals(user.getId()))
+            throw new ServiceException("It`s not your transactions", HttpStatus.FORBIDDEN);
+
+        if(request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> {
+                throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
+            });
+
+            if(!category.getUser().getId().equals(user.getId()))
+                throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
+
+            if(category.isOnlyForEarn() && transaction.getTransactionType() == BankTransactionType.SPEND)
+                throw new ServiceException("Given category only for earn", HttpStatus.BAD_REQUEST);
+
+            if(transaction.getTransactionType() == BankTransactionType.SPEND) {
+                category.setCategorySpend(category.getCategorySpend() + transactionAmount);
+
+                if(category.getCategoryLimit() != 0) {
+                    category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                }
+            } else {
+                category.setCategoryEarn(category.getCategoryEarn() + transactionAmount);
+            }
+
+            transaction.setCategory(category);
+        }
+
+        tochkaTransactionRepository.save(transaction);
+
+        return transaction;
     }
 }

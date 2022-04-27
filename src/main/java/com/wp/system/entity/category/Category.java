@@ -8,6 +8,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +24,9 @@ public class Category {
     private String description;
 
     private int categoryLimit;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private Instant resetDataDate;
 
     private boolean onlyForEarn = false;
 
@@ -59,6 +63,14 @@ public class Category {
         this.description = description;
         this.user = user;
         this.icon = icon;
+    }
+
+    public Instant getResetDataDate() {
+        return resetDataDate;
+    }
+
+    public void setResetDataDate(Instant resetDataDate) {
+        this.resetDataDate = resetDataDate;
     }
 
     public Set<BillLog> getBillLogs() {

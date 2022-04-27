@@ -162,6 +162,10 @@ public class LoyaltyCardService {
         if(!card.getUser().getId().equals(user.getId()))
             throw new ServiceException("It`s not your card", HttpStatus.FORBIDDEN);
 
+        card.setUser(null);
+        card.setCustomImage(null);
+        card.setBlank(null);
+
         loyaltyCardRepository.delete(card);
 
         return card;

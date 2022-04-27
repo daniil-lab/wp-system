@@ -40,7 +40,7 @@ public class BillTransaction {
     @JoinColumn(name="user_id")
     private User user;
 
-    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Column(columnDefinition = "TIMESTAMP")
     private Instant createAt;
 
     public BillTransaction() {};

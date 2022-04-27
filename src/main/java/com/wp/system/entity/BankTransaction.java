@@ -19,7 +19,7 @@ public class BankTransaction {
 
     private BankTransactionType transactionType;
 
-    @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Column(columnDefinition = "TIMESTAMP")
     private Instant date;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {
