@@ -71,11 +71,13 @@ public class LoyaltyCardController {
 
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_GET_CUSTOM_IMAGE', 'LOYALTY_CARD_FULL')")
     @Operation(summary = "Получение изображения кастомного изображения")
-    @GetMapping(value = "/custom-image/{path}")
+    @GetMapping(value = "/custom-image/{dir}/{file}")
     public ResponseEntity<byte[]> getImageContent(
             @PathVariable
-                    String path) {
-        Tuple2<byte[], String> data = loyaltyCardService.getImageContent(path);
+                    String file,
+            @PathVariable
+                    String dir) {
+        Tuple2<byte[], String> data = loyaltyCardService.getImageContent(dir + "/" + file);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.valueOf(data.getT2()));
