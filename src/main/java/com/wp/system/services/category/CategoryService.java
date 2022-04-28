@@ -137,7 +137,7 @@ public class CategoryService {
                                         Instant.now().atZone(ZoneId.systemDefault()).getDayOfMonth() - 1, ChronoUnit.DAYS
                                 )).truncatedTo(ChronoUnit.DAYS));
 
-                Instant transactionsDate = category.getResetDataDate().minus(1, ChronoUnit.MONTHS);
+                Instant transactionsDate = category.getResetDataDate().atZone(ZoneId.systemDefault()).minus(1, ChronoUnit.MONTHS);
 
                 billTransactionRepository.findByCategoryIdAndCreateAtGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
                         .forEach((item) -> {
