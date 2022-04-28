@@ -28,6 +28,14 @@ public class LoyaltyCardDTO {
         this.customImage = card.getCustomImage() == null ? null : new LoyaltyCardCustomImageDTO(card.getCustomImage());
     }
 
+    public LoyaltyCardCustomImageDTO getCustomImage() {
+        return customImage;
+    }
+
+    public void setCustomImage(LoyaltyCardCustomImageDTO customImage) {
+        this.customImage = customImage;
+    }
+
     public UUID getId() {
         return id;
     }
