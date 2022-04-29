@@ -20,5 +20,5 @@ RUN apk add chromium
 
 EXPOSE 8080
 
-ENTRYPOINT java -jar system-dev.jar
+ENTRYPOINT java -Xmx6144M -d64 -jar system-dev.jar
 
