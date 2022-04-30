@@ -149,32 +149,32 @@ public class CategoryService {
                             }
                         });
 
-//                sberTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
-//                        .forEach((item) -> {
-//                            if(item.getTransactionType() == BankTransactionType.SPEND) {
-//                                category.setCategorySpend(category.getCategorySpend() +
-//                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-//                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
-//                            }
-//                        });
-//
-//                tinkoffTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
-//                        .forEach((item) -> {
-//                            if(item.getTransactionType() == BankTransactionType.SPEND) {
-//                                category.setCategorySpend(category.getCategorySpend() +
-//                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-//                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
-//                            }
-//                        });
-//
-//                tochkaTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
-//                        .forEach((item) -> {
-//                            if(item.getTransactionType() == BankTransactionType.SPEND) {
-//                                category.setCategorySpend(category.getCategorySpend() +
-//                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-//                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
-//                            }
-//                        });
+                sberTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Instant.from(transactionsDate))
+                        .forEach((item) -> {
+                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+                                category.setCategorySpend(category.getCategorySpend() +
+                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                            }
+                        });
+
+                tinkoffTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Instant.from(transactionsDate))
+                        .forEach((item) -> {
+                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+                                category.setCategorySpend(category.getCategorySpend() +
+                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                            }
+                        });
+
+                tochkaTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Instant.from(transactionsDate))
+                        .forEach((item) -> {
+                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+                                category.setCategorySpend(category.getCategorySpend() +
+                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                            }
+                        });
             }
             category.setCategoryLimit(request.getCategoryLimit());
         }

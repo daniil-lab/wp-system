@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,5 +24,5 @@ public interface TochkaTransactionRepository extends JpaRepository<TochkaTransac
 
     Page<TochkaTransaction> findByCardId(UUID id, Pageable pageable);
 
-    List<TochkaTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Timestamp date);
+    List<TochkaTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Instant date);
 }

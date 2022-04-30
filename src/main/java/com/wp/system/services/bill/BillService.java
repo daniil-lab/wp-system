@@ -7,6 +7,7 @@ import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.bill.BillLogRepository;
+import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.Geocoder;
 import com.wp.system.utils.bill.BillBalanceFacade;
@@ -38,6 +39,9 @@ public class BillService {
 
     @Autowired
     private BillTransactionRepository billTransactionRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private BillLogRepository billLogRepository;
@@ -128,6 +132,11 @@ public class BillService {
         BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(category, bill, bill.getUser());
 
         BillTransaction transaction = facade.withdraw(request.getAmount(), request.getCents(), request.getDescription(), request.getTime());
+
+        if(category != null && category.getCategoryLimit() != 0) {
+            category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+            categoryRepository.save(category);
+        }
 
         if(request.getPlaceName() != null)
             transaction.setGeocodedPlace(request.getPlaceName());

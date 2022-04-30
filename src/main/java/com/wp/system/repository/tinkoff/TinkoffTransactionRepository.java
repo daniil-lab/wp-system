@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,5 +24,5 @@ public interface TinkoffTransactionRepository extends JpaRepository<TinkoffTrans
 
     Page<TinkoffTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
 
-    List<TinkoffTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Timestamp date);
+    List<TinkoffTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Instant date);
 }

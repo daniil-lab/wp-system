@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,5 +26,5 @@ public interface SberTransactionRepository extends JpaRepository<SberTransaction
 
     Page<SberTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
 
-    List<SberTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Timestamp date);
+    List<SberTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Instant date);
 }
