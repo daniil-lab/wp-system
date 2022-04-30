@@ -146,7 +146,13 @@ public class CategoryService {
                             System.out.println(item.getAction());
                             if(item.getAction() == BillBalanceAction.WITHDRAW) {
                                 category.setCategorySpend(category.getCategorySpend() + item.getSum());
+                                System.out.println(item.getSum());
+                                System.out.println("sum");
+                                System.out.println("category spend");
+                                System.out.println(category.getCategorySpend());
                                 category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                                System.out.println("category percent");
+                                System.out.println(category.getPercentsFromLimit());
                             }
                         });
 
