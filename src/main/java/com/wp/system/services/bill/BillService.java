@@ -133,7 +133,9 @@ public class BillService {
 
         BillTransaction transaction = facade.withdraw(request.getAmount(), request.getCents(), request.getDescription(), request.getTime());
 
+
         if(category != null && category.getCategoryLimit() != 0) {
+            category.setCategorySpend(category.getCategorySpend() + request.getAmount());
             category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
             categoryRepository.save(category);
         }
