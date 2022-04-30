@@ -59,6 +59,22 @@ public class CategoryDTO {
         this.categoryLimit = category.getCategoryLimit();
     }
 
+    public Double getCategorySpend() {
+        return categorySpend;
+    }
+
+    public void setCategorySpend(Double categorySpend) {
+        this.categorySpend = categorySpend;
+    }
+
+    public Double getCategoryEarn() {
+        return categoryEarn;
+    }
+
+    public void setCategoryEarn(Double categoryEarn) {
+        this.categoryEarn = categoryEarn;
+    }
+
     public Boolean getOnlyForEarn() {
         return onlyForEarn;
     }
