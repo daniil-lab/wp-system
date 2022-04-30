@@ -143,6 +143,7 @@ public class CategoryService {
 
                 billTransactionRepository.findByCategoryIdAndCreateAtGreaterThanEqual(categoryId, Instant.from(transactionsDate))
                         .forEach((item) -> {
+                            System.out.println(item.getAction());
                             if(item.getAction() == BillBalanceAction.WITHDRAW) {
                                 category.setCategorySpend(category.getCategorySpend() + item.getSum());
                                 category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
@@ -175,11 +176,11 @@ public class CategoryService {
                                 category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
                             }
                         });
+            } else {
+                category.setPercentsFromLimit(0.0);
+                category.setCategorySpend(null);
+                category.setCategoryLimit(request.getCategoryLimit());
             }
-
-            category.setPercentsFromLimit(0.0);
-            category.setCategorySpend(null);
-            category.setCategoryLimit(request.getCategoryLimit());
         }
 
         categoryRepository.save(category);
