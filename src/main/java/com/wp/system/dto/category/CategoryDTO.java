@@ -38,12 +38,18 @@ public class CategoryDTO {
 
     private Double percentsFromLimit;
 
+    private Double categorySpend;
+
+    private Double categoryEarn;
+
     public CategoryDTO(Category category) {
         if(category == null)
             return;
 
         this.percentsFromLimit = category.getPercentsFromLimit();
         this.onlyForEarn = category.isOnlyForEarn();
+        this.categorySpend = category.getCategorySpend();
+        this.categoryEarn = category.getCategoryEarn();
         this.id = category.getId();
         this.name = category.getName();
         this.color = new CategoryDTOColor(category.getColor());
