@@ -176,6 +176,9 @@ public class CategoryService {
                             }
                         });
             }
+
+            category.setPercentsFromLimit(0.0);
+            category.setCategorySpend(null);
             category.setCategoryLimit(request.getCategoryLimit());
         }
 
