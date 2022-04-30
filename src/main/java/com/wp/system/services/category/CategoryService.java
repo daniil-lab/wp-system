@@ -150,7 +150,7 @@ public class CategoryService {
                                 System.out.println("sum");
                                 System.out.println("category spend");
                                 System.out.println(category.getCategorySpend());
-                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100.0);
                                 System.out.println("category percent");
                                 System.out.println(category.getPercentsFromLimit());
                             }
@@ -161,7 +161,7 @@ public class CategoryService {
                             if(item.getTransactionType() == BankTransactionType.SPEND) {
                                 category.setCategorySpend(category.getCategorySpend() +
                                         (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100.0);
                             }
                         });
 
@@ -170,7 +170,7 @@ public class CategoryService {
                             if(item.getTransactionType() == BankTransactionType.SPEND) {
                                 category.setCategorySpend(category.getCategorySpend() +
                                         (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100.0);
                             }
                         });
 
@@ -179,7 +179,7 @@ public class CategoryService {
                             if(item.getTransactionType() == BankTransactionType.SPEND) {
                                 category.setCategorySpend(category.getCategorySpend() +
                                         (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100.0);
                             }
                         });
             } else {
