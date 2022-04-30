@@ -43,6 +43,7 @@ public class AdvertisingController {
     @Autowired
     private AdvertisingService advertisingService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_CREATE', 'ADVERTISING_FULL')")
     @Operation(summary = "Создание рекламы")
     @PostMapping("/")
@@ -53,6 +54,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new AdvertisingDTO(this.advertisingService.createAdvertising(request)), "Advertising created"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_UPDATE', 'ADVERTISING_FULL')")
     @Operation(summary = "Изменение рекламы")
     @PatchMapping("/{advertisingId}")
@@ -60,6 +62,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new AdvertisingDTO(this.advertisingService.updateAdvertising(request, advertisingId)), "Advertising updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_UPDATE', 'ADVERTISING_FULL')")
     @Operation(summary = "Прикрепление файла к рекламе")
     @PatchMapping(path = "/file/{advertisingId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -67,6 +70,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new AdvertisingDTO(this.advertisingService.addFileToAdvertising(request, advertisingId)), "Advertising updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_UPDATE', 'ADVERTISING_FULL')")
     @Operation(summary = "Открепление файла от рекламе")
     @DeleteMapping("/file/{advertisingId}")
@@ -74,6 +78,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new AdvertisingDTO(this.advertisingService.removeFileFromAdvertising(request, advertisingId)), "Advertising updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_GET', 'ADVERTISING_FULL')")
     @Operation(summary = "Удаление рекламы")
     @DeleteMapping("/{advertisingId}")
@@ -81,6 +86,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new AdvertisingDTO(this.advertisingService.removeAdvertising(advertisingId)), "Advertising removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_GET', 'ADVERTISING_FULL')")
     @Operation(summary = "Получение всей рекламы")
     @GetMapping("/")
@@ -88,6 +94,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.advertisingService.getAllAdvertising().stream().map(AdvertisingDTO::new).collect(Collectors.toList()), "Advertising returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_UPDATE', 'ADVERTISING_FULL')")
     @Operation(summary = "Добавление просмотра к рекламе")
     @GetMapping("/view/{advertisingId}")
@@ -95,6 +102,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new AdvertisingDTO(advertisingService.addViewToAdvertising(advertisingId)), "Advertising returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_GET', 'ADVERTISING_FULL')")
     @Operation(summary = "Получение просмотров рекламы")
     @GetMapping("/views/{advertisingId}")
@@ -102,6 +110,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.advertisingService.getAdvertisingViews(advertisingId).stream().map(AdvertisingViewDTO::new).collect(Collectors.toList()), "Advertising returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_GET', 'ADVERTISING_FULL')")
     @Operation(summary = "Получение просмотров рекламы за период")
     @GetMapping("/views/period/{advertisingId}")
@@ -111,6 +120,7 @@ public class AdvertisingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.advertisingService.getAdvertisingViewsByPeriod(advertisingId, startDate, endDate).stream().map(AdvertisingViewDTO::new).collect(Collectors.toList()), "Advertising returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получение контента рекламы")
     @GetMapping(value = "/content/{contentName}")
     public ResponseEntity<byte[]> getImageContent(

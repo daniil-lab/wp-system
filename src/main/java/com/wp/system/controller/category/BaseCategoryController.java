@@ -28,6 +28,7 @@ public class BaseCategoryController extends DocumentedRestController {
     @Autowired
     private BaseCategoryService baseCategoryService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BASE_CATEGORY_CREATE', 'BASE_CATEGORY_FULL')")
     @Operation(summary = "Создание базовой категории")
     @PostMapping("/")
@@ -35,6 +36,7 @@ public class BaseCategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new BaseCategoryDTO(this.baseCategoryService.createBaseCategory(request)), "Category created"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BASE_CATEGORY_UPDATE', 'BASE_CATEGORY_FULL')")
     @Operation(summary = "Изменение базовой категории")
     @PatchMapping("/{categoryId}")
@@ -42,6 +44,7 @@ public class BaseCategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BaseCategoryDTO(this.baseCategoryService.updateBaseCategory(request, categoryId)), "Category updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BASE_CATEGORY_DELETE', 'BASE_CATEGORY_FULL')")
     @Operation(summary = "Удаление базовой категории")
     @DeleteMapping("/{categoryId}")
@@ -49,6 +52,7 @@ public class BaseCategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BaseCategoryDTO(this.baseCategoryService.removeBaseCategory(categoryId)), "Category removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BASE_CATEGORY_GET', 'BASE_CATEGORY_FULL')")
     @Operation(summary = "Получение базовой категории по ID")
     @GetMapping("/{categoryId}")
@@ -56,6 +60,7 @@ public class BaseCategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BaseCategoryDTO(this.baseCategoryService.getBaseCategoryById(categoryId)), "Category returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BASE_CATEGORY_GET', 'BASE_CATEGORY_FULL')")
     @Operation(summary = "Получение всех базовых категорий")
     @GetMapping("/")
@@ -63,6 +68,7 @@ public class BaseCategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.baseCategoryService.getAllBaseCategories().stream().map(BaseCategoryDTO::new).collect(Collectors.toList()), "Category returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BASE_CATEGORY_GET', 'BASE_CATEGORY_FULL')")
     @Operation(summary = "Получение всех базовых категорий постранично")
     @GetMapping("/paged")

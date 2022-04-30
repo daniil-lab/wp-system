@@ -30,13 +30,15 @@ public class SystemAdminLoggingController {
     @Autowired
     private SystemAdminLogger adminLogger;
 
-//    @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
+    //    @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получение всех админ логов")
     @GetMapping("/")
     public ResponseEntity<ServiceResponse<List<SystemAdminLogDTO>>> getAllAdminLogs() {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.adminLogger.getAllAdminLogs().stream().map(SystemAdminLogDTO::new).collect(Collectors.toList()), "Admin logs returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
     @Operation(summary = "Получение всех админ логов постранично")
     @GetMapping("/page")
@@ -49,6 +51,7 @@ public class SystemAdminLoggingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.adminLogger.getPagedAdminLogs(page, pageSize), "Admin logs returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
     @Operation(summary = "Получение админ лога по ID")
     @GetMapping("/{logId}")
@@ -56,6 +59,7 @@ public class SystemAdminLoggingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SystemAdminLogDTO(this.adminLogger.getAdminLogById(logId)), "Admin log returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADMIN_LOG_GET', 'ADMIN_LOG_FULL')")
     @Operation(summary = "Получение админ логов по страницам")
     @GetMapping("/user/{userId}")

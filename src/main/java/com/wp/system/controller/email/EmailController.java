@@ -26,6 +26,7 @@ public class EmailController extends DocumentedRestController {
     @Autowired
     private EmailService emailService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('EMAIL_VERIFICATION_RESEND', 'EMAIL_FULL')")
     @Operation(summary = "Переотправка письма подтверждения")
     @GetMapping("/verification/resend/{userId}")
@@ -33,6 +34,7 @@ public class EmailController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), emailService.resendEmailVerification(userId), "Mail sent"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('EMAIL_VERIFICATION_SEND', 'EMAIL_FULL')")
     @Operation(summary = "Отправка письма подтверждения")
     @GetMapping("/verification/{userId}")
@@ -40,6 +42,7 @@ public class EmailController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), emailService.sendEmailVerificationMail(userId), "Mail sent"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('EMAIL_VERIFICATION_SUBMIT', 'EMAIL_FULL')")
     @Operation(summary = "Подтверждение электронного адреса")
     @PostMapping("/verification")

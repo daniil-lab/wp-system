@@ -13,10 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -28,6 +25,7 @@ public class AuthController extends DocumentedRestController {
     @Autowired
     private AuthService authService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Авторизация пользователя")
     @PostMapping("/")
     public ResponseEntity<ServiceResponse<AuthDataResponse>> authUser(
@@ -42,6 +40,7 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authUser(request), "Success auth"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Авторизация кастомного пользователя")
     @PostMapping("/cred")
     public ResponseEntity<ServiceResponse<AuthDataResponse>> authByCred(
@@ -51,6 +50,7 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authByCred(request), "Success auth"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Авторизация пользователя по E-MAIL")
     @PostMapping("/email")
     public ResponseEntity<ServiceResponse<AuthDataResponse>> authUserByEmail(
@@ -64,6 +64,7 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authUserByEmail(request), "Success auth"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Начальный этап SMS верификации")
     @PostMapping("/sms-submit")
     public ResponseEntity<ServiceResponse<SmsSubmitResponse>> smsSubmitTry(
@@ -80,6 +81,7 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.smsSubmitAttempt(request), "Try success"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Заключительный этап SMS верификации")
     @PostMapping("/sms-submit/result")
     public ResponseEntity<ServiceResponse<Boolean>> smsSubmitResult(
@@ -96,6 +98,7 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.smsSubmitResult(request), "Verification success"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Авторизация с помощью SMS верификации")
     @PostMapping("/sms")
     public ResponseEntity<ServiceResponse<AuthDataResponse>> authBySmsSubmit(
@@ -112,6 +115,7 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.authBySmsSubmit(request), "Auth success"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Проверка на регистрацию")
     @PostMapping("/check-register")
     public ResponseEntity<ServiceResponse<Boolean>> checkRegister(
@@ -125,6 +129,7 @@ public class AuthController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), authService.checkOnRegister(request), "Success check"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Проверка на регистрацию")
     @PostMapping("/check-register/email")
     public ResponseEntity<ServiceResponse<Boolean>> checkRegisterByEmail(

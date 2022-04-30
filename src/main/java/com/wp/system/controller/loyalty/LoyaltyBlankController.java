@@ -30,6 +30,7 @@ public class LoyaltyBlankController {
     @Autowired
     private LoyaltyBlankService loyaltyBlankService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('LOYALTY_BLANK_CREATE', 'LOYALTY_BLANK_FULL')")
     @Operation(summary = "Создание бланка лояльности")
     @SecurityRequirement(name = "Bearer")
@@ -41,6 +42,7 @@ public class LoyaltyBlankController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new LoyaltyBlankDTO(loyaltyBlankService.createLoyaltyBlank(request)), "Loyalty Blank created"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('LOYALTY_BLANK_GET', 'LOYALTY_BLANK_FULL')")
     @Operation(summary = "Получение бланка лояльности по ID")
     @SecurityRequirement(name = "Bearer")
@@ -50,6 +52,7 @@ public class LoyaltyBlankController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new LoyaltyBlankDTO(loyaltyBlankService.getLoyaltyBlankById(blankId)), "Loyalty Blank returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('LOYALTY_BLANK_GET', 'LOYALTY_BLANK_FULL')")
     @Operation(summary = "Получение всех бланков лояльности")
     @SecurityRequirement(name = "Bearer")
@@ -58,6 +61,7 @@ public class LoyaltyBlankController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), loyaltyBlankService.getAllLoyaltyBlanks().stream().map(LoyaltyBlankDTO::new).collect(Collectors.toList()), "Loyalty Blanks returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('LOYALTY_BLANK_UPDATE', 'LOYALTY_BLANK_FULL')")
     @Operation(summary = "Изменение бланка лояльности")
     @SecurityRequirement(name = "Bearer")
@@ -71,6 +75,7 @@ public class LoyaltyBlankController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new LoyaltyBlankDTO(loyaltyBlankService.updateLoyaltyBlank(request, blankId)), "Loyalty Blank returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('LOYALTY_BLANK_DELETE', 'LOYALTY_BLANK_FULL')")
     @Operation(summary = "Удаление бланка лояльности")
     @SecurityRequirement(name = "Bearer")

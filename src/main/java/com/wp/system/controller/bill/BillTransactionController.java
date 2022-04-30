@@ -28,6 +28,7 @@ public class BillTransactionController extends DocumentedRestController {
     @Autowired
     private BillTransactionService billTransactionService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Получение всех транзакций за определенный пероид")
     @GetMapping("/period")
@@ -49,6 +50,7 @@ public class BillTransactionController extends DocumentedRestController {
         ), "Bill Transactions returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Получение всех транзакций счета")
     @GetMapping("/bill/{billId}")
@@ -56,6 +58,7 @@ public class BillTransactionController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllTransactionsByBillId(billId, page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_UPDATE', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Изменение транзакции")
     @PatchMapping("/{transactionId}")
@@ -63,6 +66,7 @@ public class BillTransactionController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billTransactionService.updateBillTransaction(request, transactionId)), "Bill Transactions updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_UPDATE', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Удаление транзакции")
     @DeleteMapping("/{transactionId}")
@@ -70,6 +74,7 @@ public class BillTransactionController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billTransactionService.removeTransaction(transactionId)), "Bill Transactions removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_FULL')")
     @Operation(summary = "Получение всех транзакций пользователя")
     @GetMapping("/user")
@@ -77,6 +82,7 @@ public class BillTransactionController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllUserTransactions(page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Получение всех транзакций категории")
     @GetMapping("/category/{categoryId}")

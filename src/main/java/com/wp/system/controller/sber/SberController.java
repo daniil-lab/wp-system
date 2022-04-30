@@ -43,6 +43,7 @@ public class SberController {
     @Autowired
     private SberService sberService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('SBER_UPDATE', 'SBER_FULL')")
     @PatchMapping(value = "/transaction/{transactionId}")
     @Operation(summary = "Обновление транзакции Sber")
@@ -56,6 +57,7 @@ public class SberController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SberTransactionDTO(sberService.updateSberTransaction(request, transactionId)), ""), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('SBER_CREATE', 'SBER_FULL')")
     @PostMapping(value = "/connect/start")
     @Operation(summary = "Старт интеграции Sber")
@@ -68,6 +70,7 @@ public class SberController {
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_CREATE', 'SBER_FULL')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(value = "/connect/submit")
     @Operation(summary = "Подтверждение интеграции Sber")
     @SecurityRequirement(name = "Bearer")
@@ -79,6 +82,7 @@ public class SberController {
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_SYNC', 'SBER_FULL')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(value = "/sync/")
     @Operation(summary = "Синхронизация Sber")
     @SecurityRequirement(name = "Bearer")
@@ -88,6 +92,7 @@ public class SberController {
     }
 
     @PreAuthorize("hasAnyAuthority('SBER_GET', 'SBER_FULL')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(value = "/")
     @Operation(summary = "Получить Sber интеграцию")
     @SecurityRequirement(name = "Bearer")
@@ -98,6 +103,7 @@ public class SberController {
 
     @PreAuthorize("hasAnyAuthority('SBER_GET', 'SBER_FULL')")
     @GetMapping(value = "/cards/")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получить Sber карты")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<List<SberCardDTO>>> getSberCards(
@@ -108,6 +114,7 @@ public class SberController {
     @PreAuthorize("hasAnyAuthority('SBER_GET', 'SBER_FULL')")
     @GetMapping(value = "/transactions/{cardId}")
     @Operation(summary = "Получить транзакции по карте Sber")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<ServiceResponse<PagingResponse<SberTransactionDTO>>> getTransactions(
             @PathVariable
@@ -120,6 +127,7 @@ public class SberController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.getTransactionsByCardId(cardId, page, pageSize), ""), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('SBER_REMOVE', 'SBER_FULL')")
     @DeleteMapping(value = "/")
     @Operation(summary = "Удаление Sber интеграции")

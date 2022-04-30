@@ -32,12 +32,14 @@ public class HelpController extends DocumentedRestController {
     @Autowired
     private HelpService helpService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Создание обращение о помощи")
     @PostMapping("/")
     public ResponseEntity<ServiceResponse<HelpLeadDTO>> createHelpLead(@Valid @RequestBody CreateHelpLeadRequest request) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new HelpLeadDTO(this.helpService.createHelpLead(request)), "Help Lead created"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('HELP_LEAD_DELETE', 'HELP_LEAD_FULL')")
     @SecurityRequirement(name = "Bearer")
     @Operation(summary = "Удаление обращения о помощи")
@@ -46,6 +48,7 @@ public class HelpController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new HelpLeadDTO(this.helpService.removeHelpLead(helpLeadId)), "Help Lead removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('HELP_LEAD_GET', 'HELP_LEAD_FULL')")
     @SecurityRequirement(name = "Bearer")
     @Operation(summary = "Получение обращения о помощи по ID")
@@ -54,6 +57,7 @@ public class HelpController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new HelpLeadDTO(this.helpService.getHeldLeadById(helpLeadId)), "Help Lead returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('HELP_LEAD_GET', 'HELP_LEAD_FULL')")
     @SecurityRequirement(name = "Bearer")
     @Operation(summary = "Получение всех обращений о помощи")
@@ -62,6 +66,7 @@ public class HelpController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.helpService.getAllHelpLeads().stream().map(HelpLeadDTO::new).collect(Collectors.toList()), "Help Leads returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('HELP_LEAD_GET', 'HELP_LEAD_FULL')")
     @SecurityRequirement(name = "Bearer")
     @Operation(summary = "Получение всех обращений о помощи постранично")

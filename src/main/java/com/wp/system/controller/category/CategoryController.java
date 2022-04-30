@@ -30,6 +30,7 @@ public class CategoryController extends DocumentedRestController {
     @Autowired
     private CategoryService categoryService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('CATEGORY_CREATE', 'CATEGORY_FULL')")
     @Operation(summary = "Создание категории и прикрепление ее к пользователю")
     @PostMapping("/")
@@ -37,6 +38,7 @@ public class CategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new CategoryDTO(this.categoryService.createCategory(request)), "Category created"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('CATEGORY_UPDATE', 'CATEGORY_FULL')")
     @Operation(summary = "Изменение категории")
     @PatchMapping("/{categoryId}")
@@ -44,6 +46,7 @@ public class CategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new CategoryDTO(this.categoryService.editCategory(request, categoryId)), "Category updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('CATEGORY_DELETE', 'CATEGORY_FULL')")
     @Operation(summary = "Удаление категории")
     @DeleteMapping("/{categoryId}")
@@ -51,6 +54,7 @@ public class CategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new CategoryDTO(this.categoryService.removeCategory(categoryId)), "Category removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('CATEGORY_GET', 'CATEGORY_FULL')")
     @Operation(summary = "Получение категории по ID")
     @GetMapping("/{categoryId}")
@@ -58,6 +62,7 @@ public class CategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new CategoryDTO(this.categoryService.getCategoryById(categoryId)), "Category returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('CATEGORY_GET', 'CATEGORY_FULL')")
     @Operation(summary = "Получение всех категорий пользователя")
     @GetMapping("/")
@@ -65,6 +70,7 @@ public class CategoryController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.categoryService.getUserCategories().stream().map(CategoryDTO::new).collect(Collectors.toList()), "Categories returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получение цветов категорий")
     @GetMapping("/colors")
     public ResponseEntity<ServiceResponse<List<CategoryColorResponse>>> getCategoryColors() {

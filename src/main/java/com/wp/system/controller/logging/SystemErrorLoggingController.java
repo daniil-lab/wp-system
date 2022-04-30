@@ -31,6 +31,7 @@ public class SystemErrorLoggingController {
     @Autowired
     private SystemErrorLogger errorLogger;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ERROR_LOG_GET', 'ERROR_LOG_FULL')")
     @Operation(summary = "Получение всех логов ошибок")
     @GetMapping("/")
@@ -38,6 +39,7 @@ public class SystemErrorLoggingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.errorLogger.getAllErrorLogs().stream().map(SystemErrorLogDTO::new).collect(Collectors.toList()), "Error logs returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ERROR_LOG_GET', 'ERROR_LOG_FULL')")
     @Operation(summary = "Получение лога ошибки по ID")
     @GetMapping("/{logId}")
@@ -45,6 +47,7 @@ public class SystemErrorLoggingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SystemErrorLogDTO(this.errorLogger.getErrorLogById(logId)), "Error log returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ERROR_LOG_GET', 'ERROR_LOG_FULL')")
     @Operation(summary = "Получение логов ошибок по страницам")
     @GetMapping("/page")
@@ -57,6 +60,7 @@ public class SystemErrorLoggingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.errorLogger.getErrorLogsByPages(pageSize, page), "Error logs returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ERROR_LOG_DELETE', 'ERROR_LOG_FULL')")
     @Operation(summary = "Удаление лога ошибки")
     @DeleteMapping("/{logId}")
@@ -64,6 +68,7 @@ public class SystemErrorLoggingController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SystemErrorLogDTO(this.errorLogger.removeErrorLog(logId)), "Error log removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ERROR_LOG_CREATE', 'ERROR_LOG_FULL')")
     @Operation(summary = "Создание лога ошикби")
     @PostMapping("/")

@@ -33,6 +33,7 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ACTIVITY_CREATE', 'ACTIVITY_FULL')")
     @Operation(summary = "Создание активности и прикрепление ее к пользователю")
     @PostMapping("/")
@@ -43,6 +44,7 @@ public class ActivityController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new ActivityDTO(this.activityService.createActivity(request)), "Activity created"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ACTIVITY_DELETE', 'ACTIVITY_FULL')")
     @Operation(summary = "Удаление активности")
     @DeleteMapping("/{activityId}")
@@ -50,6 +52,7 @@ public class ActivityController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new ActivityDTO(this.activityService.removeActivity(activityId)), "Activity removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ACTIVITY_GET', 'ACTIVITY_FULL')")
     @Operation(summary = "Получение активности по ID")
     @GetMapping("/{activityId}")

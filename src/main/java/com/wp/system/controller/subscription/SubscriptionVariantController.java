@@ -35,6 +35,7 @@ public class SubscriptionVariantController extends DocumentedRestController {
     private SubscriptionVariantService subscriptionVariantService;
 
     @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_VARIANT_GET', 'SUBSCRIPTION_VARIANT_FULL')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получение варианта подписки по ID")
     @SecurityRequirement(name = "Bearer")
     @GetMapping(value = "/{subId}")

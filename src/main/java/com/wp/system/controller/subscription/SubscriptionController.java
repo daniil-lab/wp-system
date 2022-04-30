@@ -23,6 +23,7 @@ public class SubscriptionController extends DocumentedRestController {
     @Autowired
     private SubscriptionService subscriptionService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('SUBSCRIPTION_GET', 'SUBSCRIPTION_FULL')")
     @Operation(summary = "Получение данных подписки по ID пользователя")
     @SecurityRequirement(name = "Bearer")

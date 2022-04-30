@@ -35,6 +35,7 @@ public class BillController extends DocumentedRestController {
     @Autowired
     private BillService billService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_CREATE', 'BILL_FULL')")
     @Operation(summary = "Создание счета и прикрепление ее к пользователю")
     @PostMapping("/")
@@ -45,6 +46,7 @@ public class BillController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new BillDTO(this.billService.createBill(request)), "Bill created"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_UPDATE', 'BILL_FULL')")
     @Operation(summary = "Изменение счета")
     @PatchMapping("/{billId}")
@@ -52,6 +54,7 @@ public class BillController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillDTO(this.billService.updateBill(request, billId)), "Bill updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_UPDATE', 'BILL_FULL')")
     @Operation(summary = "Пополнение счета")
     @PatchMapping("/deposit/{billId}")
@@ -59,6 +62,7 @@ public class BillController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billService.depositBill(request, billId)), "Bill updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_UPDATE', 'BILL_FULL')")
     @Operation(summary = "Снятие счета")
     @PatchMapping("/withdraw/{billId}")
@@ -66,6 +70,7 @@ public class BillController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillTransactionDTO(this.billService.withdrawBill(request, billId)), "Bill updated"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_GET', 'BILL_FULL')")
     @Operation(summary = "Удаление счета")
     @DeleteMapping("/{billId}")
@@ -73,6 +78,7 @@ public class BillController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillDTO(this.billService.removeBill(billId)), "Bill removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_GET', 'BILL_FULL')")
     @Operation(summary = "Получение счета по ID")
     @GetMapping("/{billId}")
@@ -80,6 +86,7 @@ public class BillController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new BillDTO(this.billService.getBillById(billId)), "Bill returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('BILL_GET', 'BILL_FULL')")
     @Operation(summary = "Получение всех счетов пользователя")
     @GetMapping("/")

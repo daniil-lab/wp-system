@@ -20,6 +20,7 @@ public class PublicDataController {
     @Autowired
     private PublicDataService publicDataService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получение объекта публичных данных")
     @GetMapping("/")
     public ResponseEntity<ServiceResponse<PublicData>> getPublicData() {
@@ -31,6 +32,7 @@ public class PublicDataController {
     }
 
     @Operation(summary = "Обновление публичных данных")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PatchMapping("/")
     public ResponseEntity<ServiceResponse<Boolean>> updatePublicData(
             @Valid

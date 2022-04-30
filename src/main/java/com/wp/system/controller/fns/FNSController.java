@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +23,7 @@ public class FNSController {
     @Autowired
     private FNSService fnsService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получение информации по чеку")
     @GetMapping("/ticket-info")
     public ResponseEntity<ServiceResponse<String>> getTicketInfo(@RequestParam Integer sum,
@@ -45,6 +43,7 @@ public class FNSController {
                         rawData), "Ticket info returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получение информации по сообщению")
     @GetMapping("/message")
     public ResponseEntity<ServiceResponse<String>> getTicketInfo(@RequestParam String messageId) {

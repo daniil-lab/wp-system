@@ -33,6 +33,7 @@ public class ImageController extends DocumentedRestController {
     @Autowired
     private ImageService imageService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('IMAGES_CREATE', 'IMAGES_FULL')")
     @Operation(summary = "Загрузка изображения в общее хранилище")
     @SecurityRequirement(name = "Bearer")
@@ -44,6 +45,7 @@ public class ImageController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new SystemImageDTO(imageService.uploadImage(request)), "Image saved"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('IMAGES_GET', 'IMAGES_FULL')")
     @Operation(summary = "Получение данных изображения")
     @SecurityRequirement(name = "Bearer")
@@ -54,6 +56,7 @@ public class ImageController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new SystemImageDTO(imageService.getImageById(imageId)), "Image data returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('IMAGES_GET', 'IMAGES_FULL')")
     @Operation(summary = "Получение изображений по тегу")
     @SecurityRequirement(name = "Bearer")
@@ -64,6 +67,7 @@ public class ImageController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), imageService.getImagesByTag(imageTag).stream().map(SystemImageDTO::new).collect(Collectors.toList()), "Image data returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('IMAGES_GET', 'IMAGES_FULL')")
     @Operation(summary = "Получение данных всех изображений")
     @SecurityRequirement(name = "Bearer")
@@ -72,6 +76,7 @@ public class ImageController extends DocumentedRestController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), imageService.getAllImages().stream().map(SystemImageDTO::new).collect(Collectors.toList()), "Image data returned"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Получение изображения")
     @GetMapping(value = "/content/{imageName}")
     public ResponseEntity<byte[]> getImageContent(
@@ -85,6 +90,7 @@ public class ImageController extends DocumentedRestController {
         return ResponseEntity.ok().headers(httpHeaders).body(data.getT1());
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('IMAGES_DELETE', 'IMAGES_FULL')")
     @Operation(summary = "Удаление изображения")
     @SecurityRequirement(name = "Bearer")

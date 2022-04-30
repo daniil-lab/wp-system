@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -29,6 +26,7 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('NOTIFICATION_CREATE', 'NOTIFICATION_FULL')")
     @Operation(summary = "Отправка уведомления одному пользователю")
     @PostMapping("/firebase/user")
@@ -36,6 +34,7 @@ public class NotificationController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), this.notificationService.sendNotificationToUser(request), "Notification sent"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('NOTIFICATION_CREATE', 'NOTIFICATION_FULL')")
     @Operation(summary = "Отправка уведомления нескольким пользователям")
     @PostMapping("/firebase/user/some")
@@ -43,6 +42,7 @@ public class NotificationController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), this.notificationService.sendNotificationToSomeUsers(request), "Notifications sent"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('NOTIFICATION_CREATE', 'NOTIFICATION_FULL')")
     @Operation(summary = "Отправка уведомления всем пользователям")
     @PostMapping("/firebase/user/all")

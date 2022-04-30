@@ -34,6 +34,7 @@ public class LoyaltyCardController {
     private LoyaltyCardService loyaltyCardService;
 
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_CREATE', 'LOYALTY_CARD_FULL')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Создание карты лояльности")
     @SecurityRequirement(name = "Bearer")
     @PostMapping(value = "/")
@@ -44,6 +45,7 @@ public class LoyaltyCardController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new LoyaltyCardDTO(loyaltyCardService.createLoyaltyCard(request)), "Loyalty Card created"), HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_UPLOAD_CUSTOM_IMAGE', 'LOYALTY_CARD_FULL')")
     @Operation(summary = "Загрузка кастомной картинки карты")
     @SecurityRequirement(name = "Bearer")
@@ -58,6 +60,7 @@ public class LoyaltyCardController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new LoyaltyCardDTO(loyaltyCardService.uploadCustomImage(request, cardId)), "Image saved"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_REMOVE_CUSTOM_IMAGE', 'LOYALTY_CARD_FULL')")
     @Operation(summary = "Удаление кастомной картинки карты")
     @SecurityRequirement(name = "Bearer")
@@ -69,6 +72,7 @@ public class LoyaltyCardController {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new LoyaltyCardDTO(loyaltyCardService.removeCustomImage(cardId)), "Image removed"), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_GET_CUSTOM_IMAGE', 'LOYALTY_CARD_FULL')")
     @Operation(summary = "Получение изображения кастомного изображения")
     @GetMapping(value = "/custom-image/{dir}/{file}")
@@ -89,6 +93,7 @@ public class LoyaltyCardController {
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_GET', 'LOYALTY_CARD_FULL')")
     @Operation(summary = "Получение карты лояльности по ID")
     @SecurityRequirement(name = "Bearer")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(value = "/{cardId}")
     public ResponseEntity<ServiceResponse<LoyaltyCardDTO>> getLoyaltyBlankById(
             @PathVariable UUID cardId) {
@@ -97,6 +102,7 @@ public class LoyaltyCardController {
 
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_GET', 'LOYALTY_CARD_FULL')")
     @Operation(summary = "Получение всех карт лояльности одного пользователя")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @SecurityRequirement(name = "Bearer")
     @GetMapping(value = "/user")
     public ResponseEntity<ServiceResponse<List<LoyaltyCardDTO>>> getAllLoyaltyCards(
@@ -105,6 +111,7 @@ public class LoyaltyCardController {
     }
 
     @PreAuthorize("hasAnyAuthority('LOYALTY_CARD_DELETE', 'LOYALTY_CARD_FULL')")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Operation(summary = "Удаление карты лояльности")
     @SecurityRequirement(name = "Bearer")
     @DeleteMapping(value = "/{cardId}")
