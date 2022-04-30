@@ -139,9 +139,9 @@ public class CategoryService {
                                         Instant.now().atZone(ZoneId.systemDefault()).getDayOfMonth() - 1, ChronoUnit.DAYS
                                 )).truncatedTo(ChronoUnit.DAYS));
 
-                LocalDateTime transactionsDate = category.getResetDataDate().atZone(ZoneId.systemDefault()).minus(1, ChronoUnit.MONTHS).toLocalDateTime();
+                ZonedDateTime transactionsDate = category.getResetDataDate().atZone(ZoneId.systemDefault()).minus(1, ChronoUnit.MONTHS);
 
-                billTransactionRepository.findByCategoryIdAndCreateAtGreaterThanEqual(categoryId, transactionsDate)
+                billTransactionRepository.findByCategoryIdAndCreateAtGreaterThanEqual(categoryId, Instant.from(transactionsDate))
                         .forEach((item) -> {
                             if(item.getAction() == BillBalanceAction.WITHDRAW) {
                                 category.setCategorySpend(category.getCategorySpend() + item.getSum());
