@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -137,9 +139,9 @@ public class CategoryService {
                                         Instant.now().atZone(ZoneId.systemDefault()).getDayOfMonth() - 1, ChronoUnit.DAYS
                                 )).truncatedTo(ChronoUnit.DAYS));
 
-                Instant transactionsDate = Instant.from(category.getResetDataDate().atZone(ZoneId.systemDefault()).minus(1, ChronoUnit.MONTHS));
+                LocalDateTime transactionsDate = category.getResetDataDate().atZone(ZoneId.systemDefault()).minus(1, ChronoUnit.MONTHS).toLocalDateTime();
 
-                billTransactionRepository.findByCategoryIdAndCreateAtGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
+                billTransactionRepository.findByCategoryIdAndCreateAtGreaterThanEqual(categoryId, transactionsDate)
                         .forEach((item) -> {
                             if(item.getAction() == BillBalanceAction.WITHDRAW) {
                                 category.setCategorySpend(category.getCategorySpend() + item.getSum());
@@ -147,32 +149,32 @@ public class CategoryService {
                             }
                         });
 
-                sberTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
-                        .forEach((item) -> {
-                            if(item.getTransactionType() == BankTransactionType.SPEND) {
-                                category.setCategorySpend(category.getCategorySpend() +
-                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
-                            }
-                        });
-
-                tinkoffTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
-                        .forEach((item) -> {
-                            if(item.getTransactionType() == BankTransactionType.SPEND) {
-                                category.setCategorySpend(category.getCategorySpend() +
-                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
-                            }
-                        });
-
-                tochkaTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
-                        .forEach((item) -> {
-                            if(item.getTransactionType() == BankTransactionType.SPEND) {
-                                category.setCategorySpend(category.getCategorySpend() +
-                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
-                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
-                            }
-                        });
+//                sberTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
+//                        .forEach((item) -> {
+//                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+//                                category.setCategorySpend(category.getCategorySpend() +
+//                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+//                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+//                            }
+//                        });
+//
+//                tinkoffTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
+//                        .forEach((item) -> {
+//                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+//                                category.setCategorySpend(category.getCategorySpend() +
+//                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+//                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+//                            }
+//                        });
+//
+//                tochkaTransactionRepository.findByCategoryIdAndDateGreaterThanEqual(categoryId, Timestamp.from(transactionsDate))
+//                        .forEach((item) -> {
+//                            if(item.getTransactionType() == BankTransactionType.SPEND) {
+//                                category.setCategorySpend(category.getCategorySpend() +
+//                                        (Double.parseDouble(item.getAmount().getAmount() + "." + item.getAmount().getCents())));
+//                                category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100);
+//                            }
+//                        });
             }
             category.setCategoryLimit(request.getCategoryLimit());
         }

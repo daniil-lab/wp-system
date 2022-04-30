@@ -10,6 +10,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,5 +40,5 @@ public interface BillTransactionRepository extends JpaRepository<BillTransaction
     @Query("SELECT t FROM BillTransaction t JOIN t.category c WHERE c.id = ?1")
     List<BillTransaction> getAllCategoryTransactions(UUID categoryId, Pageable pageable);
 
-    List<BillTransaction> findByCategoryIdAndCreateAtGreaterThanEqual(UUID categoryId, Timestamp date);
+    List<BillTransaction> findByCategoryIdAndCreateAtGreaterThanEqual(UUID categoryId, LocalDateTime date);
 }
