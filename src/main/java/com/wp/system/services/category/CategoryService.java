@@ -130,6 +130,7 @@ public class CategoryService {
             if(request.getCategoryLimit() != 0) {
                 category.setCategorySpend(0.0);
                 category.setPercentsFromLimit(0.0);
+                category.setCategoryLimit(request.getCategoryLimit());
 
                 category.setResetDataDate(
                         Instant.from(Instant.now()
@@ -145,6 +146,10 @@ public class CategoryService {
                         .forEach((item) -> {
                             System.out.println(item.getAction());
                             if(item.getAction() == BillBalanceAction.WITHDRAW) {
+//                                if(category.getCategorySpend() == 0) {
+//                                    category.setCategorySpend(item.getSum());
+//                                } else {
+//                                }
                                 category.setCategorySpend(category.getCategorySpend() + item.getSum());
                                 System.out.println(item.getSum());
                                 System.out.println("sum");
@@ -185,7 +190,6 @@ public class CategoryService {
             } else {
                 category.setPercentsFromLimit(0.0);
                 category.setCategorySpend(null);
-                category.setCategoryLimit(request.getCategoryLimit());
             }
         }
 
