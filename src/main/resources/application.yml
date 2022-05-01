@@ -2,7 +2,15 @@ server:
   tomcat:
     max-threads: 4
 
+management:
+  endpoints:
+    jmx:
+      domain: com.app
+
 spring:
+  jmx:
+    unique-names: true
+
   mvc:
     static-path-pattern: /images/**
   main:
