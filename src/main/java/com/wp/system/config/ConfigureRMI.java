@@ -10,11 +10,9 @@ import org.springframework.remoting.rmi.RmiRegistryFactoryBean;
 @Configuration
 public class ConfigureRMI {
 
-    @Value("${jmx.rmi.host:localhost}")
-    private String rmiHost;
+    private String rmiHost = "localhost";
 
-    @Value("${jmx.rmi.port:1099}")
-    private Integer rmiPort;
+    private Integer rmiPort = 9696;
 
     @Bean
     public RmiRegistryFactoryBean rmiRegistry() {
