@@ -146,18 +146,8 @@ public class CategoryService {
                         .forEach((item) -> {
                             System.out.println(item.getAction());
                             if(item.getAction() == BillBalanceAction.WITHDRAW) {
-//                                if(category.getCategorySpend() == 0) {
-//                                    category.setCategorySpend(item.getSum());
-//                                } else {
-//                                }
                                 category.setCategorySpend(category.getCategorySpend() + item.getSum());
-                                System.out.println(item.getSum());
-                                System.out.println("sum");
-                                System.out.println("category spend");
-                                System.out.println(category.getCategorySpend());
                                 category.setPercentsFromLimit((category.getCategorySpend() / category.getCategoryLimit()) * 100.0);
-                                System.out.println("category percent");
-                                System.out.println(category.getPercentsFromLimit());
                             }
                         });
 

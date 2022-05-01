@@ -31,6 +31,11 @@ spring:
 #    url: jdbc:postgresql://localhost:5432/wp
 
   jpa:
+    properties:
+      hibernate:
+        query:
+          plan_cache_max_size: 512
+          plan_parameter_metadata_max_size: 32
     generate-ddl: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
