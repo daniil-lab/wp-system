@@ -23,7 +23,7 @@ COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
 COPY ./images ./images
 
-EXPOSE [8080, 5000, 9696]
+EXPOSE 8080
 
 ENTRYPOINT java -Xmx12144M -jar system-dev.jar
 
