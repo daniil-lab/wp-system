@@ -20,5 +20,5 @@ COPY ./images ./images
 
 EXPOSE 8080
 
-ENTRYPOINT java -Xmx12144M -jar system-dev.jar
+ENTRYPOINT java -jar system-dev.jar
 
