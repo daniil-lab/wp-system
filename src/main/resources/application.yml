@@ -1,3 +1,7 @@
+server:
+  tomcat:
+    max-threads: 4
+
 spring:
   mvc:
     static-path-pattern: /images/**
