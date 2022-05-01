@@ -17,9 +17,9 @@ COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
  ENV JAVA_TOOL_OPTIONS "-Dcom.sun.management.jmxremote.ssl=false \
  -Dcom.sun.management.jmxremote.authenticate=false \
  -Dcom.sun.management.jmxremote.port=9336 \
- -Dcom.sun.management.jmxremote.rmi.port=9336 \
- -Dcom.sun.management.jmxremote.host=0.0.0.0 \
- -Djava.rmi.server.hostname=0.0.0.0"/
+ -Dcom.sun.management.jmxremote.rmi.port=9337 \
+ -Dcom.sun.management.jmxremote.host=localhost \
+ -Djava.rmi.server.hostname=localhost"/
 
 COPY ./images ./images
 
