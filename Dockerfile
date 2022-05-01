@@ -14,8 +14,6 @@ FROM ghcr.io/graalvm/jdk:java17-21.3.0
 
 COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
- ENV JAVA_TOOL_OPTIONS "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=4855 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=188.225.45.41"/
-
 COPY ./images ./images
 
 EXPOSE 8080
