@@ -9,6 +9,7 @@ management:
 
 spring:
   jmx:
+    enabled: true
     unique-names: true
 
   mvc:
