@@ -10,15 +10,13 @@ WORKDIR wp
 
 RUN gradle clean build
 
-FROM openjdk:17-alpine
+FROM ghcr.io/graalvm/jdk:java17-21.3.0
 
 COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
 COPY ./images ./images
 
-RUN apk add chromium
-
 EXPOSE 8080
 
-ENTRYPOINT java -Xmx6144M -jar system-dev.jar
+ENTRYPOINT java -Xmx12144M -jar system-dev.jar
 
