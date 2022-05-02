@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,8 @@ public class AbstractService {
                 ") order by create_at desc limit :limit offset :offset");
 
         query.setParameter("userId", user.getId());
-        query.setParameter("startDate", startDate.toString());
-        query.setParameter("endDate", endDate.toString());
+        query.setParameter("startDate", Timestamp.from(startDate));
+        query.setParameter("endDate", Timestamp.from(endDate));
         query.setParameter("limit", pageSize);
         query.setParameter("offset", page * pageSize);
 
