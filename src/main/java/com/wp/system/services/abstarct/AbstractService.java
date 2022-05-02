@@ -68,17 +68,17 @@ public class AbstractService {
             dto.setSum((Double) item[2]);
 
             if(item[7].equals("SYSTEM")) {
-                if(Integer.parseInt((String) item[3]) == 1) {
+                if((Integer) item[3] == 1) {
                     dto.setTransactionType(BankTransactionType.EARN);
                 } else {
                     dto.setTransactionType(BankTransactionType.SPEND);
                 }
             } else {
-                dto.setTransactionType(BankTransactionType.values()[Integer.parseInt((String) item[3])]);
+                dto.setTransactionType(BankTransactionType.values()[(Integer) item[3]]);
             }
 
             dto.setDate(Timestamp.valueOf((String) item[4]).toInstant());
-            dto.setCurrency(WalletType.values()[Integer.parseInt((String) item[5])]);
+            dto.setCurrency(WalletType.values()[(Integer) item[5]]);
             dto.setDescription((String) item[6]);
             dto.setType((String) item[7]);
 
