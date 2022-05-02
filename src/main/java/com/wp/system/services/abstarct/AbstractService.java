@@ -35,7 +35,7 @@ public class AbstractService {
                 (select CAST(id as varchar), CAST(category_id as varchar), CAST(CONCAT(CAST(amount as varchar),'.' ,CAST(cents as varchar)) as float) as sum, transaction_type, date, currency, description, 'SBER' as transactionType from sber_transaction WHERE date BETWEEN :startDate AND :endDate AND card_id in (select sc.id from sber_card as sc where sc.integration_id = (select si.id from sber_integration as si where si.user_id = :userId)))
                 union
                 (select CAST(id as varchar), CAST(category_id as varchar), CAST(CONCAT(CAST(amount as varchar),'.' ,CAST(cents as varchar)) as float) as sum, transaction_type, date, currency, description, 'TOCHKA' as transactionType from tochka_transaction WHERE date BETWEEN :startDate AND :endDate AND card_id in (select sc.id from sber_card as sc where sc.integration_id = (select si.id from sber_integration as si where si.user_id = :userId)))
-                ) order by create_at desc limit :limit offset :offset""", Map.class);
+                ) order by create_at desc limit :limit offset :offset""", HashMap.class);
 
         query.setParameter("userId", user.getId());
         query.setParameter("startDate", Timestamp.from(startDate));
