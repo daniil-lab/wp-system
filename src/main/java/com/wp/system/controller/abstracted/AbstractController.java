@@ -1,5 +1,6 @@
 package com.wp.system.controller.abstracted;
 
+import com.wp.system.dto.AbstractTransactionDTO;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
 import com.wp.system.services.abstarct.AbstractService;
@@ -24,7 +25,7 @@ public class AbstractController {
     private AbstractService abstractService;
 
     @GetMapping("/all-transactions")
-    public ResponseEntity<ServiceResponse<PagingResponse<Object>>> getAllTransactions(
+    public ResponseEntity<ServiceResponse<PagingResponse<AbstractTransactionDTO>>> getAllTransactions(
             @RequestParam
                     Instant startDate,
             @RequestParam
