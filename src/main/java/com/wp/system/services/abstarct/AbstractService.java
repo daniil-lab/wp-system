@@ -1,8 +1,14 @@
 package com.wp.system.services.abstarct;
 
+import com.wp.system.dto.AbstractTransactionDTO;
+import com.wp.system.dto.category.CategoryDTO;
+import com.wp.system.entity.BankTransactionType;
+import com.wp.system.entity.category.Category;
 import com.wp.system.entity.user.User;
+import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.utils.AuthHelper;
+import com.wp.system.utils.WalletType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AbstractService {
@@ -24,7 +28,10 @@ public class AbstractService {
     @Autowired
     private AuthHelper authHelper;
 
-    public PagingResponse<Object> getAllTransactions(Instant startDate, Instant endDate, int page, int pageSize) {
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    public PagingResponse<AbstractTransactionDTO> getAllTransactions(Instant startDate, Instant endDate, int page, int pageSize) {
         User user = authHelper.getUserFromAuthCredentials();
 
         Query query = entityManager.createNativeQuery("""
@@ -45,17 +52,39 @@ public class AbstractService {
 
         List<Object[]> results = query.getResultList();
 
+
+        List<AbstractTransactionDTO> transactions = new ArrayList<>();
         results.forEach(item -> {
-            System.out.println(item[0]);
-            System.out.println(item[1]);
-            System.out.println(item[2]);
-            System.out.println(item[3]);
-            System.out.println(item[4]);
-            System.out.println(item[5]);
-            System.out.println(item[6]);
-            System.out.println(item[7]);
+            AbstractTransactionDTO dto = new AbstractTransactionDTO();
+
+            dto.setId(UUID.fromString((String)item[0]));
+
+            if(item[1] != null) {
+                categoryRepository.findById(UUID.fromString((String)item[1])).ifPresent(c -> {
+                    dto.setCategory(new CategoryDTO(c));
+                });
+            }
+
+            dto.setSum(Double.parseDouble((String) item[2]));
+
+            if(item[7].equals("SYSTEM")) {
+                if(Integer.parseInt((String) item[3]) == 1) {
+                    dto.setTransactionType(BankTransactionType.EARN);
+                } else {
+                    dto.setTransactionType(BankTransactionType.SPEND);
+                }
+            } else {
+                dto.setTransactionType(BankTransactionType.values()[Integer.parseInt((String) item[3])]);
+            }
+
+            dto.setDate(Timestamp.valueOf((String) item[4]).toInstant());
+            dto.setCurrency(WalletType.values()[Integer.parseInt((String) item[5])]);
+            dto.setDescription((String) item[6]);
+            dto.setType((String) item[7]);
+
+            transactions.add(dto);
         });
 
-        return null;
+        return new PagingResponse<>(transactions, 0, 0);
     }
 }
