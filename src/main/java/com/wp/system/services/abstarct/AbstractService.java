@@ -65,7 +65,7 @@ public class AbstractService {
                 });
             }
 
-            dto.setSum(Double.parseDouble((String) item[2]));
+            dto.setSum((Double) item[2]);
 
             if(item[7].equals("SYSTEM")) {
                 if(Integer.parseInt((String) item[3]) == 1) {
