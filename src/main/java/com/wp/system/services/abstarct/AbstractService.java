@@ -77,7 +77,7 @@ public class AbstractService {
                 dto.setTransactionType(BankTransactionType.values()[(Integer) item[3]]);
             }
 
-            dto.setDate(Timestamp.valueOf((String) item[4]).toInstant());
+            dto.setDate(((Timestamp) item[4]).toInstant());
             dto.setCurrency(WalletType.values()[(Integer) item[5]]);
             dto.setDescription((String) item[6]);
             dto.setType((String) item[7]);
