@@ -26,14 +26,15 @@ public class AbstractService {
     public PagingResponse<Object> getAllTransactions(Instant startDate, Instant endDate, int page, int pageSize) {
         User user = authHelper.getUserFromAuthCredentials();
 
-        Query query = entityManager.createNativeQuery("((select id, category_id, sum, action, create_at, currency, description, 'SYSTEM' as transaction_type from bill_transaction WHERE create_at BETWEEN timestamp :startDate AND timestamp :endDate AND user_id = :userId)\n" +
-                "union\n" +
-                "(select id, category_id, CAST(CONCAT(CAST(amount as varchar),'.' ,CAST(cents as varchar)) as float) as sum, transaction_type, date, currency, description, 'TINKOFF' as transactionType from tinkoff_transaction WHERE date BETWEEN timestamp :startDate AND timestamp :endDate AND card_id in (select tc.id from tinkoff_card as tc where tc.integration_id = (select ti.id from tinkoff_integration as ti where ti.user_id = :userId)))\n" +
-                "union\n" +
-                "(select id, category_id, CAST(CONCAT(CAST(amount as varchar),'.' ,CAST(cents as varchar)) as float) as sum, transaction_type, date, currency, description, 'SBER' as transactionType from sber_transaction WHERE date BETWEEN timestamp :startDate AND timestamp :endDate AND card_id in (select sc.id from sber_card as sc where sc.integration_id = (select si.id from sber_integration as si where si.user_id = :userId)))\n" +
-                "union\n" +
-                "(select id, category_id, CAST(CONCAT(CAST(amount as varchar),'.' ,CAST(cents as varchar)) as float) as sum, transaction_type, date, currency, description, 'TOCHKA' as transactionType from tochka_transaction WHERE date BETWEEN timestamp :startDate AND timestamp :endDate AND card_id in (select sc.id from sber_card as sc where sc.integration_id = (select si.id from sber_integration as si where si.user_id = :userId)))\n" +
-                ") order by create_at desc limit :limit offset :offset");
+        Query query = entityManager.createNativeQuery("""
+                ((select id, category_id, sum, action, create_at, currency, description, 'SYSTEM' as transaction_type from bill_transaction WHERE create_at BETWEEN :startDate AND :endDate AND user_id = :userId)
+                union
+                (select id, category_id, CAST(CONCAT(CAST(amount as varchar),'.' ,CAST(cents as varchar)) as float) as sum, transaction_type, date, currency, description, 'TINKOFF' as transactionType from tinkoff_transaction WHERE date BETWEEN :startDate AND :endDate AND card_id in (select tc.id from tinkoff_card as tc where tc.integration_id = (select ti.id from tinkoff_integration as ti where ti.user_id = :userId)))
+                union
+                (select id, category_id, CAST(CONCAT(CAST(amount as varchar),'.' ,CAST(cents as varchar)) as float) as sum, transaction_type, date, currency, description, 'SBER' as transactionType from sber_transaction WHERE date BETWEEN :startDate AND :endDate AND card_id in (select sc.id from sber_card as sc where sc.integration_id = (select si.id from sber_integration as si where si.user_id = :userId)))
+                union
+                (select id, category_id, CAST(CONCAT(CAST(amount as varchar),'.' ,CAST(cents as varchar)) as float) as sum, transaction_type, date, currency, description, 'TOCHKA' as transactionType from tochka_transaction WHERE date BETWEEN :startDate AND :endDate AND card_id in (select sc.id from sber_card as sc where sc.integration_id = (select si.id from sber_integration as si where si.user_id = :userId)))
+                ) order by create_at desc limit :limit offset :offset""");
 
         query.setParameter("userId", user.getId());
         query.setParameter("startDate", Timestamp.from(startDate));
