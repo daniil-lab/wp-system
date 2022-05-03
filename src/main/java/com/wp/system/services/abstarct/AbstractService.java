@@ -81,6 +81,7 @@ public class AbstractService {
             dto.setCurrency(WalletType.values()[(Integer) item[5]]);
             dto.setDescription((String) item[6]);
             dto.setType((String) item[7]);
+            dto.setBillName((String) item[8]);
 
             transactions.add(dto);
         });

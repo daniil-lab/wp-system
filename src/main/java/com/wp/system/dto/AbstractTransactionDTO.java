@@ -24,7 +24,17 @@ public class AbstractTransactionDTO {
 
     private WalletType currency;
 
+    private String billName;
+
     public AbstractTransactionDTO() {}
+
+    public String getBillName() {
+        return billName;
+    }
+
+    public void setBillName(String billName) {
+        this.billName = billName;
+    }
 
     public String getDescription() {
         return description;
