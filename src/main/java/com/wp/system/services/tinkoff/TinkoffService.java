@@ -91,7 +91,7 @@ public class TinkoffService {
     public PagingResponse<TinkoffTransaction> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
         Page<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, PageRequest.of(page, pageSize));
 
-        return new PagingResponse<>(TinkoffTransaction,
+        return new PagingResponse<>(tinkoffTransactions.getContent(),
                 tinkoffTransactions.getTotalElements(), tinkoffTransactions.getTotalPages());
     }
 
