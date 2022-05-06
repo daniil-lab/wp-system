@@ -88,6 +88,7 @@ public class TinkoffService {
         });
     }
 
+    @Transactional
     public PagingResponse<TinkoffTransactionDTO> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
         Page<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, PageRequest.of(page, pageSize));
 
