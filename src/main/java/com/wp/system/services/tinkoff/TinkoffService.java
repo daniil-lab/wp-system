@@ -88,10 +88,10 @@ public class TinkoffService {
         });
     }
 
-    public PagingResponse<TinkoffTransactionDTO> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
+    public PagingResponse<TinkoffTransaction> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
         Page<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, PageRequest.of(page, pageSize));
 
-        return new PagingResponse<>(tinkoffTransactions.getContent().stream().map(TinkoffTransactionDTO::new).collect(Collectors.toList()),
+        return new PagingResponse<>(TinkoffTransaction,
                 tinkoffTransactions.getTotalElements(), tinkoffTransactions.getTotalPages());
     }
 

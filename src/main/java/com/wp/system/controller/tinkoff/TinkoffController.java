@@ -90,7 +90,7 @@ public class TinkoffController {
     @GetMapping(value = "/transactions/{cardId}")
     @Operation(summary = "Получить транзакции по карте")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<ServiceResponse<PagingResponse<TinkoffTransactionDTO>>> getTransactions(
+    public ResponseEntity<ServiceResponse<PagingResponse<TinkoffTransaction>>> getTransactions(
             @PathVariable
                     UUID cardId,
             @RequestParam
