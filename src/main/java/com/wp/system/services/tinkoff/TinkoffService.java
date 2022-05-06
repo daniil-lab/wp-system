@@ -90,10 +90,10 @@ public class TinkoffService {
 
     @Transactional
     public PagingResponse<TinkoffTransactionDTO> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
-        Page<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, page * pageSize, pageSize);
+        List<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, page * pageSize, pageSize);
 
-        return new PagingResponse<>(tinkoffTransactions.getContent().stream().map(TinkoffTransactionDTO::new).collect(Collectors.toList()),
-                tinkoffTransactions.getTotalElements(), tinkoffTransactions.getTotalPages());
+        return new PagingResponse<>(tinkoffTransactions.stream().map(TinkoffTransactionDTO::new).collect(Collectors.toList()),
+                0, 0);
     }
 
     @Transactional
