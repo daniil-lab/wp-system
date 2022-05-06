@@ -49,6 +49,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.*;
@@ -76,6 +79,9 @@ public class TinkoffService {
     @Autowired
     private AuthHelper authHelper;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private List<TinkoffAuthChromeTab> tinkoffChromeTabs = new ArrayList<>();
 
     private List<TinkoffAuthRequest> authRequests = new ArrayList<>();
@@ -90,9 +96,14 @@ public class TinkoffService {
 
     @Transactional
     public PagingResponse<TinkoffTransactionDTO> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
-        List<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, page * pageSize, pageSize);
+//        List<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, page * pageSize, pageSize);
 
-        return new PagingResponse<>(tinkoffTransactions.stream().map(TinkoffTransactionDTO::new).collect(Collectors.toList()),
+        Query query = entityManager.createNativeQuery("SELECT * FROM tinkoff_transaction WHERE card_id = ?1 limit ?3 offset ?2", TinkoffTransaction.class)
+                .setParameter(1, cardId)
+                .setParameter(2, page * pageSize)
+                .setParameter(3, pageSize);
+
+        return new PagingResponse<>(((List<TinkoffTransaction>) query.getResultList()).stream().map(TinkoffTransactionDTO::new).collect(Collectors.toList()),
                 0, 0);
     }
 
