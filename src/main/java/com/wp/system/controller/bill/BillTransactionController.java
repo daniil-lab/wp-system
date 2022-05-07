@@ -54,8 +54,12 @@ public class BillTransactionController extends DocumentedRestController {
     @PreAuthorize("hasAnyAuthority('BILL_TRANSACTION_GET', 'BILL_TRANSACTION_FULL')")
     @Operation(summary = "Получение всех транзакций счета")
     @GetMapping("/bill/{billId}")
-    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getAllBillTransactions(@PathVariable UUID billId, @RequestParam int page, @RequestParam int pageSize) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllTransactionsByBillId(billId, page, pageSize), "Bill Transactions returned"), HttpStatus.OK);
+    public ResponseEntity<ServiceResponse<PagingResponse<BillTransactionDTO>>> getAllBillTransactions(@PathVariable UUID billId, @RequestParam int page, @RequestParam int pageSize,
+                                                                                                      @RequestParam
+                                                                                                              Instant startDate,
+                                                                                                      @RequestParam
+                                                                                                                  Instant endDate) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), this.billTransactionService.getAllTransactionsByBillId(billId, page, pageSize, startDate, endDate), "Bill Transactions returned"), HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")

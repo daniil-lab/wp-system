@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,9 +56,13 @@ public class TochkaController {
             @RequestParam
                     int page,
             @RequestParam
-                    int pageSize
+                    int pageSize,
+            @RequestParam
+                    Instant startDate,
+            @RequestParam
+                    Instant endDate
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tochkaService.getTransactionsByCardId(cardId, page, pageSize), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tochkaService.getTransactionsByCardId(cardId, startDate, endDate, page, pageSize), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TOCHKA_UPDATE', 'TOCHKA_FULL')")

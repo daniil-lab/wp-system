@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -139,8 +140,8 @@ public class TochkaService {
         return integration.getCards();
     }
 
-    public PagingResponse<TochkaTransactionDTO> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
-        Page<TochkaTransaction> transactions = tochkaTransactionRepository.findByCardId(cardId, PageRequest.of(page, pageSize));
+    public PagingResponse<TochkaTransactionDTO> getTransactionsByCardId(UUID cardId, Instant startDate, Instant endDate, int page, int pageSize) {
+        Page<TochkaTransaction> transactions = tochkaTransactionRepository.findByCardIdAndDateBetween(cardId, startDate, endDate, PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(transactions.getContent().stream().map(TochkaTransactionDTO::new).collect(Collectors.toList()),
                 transactions.getTotalElements(), transactions.getTotalPages());

@@ -30,6 +30,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -122,9 +123,13 @@ public class SberController {
             @RequestParam
                     int page,
             @RequestParam
-                    int pageSize
+                    int pageSize,
+            @RequestParam
+                    Instant startDate,
+            @RequestParam
+                    Instant endDate
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.getTransactionsByCardId(cardId, page, pageSize), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.getTransactionsByCardId(cardId, startDate, endDate, page, pageSize), ""), HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")

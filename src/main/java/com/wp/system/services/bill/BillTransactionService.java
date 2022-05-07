@@ -216,7 +216,7 @@ public class BillTransactionService {
                 transactions.getTotalElements(), transactions.getTotalPages());
     }
 
-    public PagingResponse<BillTransactionDTO> getAllTransactionsByBillId(UUID billId, int page, int pageSize) {
+    public PagingResponse<BillTransactionDTO> getAllTransactionsByBillId(UUID billId, int page, int pageSize, Instant startDate, Instant endDate) {
         User user = authHelper.getUserFromAuthCredentials();
 
         Bill bill = billRepository.findById(billId).orElseThrow(() -> {
@@ -226,10 +226,10 @@ public class BillTransactionService {
         if(!bill.getUser().getId().equals(user.getId()))
             throw new ServiceException("It`s not your transaction", HttpStatus.FORBIDDEN);
 
-        List<BillTransaction> transactions = this.billTransactionRepository.getAllBillTransactions(billId, PageRequest.of(page, pageSize));
+        Page<BillTransaction> transactions = this.billTransactionRepository.findByBillIdAndCreateAtBetween(billId, startDate, endDate, PageRequest.of(page, pageSize));
 
-        return new PagingResponse<>(transactions.stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
-                this.billTransactionRepository.getAllBillTransactions(billId).size());
+        return new PagingResponse<>(transactions.getContent().stream().map(BillTransactionDTO::new).collect(Collectors.toList()),
+                transactions.getTotalElements(), transactions.getTotalPages());
     }
 
 }

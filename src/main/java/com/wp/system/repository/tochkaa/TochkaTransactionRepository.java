@@ -22,7 +22,7 @@ public interface TochkaTransactionRepository extends JpaRepository<TochkaTransac
 //
     Page<TochkaTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
 
-    Page<TochkaTransaction> findByCardId(UUID id, Pageable pageable);
+    Page<TochkaTransaction> findByCardIdAndDateBetween(UUID id, Instant start, Instant end, Pageable pageable);
 
     List<TochkaTransaction> findByCategoryIdAndDateGreaterThanEqual(UUID categoryId, Instant date);
 }

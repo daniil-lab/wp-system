@@ -187,7 +187,7 @@ public class SberService {
         return true;
     }
 
-    public PagingResponse<SberTransactionDTO> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
+    public PagingResponse<SberTransactionDTO> getTransactionsByCardId(UUID cardId, Instant startDate, Instant endDate, int page, int pageSize) {
         User user = authHelper.getUserFromAuthCredentials();
 
         SberCard card = sberCardRepository.findById(cardId).orElseThrow(() -> {
@@ -197,7 +197,7 @@ public class SberService {
         if(!card.getIntegration().getUser().getId().equals(user.getId()))
             throw new ServiceException("No your object", HttpStatus.FORBIDDEN);
 
-        Page<SberTransaction> sberTransactions = sberTransactionRepository.findByCardId(cardId, PageRequest.of(page, pageSize));
+        Page<SberTransaction> sberTransactions = sberTransactionRepository.findByCardIdAndDateBetween(cardId, startDate, endDate, PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(sberTransactions.getContent().stream().map(SberTransactionDTO::new).collect(Collectors.toList()),
                 sberTransactions.getTotalElements(), sberTransactions.getTotalPages());

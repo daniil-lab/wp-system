@@ -32,8 +32,7 @@ public interface BillTransactionRepository extends JpaRepository<BillTransaction
     @Query(nativeQuery = true, value = "SELECT * FROM bill_transaction WHERE bill_id = ?1 AND create_at BETWEEN ?2 AND ?3")
     Page<BillTransaction> getBillTransactionsByPeriod(UUID bullId, Timestamp startTime, Timestamp endTime, Pageable pageable);
 
-    @Query("SELECT t FROM BillTransaction t JOIN t.bill b WHERE b.id = ?1")
-    List<BillTransaction> getAllBillTransactions(UUID billId, Pageable pageable);
+    Page<BillTransaction> findByBillIdAndCreateAtBetween(UUID billId, Instant startDate, Instant endDate, Pageable pageable);
 
     @Query("SELECT t FROM BillTransaction t JOIN t.bill b WHERE b.id = ?1")
     List<BillTransaction> getAllBillTransactions(UUID billId);

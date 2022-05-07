@@ -22,7 +22,7 @@ public interface SberTransactionRepository extends JpaRepository<SberTransaction
 
     List<SberTransaction> findByCardId(UUID id);
 
-    Page<SberTransaction> findByCardId(UUID id, Pageable pageable);
+    Page<SberTransaction> findByCardIdAndDateBetween(UUID id, Instant start, Instant end, Pageable pageable);
 
     Page<SberTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
 
