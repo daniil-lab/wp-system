@@ -56,4 +56,12 @@ public class PagingResponse<T> {
     public void setTotal(long total) {
         this.total = total;
     }
+
+    public Integer getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(Integer totalPages) {
+        this.totalPages = totalPages;
+    }
 }
