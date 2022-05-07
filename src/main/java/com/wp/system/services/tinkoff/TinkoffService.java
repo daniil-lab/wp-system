@@ -91,7 +91,7 @@ public class TinkoffService {
 
     public PagingResponse<TinkoffTransaction> getTransactionsByCardId(UUID cardId, int page, int pageSize, Instant startDate, Instant endDate) {
         Page<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardIdAndDateBetween(cardId,
-                Timestamp.from(startDate), Timestamp.from(endDate), PageRequest.of(page, pageSize));
+                startDate, endDate, PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(tinkoffTransactions.getContent(),
                 tinkoffTransactions.getTotalElements(), tinkoffTransactions.getTotalPages());
