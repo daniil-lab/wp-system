@@ -20,7 +20,7 @@ public interface TinkoffTransactionRepository extends JpaRepository<TinkoffTrans
     @Query("SELECT t FROM TinkoffTransaction t WHERE t.tinkoffId = ?1 AND t.card.id = ?2")
     Optional<TinkoffTransaction> getTinkoffTransactionByTinkoffId(String id, UUID cardId);
 
-    Page<TinkoffTransaction> findByCardId(UUID id, Pageable pageable);
+    Page<TinkoffTransaction> findByCardIdAndDateBetween(UUID id, Timestamp start, Timestamp end, Pageable pageable);
 
     Page<TinkoffTransaction> findByCardIntegrationUserId(UUID id, Pageable pageable);
 

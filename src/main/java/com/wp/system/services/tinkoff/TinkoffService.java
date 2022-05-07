@@ -50,6 +50,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -88,8 +89,9 @@ public class TinkoffService {
         });
     }
 
-    public PagingResponse<TinkoffTransaction> getTransactionsByCardId(UUID cardId, int page, int pageSize) {
-        Page<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId, PageRequest.of(page, pageSize));
+    public PagingResponse<TinkoffTransaction> getTransactionsByCardId(UUID cardId, int page, int pageSize, Instant startDate, Instant endDate) {
+        Page<TinkoffTransaction> tinkoffTransactions = tinkoffTransactionRepository.findByCardId(cardId,
+                Timestamp.from(startDate), Timestamp.from(endDate), PageRequest.of(page, pageSize));
 
         return new PagingResponse<>(tinkoffTransactions.getContent(),
                 tinkoffTransactions.getTotalElements(), tinkoffTransactions.getTotalPages());

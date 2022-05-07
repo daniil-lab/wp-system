@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -96,9 +97,13 @@ public class TinkoffController {
             @RequestParam
                     int page,
             @RequestParam
-                    int pageSize
+                    int pageSize,
+            @RequestParam
+                    Instant startDate,
+            @RequestParam
+                    Instant endDate
     ) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getTransactionsByCardId(cardId, page, pageSize), ""), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.getTransactionsByCardId(cardId, page, pageSize, startDate, endDate), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_GET', 'TINKOFF_FULL')")
