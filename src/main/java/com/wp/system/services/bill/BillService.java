@@ -63,9 +63,6 @@ public class BillService {
     @Autowired
     private AuthHelper authHelper;
 
-    @PersistenceContext
-    private EntityManager entityManager
-
     public Bill updateBill(EditBillRequest request, UUID billId) {
         Bill bill = this.getBillById(billId);
         User user = authHelper.getUserFromAuthCredentials();
