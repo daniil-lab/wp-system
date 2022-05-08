@@ -26,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -60,6 +62,9 @@ public class BillService {
 
     @Autowired
     private AuthHelper authHelper;
+
+    @PersistenceContext
+    private EntityManager entityManager
 
     public Bill updateBill(EditBillRequest request, UUID billId) {
         Bill bill = this.getBillById(billId);
@@ -201,6 +206,11 @@ public class BillService {
         });
 
         bill.setLogs(new ArrayList<>());
+
+        Query query = entityManager.createNativeQuery("DELETE FROM bill_transaction WHERE bill_id = :billId");
+        query.setParameter("billId", bill.getId());
+
+        query.executeUpdate();
 
         this.billRepository.delete(bill);
 
