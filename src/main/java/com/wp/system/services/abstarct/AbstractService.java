@@ -68,9 +68,9 @@ public class AbstractService {
         query.setParameter("endDate", Timestamp.from(endDate));
         query.setParameter("limit", pageSize);
         query.setParameter("offset", page * pageSize);
-        query.setParameter("tinkoffIntegration", tinkoffIntegration.isPresent() ? tinkoffIntegration.get().getId() : "no");
-        query.setParameter("sberIntegration", sberIntegration.isPresent() ? tinkoffIntegration.get().getId() : "no");
-        query.setParameter("tochkaIntegration", tochkaIntegration.isPresent() ? tinkoffIntegration.get().getId() : "no");
+        query.setParameter("tinkoffIntegrationId", tinkoffIntegration.isPresent() ? tinkoffIntegration.get().getId() : "no");
+        query.setParameter("sberIntegrationId", sberIntegration.isPresent() ? tinkoffIntegration.get().getId() : "no");
+        query.setParameter("tochkaIntegrationId", tochkaIntegration.isPresent() ? tinkoffIntegration.get().getId() : "no");
 
         List<Object[]> results = query.getResultList();
 
