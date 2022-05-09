@@ -62,6 +62,9 @@ public class BaseCategoryService {
             category.setIcon(image);
         }
 
+        category.setForEarn(request.getForEarn());
+        category.setForSpend(request.getForSpend());
+
         baseCategoryRepository.save(category);
 
         return category;
