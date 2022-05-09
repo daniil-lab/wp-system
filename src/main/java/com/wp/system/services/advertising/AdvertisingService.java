@@ -131,13 +131,13 @@ public class AdvertisingService {
     }
 
     @Transactional
-    public Advertising removeFileFromAdvertising(RemoveFileFromAdvertisingRequest request, UUID id) {
+    public Advertising removeFileFromAdvertising(UUID fileId, UUID id) {
         Advertising advertising = getAdvertisingById(id);
 
         AdvertisingFile file = null;
 
         for (AdvertisingFile f : advertising.getFiles())
-            if(f.getId().equals(request.getId()))
+            if(f.getId().equals(fileId))
                 file = f;
 
         if(file == null)

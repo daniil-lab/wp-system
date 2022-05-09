@@ -73,9 +73,9 @@ public class AdvertisingController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('ADVERTISING_UPDATE', 'ADVERTISING_FULL')")
     @Operation(summary = "Открепление файла от рекламе")
-    @DeleteMapping("/file/{advertisingId}")
-    public ResponseEntity<ServiceResponse<AdvertisingDTO>> removeFileFromAdvertising(@Valid @RequestBody RemoveFileFromAdvertisingRequest request, @PathVariable UUID advertisingId) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new AdvertisingDTO(this.advertisingService.removeFileFromAdvertising(request, advertisingId)), "Advertising updated"), HttpStatus.OK);
+    @DeleteMapping("/file/{advertisingId}/{fileId}")
+    public ResponseEntity<ServiceResponse<AdvertisingDTO>> removeFileFromAdvertising(@Valid @PathVariable UUID fileId, @PathVariable UUID advertisingId) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new AdvertisingDTO(this.advertisingService.removeFileFromAdvertising(fileId, advertisingId)), "Advertising updated"), HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")

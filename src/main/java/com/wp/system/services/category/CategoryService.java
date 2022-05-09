@@ -105,7 +105,7 @@ public class CategoryService {
         if(!category.getUser().getId().equals(user.getId()))
             throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
 
-        if(request.getDescription() != null && !category.getDescription().equals(request.getDescription()))
+        if(request.getDescription() != null)
             category.setDescription(request.getDescription());
 
         if(request.getName() != null && !category.getName().equals(request.getName()))
