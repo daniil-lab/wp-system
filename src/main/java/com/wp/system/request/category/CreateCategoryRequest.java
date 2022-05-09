@@ -34,9 +34,13 @@ public class CreateCategoryRequest {
     @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
     private int categoryLimit;
 
-    @Schema(required = true, description = "Указатель, что категория только для пополнений")
+    @Schema(required = true, description = "Указатель, что категория может содержать пополнения")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    private Boolean onlyForEarn;
+    private Boolean forEarn;
+
+    @Schema(required = true, description = "Указатель, что категория может содержать расходы")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private Boolean forSpend;
 
     public CreateCategoryRequest() {}
 
@@ -51,18 +55,27 @@ public class CreateCategoryRequest {
     public CreateCategoryRequest(BaseCategory category, UUID userId) {
         this.name = category.getName();
         this.color = category.getColor();
-        this.onlyForEarn = false;
+        this.forSpend = category.getForSpend();
+        this.forEarn = category.getForEarn();
         this.description = category.getDescription();
         this.icon = category.getIcon() != null ? category.getIcon().getId() : null;
         this.userId = userId;
     }
 
-    public Boolean getOnlyForEarn() {
-        return onlyForEarn;
+    public Boolean getForEarn() {
+        return forEarn;
     }
 
-    public void setOnlyForEarn(Boolean onlyForEarn) {
-        this.onlyForEarn = onlyForEarn;
+    public void setForEarn(Boolean forEarn) {
+        this.forEarn = forEarn;
+    }
+
+    public Boolean getForSpend() {
+        return forSpend;
+    }
+
+    public void setForSpend(Boolean forSpend) {
+        this.forSpend = forSpend;
     }
 
     public int getCategoryLimit() {

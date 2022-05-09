@@ -24,15 +24,37 @@ public class BaseCategoryDTO {
     @Schema(description = "Описание категории")
     private String description;
 
+    private Boolean forEarn;
+
+    private Boolean forSpend;
+
     public BaseCategoryDTO(BaseCategory category) {
         if(category == null)
             return;
 
         this.id = category.getId();
+        this.forSpend = category.getForSpend();
+        this.forEarn = category.getForEarn();
         this.name = category.getName();
         this.color = new CategoryDTOColor(category.getColor());
         this.icon = category.getIcon() != null ? new SystemImageDTO(category.getIcon()) : null;
         this.description = category.getDescription();
+    }
+
+    public Boolean getForEarn() {
+        return forEarn;
+    }
+
+    public void setForEarn(Boolean forEarn) {
+        this.forEarn = forEarn;
+    }
+
+    public Boolean getForSpend() {
+        return forSpend;
+    }
+
+    public void setForSpend(Boolean forSpend) {
+        this.forSpend = forSpend;
     }
 
     public UUID getId() {

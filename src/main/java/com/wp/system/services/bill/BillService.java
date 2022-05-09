@@ -131,6 +131,12 @@ public class BillService {
         if(request.getCategoryId() != null)
             category = this.categoryService.getCategoryById(request.getCategoryId());
 
+        if(category != null) {
+            if(!category.getForSpend()) {
+                throw new ServiceException("Указанная категория не может содержать расходов", HttpStatus.BAD_REQUEST);
+            }
+        }
+
         BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(category, bill, bill.getUser());
 
         BillTransaction transaction = facade.withdraw(request.getAmount(), request.getCents(), request.getDescription(), request.getTime());
@@ -180,7 +186,18 @@ public class BillService {
     public BillTransaction depositBill(DepositBillRequest request, UUID billId) {
         Bill bill = this.getBillById(billId);
 
-        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(request.getCategoryId() == null ? null : this.categoryService.getCategoryById(request.getCategoryId()), bill, bill.getUser());
+        Category category = null;
+
+        if(request.getCategoryId() != null)
+            category = this.categoryService.getCategoryById(request.getCategoryId());
+
+        if(category != null) {
+            if(!category.getForEarn()) {
+                throw new ServiceException("Указанная категория не может содержать пополнений", HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        BillBalanceFacade facade = billBalanceFacadeFactory.getFacade(category, bill, bill.getUser());
 
         BillTransaction transaction = facade.deposit(request.getAmount(), request.getCents(), request.getDescription(), request.getTime());
 

@@ -80,8 +80,15 @@ public class SberService {
             if(!category.getUser().getId().equals(user.getId()))
                 throw new ServiceException("It`s not your category", HttpStatus.FORBIDDEN);
 
-            if(category.isOnlyForEarn() && transaction.getTransactionType() == BankTransactionType.SPEND)
-                throw new ServiceException("Given category only for earn", HttpStatus.BAD_REQUEST);
+            if(BankTransactionType.SPEND == transaction.getTransactionType()) {
+                if(!category.getForSpend())
+                    throw new ServiceException("Указанная категория не может содержать пополнений", HttpStatus.BAD_REQUEST);
+            }
+
+            if(BankTransactionType.EARN == transaction.getTransactionType()) {
+                if(!category.getForEarn())
+                    throw new ServiceException("Указанная категория не может содержать пополнений", HttpStatus.BAD_REQUEST);
+            }
 
             if(transaction.getTransactionType() == BankTransactionType.SPEND) {
                 category.setCategorySpend(category.getCategorySpend() + transactionAmount);

@@ -27,9 +27,13 @@ public class EditCategoryRequest {
     @PositiveOrZero(message = ValidationErrorMessages.INVALID_CATEGORY_LIMIT)
     private int categoryLimit;
 
-    @Schema(required = false, description = "Указатель, что категория только для пополнений")
+    @Schema(required = false, description = "Указатель, что категория для пополнений")
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
-    private Boolean onlyForEarn;
+    private Boolean forEarn;
+
+    @Schema(required = false, description = "Указатель, что категория для расходов")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private Boolean forSpend;
 
     public EditCategoryRequest() {}
 
@@ -40,12 +44,20 @@ public class EditCategoryRequest {
         this.icon = UUID;
     }
 
-    public Boolean getOnlyForEarn() {
-        return onlyForEarn;
+    public Boolean getForSpend() {
+        return forSpend;
     }
 
-    public void setOnlyForEarn(Boolean onlyForEarn) {
-        this.onlyForEarn = onlyForEarn;
+    public void setForSpend(Boolean forSpend) {
+        this.forSpend = forSpend;
+    }
+
+    public Boolean getForEarn() {
+        return forEarn;
+    }
+
+    public void setForEarn(Boolean forEarn) {
+        this.forEarn = forEarn;
     }
 
     public UUID getIcon() {

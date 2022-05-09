@@ -21,12 +21,32 @@ public class BaseCategory {
     @JoinColumn(name="icon_id")
     private SystemImage icon;
 
+    private Boolean forEarn;
+
+    private Boolean forSpend;
+
     public BaseCategory() {}
 
     public BaseCategory(String name, CategoryColor color, String description) {
         this.name = name;
         this.color = color;
         this.description = description;
+    }
+
+    public Boolean getForEarn() {
+        return forEarn;
+    }
+
+    public void setForEarn(Boolean forEarn) {
+        this.forEarn = forEarn;
+    }
+
+    public Boolean getForSpend() {
+        return forSpend;
+    }
+
+    public void setForSpend(Boolean forSpend) {
+        this.forSpend = forSpend;
     }
 
     public UUID getId() {

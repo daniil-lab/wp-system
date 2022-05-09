@@ -28,7 +28,9 @@ public class Category {
     @Column(columnDefinition = "TIMESTAMP")
     private Instant resetDataDate;
 
-    private boolean onlyForEarn = false;
+    private Boolean forEarn;
+
+    private Boolean forSpend;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="user_id")
@@ -101,12 +103,20 @@ public class Category {
         this.id = id;
     }
 
-    public boolean isOnlyForEarn() {
-        return onlyForEarn;
+    public Boolean getForSpend() {
+        return forSpend;
     }
 
-    public void setOnlyForEarn(boolean onlyForEarn) {
-        this.onlyForEarn = onlyForEarn;
+    public void setForSpend(Boolean forSpend) {
+        this.forSpend = forSpend;
+    }
+
+    public Boolean getForEarn() {
+        return forEarn;
+    }
+
+    public void setForEarn(Boolean forEarn) {
+        this.forEarn = forEarn;
     }
 
     public Double getPercentsFromLimit() {

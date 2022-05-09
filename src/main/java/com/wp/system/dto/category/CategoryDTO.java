@@ -34,7 +34,9 @@ public class CategoryDTO {
     @Schema(description = "Пользователь, к которому прикреплена категория")
     private UserDTO user;
 
-    private Boolean onlyForEarn;
+    private Boolean forEarn;
+
+    private Boolean forSpend;
 
     private Double percentsFromLimit;
 
@@ -47,7 +49,8 @@ public class CategoryDTO {
             return;
 
         this.percentsFromLimit = category.getPercentsFromLimit();
-        this.onlyForEarn = category.isOnlyForEarn();
+        this.forEarn = category.getForEarn();
+        this.forSpend = category.getForSpend();
         this.categorySpend = category.getCategorySpend();
         this.categoryEarn = category.getCategoryEarn();
         this.id = category.getId();
@@ -75,12 +78,20 @@ public class CategoryDTO {
         this.categoryEarn = categoryEarn;
     }
 
-    public Boolean getOnlyForEarn() {
-        return onlyForEarn;
+    public Boolean getForEarn() {
+        return forEarn;
     }
 
-    public void setOnlyForEarn(Boolean onlyForEarn) {
-        this.onlyForEarn = onlyForEarn;
+    public void setForEarn(Boolean forEarn) {
+        this.forEarn = forEarn;
+    }
+
+    public Boolean getForSpend() {
+        return forSpend;
+    }
+
+    public void setForSpend(Boolean forSpend) {
+        this.forSpend = forSpend;
     }
 
     public Double getPercentsFromLimit() {

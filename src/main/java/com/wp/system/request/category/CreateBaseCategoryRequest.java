@@ -25,6 +25,14 @@ public class CreateBaseCategoryRequest {
     @NotNull(message = ValidationErrorMessages.NO_EMPTY)
     private CategoryColor color;
 
+    @Schema(required = true, description = "Указатель, что категория может содержать пополнения")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private Boolean forEarn;
+
+    @Schema(required = true, description = "Указатель, что категория может содержать расходы")
+    @NotNull(message = ValidationErrorMessages.NO_EMPTY)
+    private Boolean forSpend;
+
     public CreateBaseCategoryRequest() {}
 
     public CreateBaseCategoryRequest(String name, String description, UUID UUID, CategoryColor categoryColor) {
@@ -32,6 +40,22 @@ public class CreateBaseCategoryRequest {
         this.color = categoryColor;
         this.description = description;
         this.icon = UUID;
+    }
+
+    public Boolean getForEarn() {
+        return forEarn;
+    }
+
+    public void setForEarn(Boolean forEarn) {
+        this.forEarn = forEarn;
+    }
+
+    public Boolean getForSpend() {
+        return forSpend;
+    }
+
+    public void setForSpend(Boolean forSpend) {
+        this.forSpend = forSpend;
     }
 
     public UUID getIcon() {
