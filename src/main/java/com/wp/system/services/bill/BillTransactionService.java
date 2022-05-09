@@ -85,8 +85,15 @@ public class BillTransactionService {
                 throw new ServiceException("Category not found", HttpStatus.NOT_FOUND);
             });
 
-            if(category.isOnlyForEarn() && request.getAction() == BillBalanceAction.WITHDRAW)
-                throw new ServiceException("Given category only for earn", HttpStatus.BAD_REQUEST);
+            if(BillBalanceAction.WITHDRAW == request.getAction()) {
+                if(!category.getForSpend())
+                    throw new ServiceException("Указанная категория не для расходов", HttpStatus.BAD_REQUEST);
+            }
+
+            if(BillBalanceAction.DEPOSIT == request.getAction()) {
+                if(!category.getForEarn())
+                    throw new ServiceException("Указанная категория не для доходов", HttpStatus.BAD_REQUEST);
+            }
 
             if(request.getAction() == BillBalanceAction.WITHDRAW) {
                 category.setCategorySpend(category.getCategorySpend() + transactionAmount);
