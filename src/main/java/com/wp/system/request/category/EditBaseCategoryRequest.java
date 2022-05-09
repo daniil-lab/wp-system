@@ -5,6 +5,7 @@ import com.wp.system.utils.ValidationErrorMessages;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class EditBaseCategoryRequest {
@@ -21,6 +22,12 @@ public class EditBaseCategoryRequest {
     @Schema(required = false, description = "Цвет категории")
     private CategoryColor color;
 
+    @Schema(required = true, description = "Указатель, что категория может содержать пополнения")
+    private Boolean forEarn;
+
+    @Schema(required = true, description = "Указатель, что категория может содержать расходы")
+    private Boolean forSpend;
+
     public EditBaseCategoryRequest() {}
 
     public EditBaseCategoryRequest(String name, String description, CategoryColor color, UUID UUID) {
@@ -28,6 +35,22 @@ public class EditBaseCategoryRequest {
         this.description = description;
         this.color = color;
         this.icon = UUID;
+    }
+
+    public Boolean getForEarn() {
+        return forEarn;
+    }
+
+    public void setForEarn(Boolean forEarn) {
+        this.forEarn = forEarn;
+    }
+
+    public Boolean getForSpend() {
+        return forSpend;
+    }
+
+    public void setForSpend(Boolean forSpend) {
+        this.forSpend = forSpend;
     }
 
     public UUID getIcon() {

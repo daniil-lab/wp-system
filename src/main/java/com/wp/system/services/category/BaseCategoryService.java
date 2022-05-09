@@ -89,6 +89,12 @@ public class BaseCategoryService {
             category.setIcon(image);
         }
 
+        if(request.getForEarn() != null)
+            category.setForEarn(request.getForEarn());
+
+        if(request.getForSpend() != null)
+            category.setForSpend(request.getForSpend());
+
         return category;
     }
 }
