@@ -26,7 +26,17 @@ public class AbstractTransactionDTO {
 
     private String billName;
 
+    private String billId;
+
     public AbstractTransactionDTO() {}
+
+    public String getBillId() {
+        return billId;
+    }
+
+    public void setBillId(String billId) {
+        this.billId = billId;
+    }
 
     public String getBillName() {
         return billName;
