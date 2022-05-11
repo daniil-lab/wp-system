@@ -14,7 +14,7 @@ public class AbstractTransactionDTO {
 
     private String description;
 
-    private BankTransactionType transactionType;
+    private String transactionType;
 
     private Instant date;
 
@@ -78,11 +78,11 @@ public class AbstractTransactionDTO {
         this.type = type;
     }
 
-    public BankTransactionType getTransactionType() {
+    public String getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionType(BankTransactionType transactionType) {
+    public void setTransactionType(String transactionType) {
         this.transactionType = transactionType;
     }
 

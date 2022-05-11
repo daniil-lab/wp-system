@@ -15,6 +15,7 @@ import com.wp.system.repository.tochkaa.TochkaIntegrationRepository;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.utils.AuthHelper;
 import com.wp.system.utils.WalletType;
+import com.wp.system.utils.bill.BillBalanceAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,12 +90,12 @@ public class AbstractService {
 
             if(item[7].equals("SYSTEM")) {
                 if((Integer) item[3] == 1) {
-                    dto.setTransactionType(BankTransactionType.EARN);
+                    dto.setTransactionType(BillBalanceAction.WITHDRAW.name());
                 } else {
-                    dto.setTransactionType(BankTransactionType.SPEND);
+                    dto.setTransactionType(BillBalanceAction.DEPOSIT.name());
                 }
             } else {
-                dto.setTransactionType(BankTransactionType.values()[(Integer) item[3]]);
+                dto.setTransactionType(BankTransactionType.values()[(Integer) item[3]].name());
             }
 
             dto.setDate(((Timestamp) item[4]).toInstant());
