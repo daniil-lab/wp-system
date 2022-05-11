@@ -89,7 +89,7 @@ public class AbstractService {
             dto.setSum((Double) item[2]);
 
             if(item[7].equals("SYSTEM")) {
-                if((Integer) item[3] == 1) {
+                if((Integer) item[3] == 0) {
                     dto.setTransactionType(BillBalanceAction.WITHDRAW.name());
                 } else {
                     dto.setTransactionType(BillBalanceAction.DEPOSIT.name());
