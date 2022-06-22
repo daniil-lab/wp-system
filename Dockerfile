@@ -10,7 +10,7 @@ WORKDIR wp
 
 RUN gradle clean build
 
-FROM ghcr.io/graalvm/jdk:java17-21.3.0
+FROM openjdk:17-oracle
 
 COPY --from=build /home/gradle/wp/build/libs/system-dev.jar .
 
