@@ -73,7 +73,6 @@ public class AbstractService {
 
         List<Object[]> results = query.getResultList();
 
-
         List<AbstractTransactionDTO> transactions = new ArrayList<>();
         results.forEach(item -> {
             AbstractTransactionDTO dto = new AbstractTransactionDTO();
