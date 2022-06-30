@@ -84,7 +84,7 @@ public class ImageService {
         return image;
     }
 
-    public SystemImage uploadImage(UploadImageRequest request) {
+    public SystemImage uploadImage(List<UploadImageRequest> request) {
         try {
             String fileName = Instant.now().toString() + "-" + UUID.randomUUID() + "." + request.getFile().getOriginalFilename().split("\\.")[1];
 

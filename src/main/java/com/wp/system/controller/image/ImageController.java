@@ -41,7 +41,7 @@ public class ImageController extends DocumentedRestController {
     public ResponseEntity<ServiceResponse<SystemImageDTO>> uploadImage(
             @Valid
             @ModelAttribute
-                UploadImageRequest request) {
+                List<UploadImageRequest> request) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new SystemImageDTO(imageService.uploadImage(request)), "Image saved"), HttpStatus.CREATED);
     }
 
