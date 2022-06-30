@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
@@ -85,24 +84,21 @@ public class ImageService {
         return image;
     }
 
-    public Boolean uploadImage(UploadImageRequest request) {
+    public SystemImage uploadImage(UploadImageRequest request) {
         try {
+            String fileName = Instant.now().toString() + "-" + UUID.randomUUID() + "." + request.getFile().getOriginalFilename().split("\\.")[1];
+
             String uploadDir = "images/";
 
-            for (MultipartFile f : request.getFile()) {
-                String fileName = Instant.now().toString() + "-" + UUID.randomUUID() + "." + f.getOriginalFilename().split("\\.")[1];
+            FileUploadUtil.saveFile(uploadDir, fileName, request.getFile());
 
+            SystemImage image = new SystemImage(fileName, uploadDir + fileName, request.getFile().getContentType());
 
-                FileUploadUtil.saveFile(uploadDir, fileName, f);
+            image.setTag(request.getTag());
 
-                SystemImage image = new SystemImage(fileName, uploadDir + fileName, f.getContentType());
+            systemImageRepository.save(image);
 
-                image.setTag(request.getTag());
-
-                systemImageRepository.save(image);
-            }
-
-            return true;
+            return image;
         } catch (Exception e) {
             throw new ServiceException("Upload error", HttpStatus.INTERNAL_SERVER_ERROR);
         }

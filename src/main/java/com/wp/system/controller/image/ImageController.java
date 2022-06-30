@@ -38,11 +38,11 @@ public class ImageController extends DocumentedRestController {
     @Operation(summary = "Загрузка изображения в общее хранилище")
     @SecurityRequirement(name = "Bearer")
     @PostMapping(value = "/", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ServiceResponse<Boolean>> uploadImage(
+    public ResponseEntity<ServiceResponse<SystemImageDTO>> uploadImage(
             @Valid
             @ModelAttribute
                 UploadImageRequest request) {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), imageService.uploadImage(request), "Image saved"), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.CREATED.value(), new SystemImageDTO(imageService.uploadImage(request)), "Image saved"), HttpStatus.CREATED);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
