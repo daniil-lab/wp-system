@@ -4,22 +4,21 @@ import com.wp.system.utils.SystemImageTag;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 public class UploadImageRequest {
     @NotNull
-    private List<MultipartFile> file;
+    private MultipartFile file;
 
     @NotNull
     private SystemImageTag tag;
 
     public UploadImageRequest() {}
 
-    public List<MultipartFile> getFile() {
+    public MultipartFile getFile() {
         return file;
     }
 
-    public void setFile(List<MultipartFile> file) {
+    public void setFile(MultipartFile file) {
         this.file = file;
     }
 
