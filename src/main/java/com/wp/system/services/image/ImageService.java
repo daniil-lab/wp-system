@@ -87,11 +87,12 @@ public class ImageService {
 
     public Boolean uploadImage(UploadImageRequest request) {
         try {
-            String fileName = Instant.now().toString() + "-" + UUID.randomUUID() + "." + request.getFile().getOriginalFilename().split("\\.")[1];
-
             String uploadDir = "images/";
 
             for (MultipartFile f : request.getFile()) {
+                String fileName = Instant.now().toString() + "-" + UUID.randomUUID() + "." + f.getOriginalFilename().split("\\.")[1];
+
+
                 FileUploadUtil.saveFile(uploadDir, fileName, f);
 
                 SystemImage image = new SystemImage(fileName, uploadDir + fileName, f.getContentType());
