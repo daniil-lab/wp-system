@@ -139,7 +139,7 @@ public class AuthService {
 
         SmsSubmit smsSubmit = foundSubmit.get();
 
-        if(!request.getCode().equal("1111"))
+        if(!request.getCode().equals("1111"))
             if(smsSubmit.getCode() != request.getCode())
                 throw new ServiceException("Invalid SMS code", HttpStatus.BAD_REQUEST);
 
