@@ -15,11 +15,11 @@ public class UploadImageRequest {
 
     public UploadImageRequest() {}
 
-    public MultipartFile getFile() {
+    public List<MultipartFile> getFile() {
         return file;
     }
 
-    public void setFile(MultipartFile file) {
+    public void setFile(List<MultipartFile> file) {
         this.file = file;
     }
 
