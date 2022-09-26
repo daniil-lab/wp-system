@@ -283,10 +283,10 @@ public class TinkoffService {
 
         driver.get("https://www.tinkoff.ru/login/");
 
-        WebElement phoneInput = (new WebDriverWait(driver, Duration.of(60, ChronoUnit.SECONDS))).until(d -> d.findElement(By.id("phoneNumber")));
+        WebElement phoneInput = new WebDriverWait(driver, Duration.of(60, ChronoUnit.SECONDS)).until(ExpectedConditions.visibilityOf(driver.findElement(By.id("phoneNumber"))));
         phoneInput.sendKeys(phone);
 
-        WebElement button = (new WebDriverWait(driver, Duration.of(60, ChronoUnit.SECONDS))).until(d -> d.findElement(By.id("submit-button")));
+        WebElement button = (new WebDriverWait(driver, Duration.of(60, ChronoUnit.SECONDS))).until(ExpectedConditions.visibilityOf(driver.findElement(By.id("submit-button"))));
 
         button.click();
 
@@ -346,12 +346,12 @@ public class TinkoffService {
                     tinkoffAuthChromeTab = r;
 
             if(tinkoffAuthChromeTab != null) {
-                (new WebDriverWait(tinkoffAuthChromeTab.getDriver(), Duration.of(10, ChronoUnit.SECONDS))).until(d -> d.findElement(By.id("smsCode"))).sendKeys(request.getCode());
+                (new WebDriverWait(tinkoffAuthChromeTab.getDriver(), Duration.of(10, ChronoUnit.SECONDS))).until(ExpectedConditions.visibilityOf(tinkoffAuthChromeTab.getDriver().findElement(By.id("smsCode")))).sendKeys(request.getCode());
 
-                (new WebDriverWait(tinkoffAuthChromeTab.getDriver(), Duration.of(10, ChronoUnit.SECONDS))).until(d -> d.findElement(By.id("password"))).sendKeys(tinkoffAuthChromeTab.getPassword() == null ?
+                (new WebDriverWait(tinkoffAuthChromeTab.getDriver(), Duration.of(10, ChronoUnit.SECONDS))).until(ExpectedConditions.visibilityOf(tinkoffAuthChromeTab.getDriver().findElement(By.id("password")))).sendKeys(tinkoffAuthChromeTab.getPassword() == null ?
                         request.getPassword() : tinkoffAuthChromeTab.getPassword());
 
-                (new WebDriverWait(tinkoffAuthChromeTab.getDriver(), Duration.of(10, ChronoUnit.SECONDS))).until(d -> d.findElement(By.id("submit-button"))).click();
+                (new WebDriverWait(tinkoffAuthChromeTab.getDriver(), Duration.of(10, ChronoUnit.SECONDS))).until(ExpectedConditions.visibilityOf(tinkoffAuthChromeTab.getDriver().findElement(By.id("submit-button")))).click();
 
                 System.out.println(tinkoffAuthChromeTab.getDriver().getCurrentUrl());
                 System.out.println(tinkoffAuthChromeTab.getDriver().getPageSource());
