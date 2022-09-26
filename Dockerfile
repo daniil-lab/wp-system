@@ -1,7 +1,5 @@
 FROM maven:3.8.4-openjdk-17 as build
 
-RUN apt-get update
-
 RUN apk add git
 
 RUN git clone https://daniil-lab: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@github.com/daniil-lab/wp-system.git wp
