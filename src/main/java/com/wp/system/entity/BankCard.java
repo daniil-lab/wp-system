@@ -11,7 +11,6 @@ public class BankCard {
     @Id
     private UUID id = UUID.randomUUID();
 
-    @Embedded
     private BigDecimal balance = BigDecimal.ZERO;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
