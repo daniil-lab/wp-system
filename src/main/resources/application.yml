@@ -1,0 +1,54 @@
+server:
+  tomcat:
+    max-threads: 4
+
+management:
+  endpoints:
+    jmx:
+      domain: com.app
+
+spring:
+  jmx:
+    enabled: true
+    unique-names: true
+
+  mvc:
+    static-path-pattern: /images/**
+  main:
+    allow-circular-references: true
+  port: 8900
+  application:
+    name: WP
+  web:
+    resources:
+      static-locations: file:/images
+
+  datasource:
+    username: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+    url: { $SPRING_DATASOURCE_URL}
+#    url: jdbc:postgresql://localhost:5432/wp
+
+  jpa:
+    properties:
+      hibernate:
+        query:
+          plan_cache_max_size: 512
+          plan_parameter_metadata_max_size: 32
+    generate-ddl: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+
+logging:
+  level:
+    root: INFO
+
+springdoc:
+  api-docs:
+    path: /docs
+
+  swagger-ui:
+    path: /swagger
+    csrf:
+      enabled: true

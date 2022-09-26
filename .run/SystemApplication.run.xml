@@ -1,0 +1,30 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SystemApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="SELENIUM_URL" value="https://google.com/" />
+      <env name="POSTGRES_USER" value="test" />
+      <env name="POSTGRES_PASSWORD" value="test" />
+      <env name="POSTGRES_DB" value="wp" />
+      <env name="SPRING_DATASOURCE_URL" value="jdbc:postgresql://localhost:5434/wp" />
+      <env name="SENDPULSE_CLIENT_SECRET" value="e6a25e4d987db74d7e63543d9ca429c1" />
+      <env name="SIGMA_USER" value="2025sel@gmail.com" />
+      <env name="SIGMA_PASS" value="j4nLYx" />
+      <env name="SENDPULSE_CLIENT_ID" value="d9bdd184a2a4a14b830a8b264ce33f31" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.wp.system.SystemApplication" />
+    <module name="system.main" />
+    <extension name="net.ashald.envfile">
+      <option name="IS_ENABLED" value="false" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+      </ENTRIES>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
