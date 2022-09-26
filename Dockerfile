@@ -1,4 +1,4 @@
-FROM maven:3.8.4-openjdk-17 as build
+FROM maven:3.8.4-openjdk-11 as build
 
 RUN git clone https://daniil-lab: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@github.com/daniil-lab/wp-system.git wp
 
