@@ -356,6 +356,8 @@ public class TinkoffService {
                 System.out.println(tinkoffAuthChromeTab.getDriver().getCurrentUrl());
                 System.out.println(tinkoffAuthChromeTab.getDriver().getPageSource());
 
+                (new WebDriverWait(tinkoffAuthChromeTab.getDriver(), Duration.of(30, ChronoUnit.SECONDS))).until(ExpectedConditions.urlContains("summary"));
+
                 if(!tinkoffAuthChromeTab.getDriver().getCurrentUrl().contains("summary")) {
                     tinkoffAuthChromeTab.getDriver().quit();
 
