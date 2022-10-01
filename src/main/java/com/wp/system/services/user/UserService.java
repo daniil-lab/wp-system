@@ -13,6 +13,7 @@ import com.wp.system.entity.subscription.Subscription;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.bill.BillTransactionRepository;
 import com.wp.system.utils.*;
+import com.wp.system.utils.convert.ConvertResponse;
 import com.wp.system.utils.user.UserType;
 import com.wp.system.permissions.PermissionManager;
 import com.wp.system.repository.user.UserRepository;
@@ -31,12 +32,13 @@ import com.wp.system.services.logging.SystemAdminLogger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityManager;
@@ -112,6 +114,9 @@ public class UserService {
 
     @Autowired
     private AuthHelper authHelper;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     public User linkWithGoogle(LinkWithGoogleRequest request) {
         User user = authHelper.getUserFromAuthCredentials();
@@ -424,11 +429,25 @@ public class UserService {
         if(request.getWalletType() != null && !request.getWalletType().equals(user.getWallet())) {
             List<Bill> bills = this.billService.getUserBills();
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("apikey", System.getenv("CURRENCY_API_KEY"));
+            HttpEntity entity = new HttpEntity(headers);
             for (Bill bill : bills) {
-                CurrencySingletonCourse baseCourse = this.currencySingleton.findCourse(user.getWallet());
-                CurrencySingletonCourse needCourse = this.currencySingleton.findCourse(request.getWalletType());
+                ResponseEntity<ConvertResponse> response = restTemplate.exchange(
+                        "https://api.apilayer.com/currency_data/convert?from=" + user.getWallet().name() + "&to=" + request.getWalletType().name() + "&amount=" + bill.getBalance(),
+                        HttpMethod.GET,
+                        entity,
+                        ConvertResponse.class
+                );
 
-                bill.setBalance(bill.getBalance().divide(BigDecimal.valueOf(baseCourse.getCourse()), 2, RoundingMode.CEILING).multiply(BigDecimal.valueOf(needCourse.getCourse())));
+                if(response.getStatusCodeValue() != 200)
+                    throw new ServiceException("Ошибка при ковертации счетов", HttpStatus.BAD_REQUEST);
+
+                bill.setBalance(response.getBody().getResult());
+                //                CurrencySingletonCourse baseCourse = this.currencySingleton.findCourse(user.getWallet());
+//                CurrencySingletonCourse needCourse = this.currencySingleton.findCourse(request.getWalletType());
+
+//                bill.setBalance(bill.getBalance().divide(BigDecimal.valueOf(baseCourse.getCourse()), 2, RoundingMode.CEILING).multiply(BigDecimal.valueOf(needCourse.getCourse())));
             }
 
             user.setWallet(request.getWalletType());
