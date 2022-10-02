@@ -115,8 +115,7 @@ public class UserService {
     @Autowired
     private AuthHelper authHelper;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate = new RestTemplate();
 
     public User linkWithGoogle(LinkWithGoogleRequest request) {
         User user = authHelper.getUserFromAuthCredentials();
