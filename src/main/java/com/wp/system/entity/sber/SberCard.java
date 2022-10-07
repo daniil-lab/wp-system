@@ -30,6 +30,16 @@ public class SberCard extends BankCard {
 
     private String type;
 
+    private Boolean hidden = false;
+
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
+
     @JsonIgnore
     @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<SberTransaction> transactions;

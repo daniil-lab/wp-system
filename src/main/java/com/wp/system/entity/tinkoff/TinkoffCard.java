@@ -27,6 +27,8 @@ public class TinkoffCard extends BankCard {
 
     private Long createdMillis;
 
+    private Boolean hidden = false;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="integration_id")
@@ -35,6 +37,14 @@ public class TinkoffCard extends BankCard {
     @JsonIgnore
     @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<TinkoffTransaction> transactions;
+
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
 
     public TinkoffCard() {
         setBankName(BankList.TINKOFF);
