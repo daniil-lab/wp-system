@@ -80,8 +80,8 @@ public class AbstractService {
             AbstractBillDTO dto = new AbstractBillDTO();
 
             dto.setId(UUID.fromString((String) item[0]));
-            dto.setBalance(new BigDecimal((String) item[1]));
-            dto.setHidden(Boolean.parseBoolean((String) item[2]));
+            dto.setBalance((BigDecimal) item[1]);
+            dto.setHidden((Boolean) item[2]);
             dto.setName((String) item[3]);
             dto.setBillType((String) item[4]);
 
