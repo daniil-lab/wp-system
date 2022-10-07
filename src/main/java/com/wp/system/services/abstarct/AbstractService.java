@@ -53,7 +53,7 @@ public class AbstractService {
         TinkoffIntegration tinkoffIntegration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId()).orElse(null);
         SberIntegration sberIntegration = sberIntegrationRepository.getSberIntegrationByUserId(user.getId()).orElse(null);
 
-        String stringQuery = "(SELECT CAST(id as varchar), balance, hidden, name, 'SYSTEM') FROM bill WHERE user_id = :user_id)";
+        String stringQuery = "(SELECT CAST(id as varchar), balance, hidden, name, 'SYSTEM' FROM bill WHERE user_id = :user_id)";
 
         if(tinkoffIntegration != null)
             stringQuery += " union (SELECT CAST(id as varchar), balance, hidden, name, 'TINKOFF' FROM tinkoff_card WHERE integration_id = :tinkoff_integration_id)";
