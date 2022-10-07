@@ -28,7 +28,7 @@ public class AbstractController {
     @Autowired
     private AbstractService abstractService;
 
-    @GetMapping("/all-transactions")
+    @GetMapping("/bills")
     public ResponseEntity<ServiceResponse<List<AbstractBillDTO>>> getBills() {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), abstractService.getBills()), HttpStatus.OK);
     }
