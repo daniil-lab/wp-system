@@ -1,6 +1,7 @@
 package com.wp.system.services.abstarct;
 
 import com.wp.system.dto.AbstractTransactionDTO;
+import com.wp.system.dto.bill.AbstractBillDTO;
 import com.wp.system.dto.category.CategoryDTO;
 import com.wp.system.entity.sber.SberIntegration;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
@@ -24,6 +25,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AbstractService {
@@ -46,12 +48,49 @@ public class AbstractService {
     @Autowired
     private TochkaIntegrationRepository tochkaIntegrationRepository;
 
+    public List<AbstractBillDTO> getBills() {
+        User user = authHelper.getUserFromAuthCredentials();
+        TinkoffIntegration tinkoffIntegration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId()).orElse(null);
+        SberIntegration sberIntegration = sberIntegrationRepository.getSberIntegrationByUserId(user.getId()).orElse(null);
+
+        String stringQuery = "(SELECT CAST(id as varchar), balance, hidden, name, 'SYSTEM') FROM bill WHERE user_id = :user_id)";
+
+        if(tinkoffIntegration != null)
+            stringQuery += " union (SELECT CAST(id as varchar), balance, hidden, name, 'TINKOFF' FROM tinkoff_card WHERE integration_id = :tinkoff_integration_id)";
+
+
+        if(sberIntegration != null)
+            stringQuery += " union (SELECT CAST(id as varchar), balance, hidden, name, 'SBER' FROM sber_card WHERE integration_id = :sber_integration_id)";
+
+        Query query = entityManager.createNativeQuery(
+                stringQuery
+        );
+
+        query.setParameter("user_id", user.getId());
+
+        if(tinkoffIntegration != null)
+            query.setParameter("tinkoff_integration_id", tinkoffIntegration.getId());
+
+        if(sberIntegration != null)
+            query.setParameter("sber_integration_id", sberIntegration.getId());
+
+        List<Object[]> results = query.getResultList();
+
+        return results.stream().map(item -> {
+            AbstractBillDTO dto = new AbstractBillDTO();
+
+            dto.setId(UUID.fromString((String) item[0]));
+            dto.setBalance(new BigDecimal((String) item[1]));
+            dto.setHidden(Boolean.parseBoolean((String) item[2]));
+            dto.setName((String) item[3]);
+            dto.setBillType((String) item[4]);
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
     public PagingResponse<AbstractTransactionDTO> getAllTransactions(Instant startDate, Instant endDate, TransactionType transactionType, int page, int pageSize) {
         User user = authHelper.getUserFromAuthCredentials();
-
-        Optional<TinkoffIntegration> tinkoffIntegration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId());
-        Optional<SberIntegration> sberIntegration = sberIntegrationRepository.getSberIntegrationByUserId(user.getId());
-        Optional<TochkaIntegration> tochkaIntegration = tochkaIntegrationRepository.getTochkaIntegrationByUserId(user.getId());
 
         Query query = null;
 

@@ -1,6 +1,7 @@
 package com.wp.system.controller.abstracted;
 
 import com.wp.system.dto.AbstractTransactionDTO;
+import com.wp.system.dto.bill.AbstractBillDTO;
 import com.wp.system.entity.transaction.Transaction;
 import com.wp.system.response.PagingResponse;
 import com.wp.system.response.ServiceResponse;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.List;
 
 @RestController
 @Tag(name = "Abstract API")
@@ -25,6 +27,11 @@ import java.time.Instant;
 public class AbstractController {
     @Autowired
     private AbstractService abstractService;
+
+    @GetMapping("/all-transactions")
+    public ResponseEntity<ServiceResponse<List<AbstractBillDTO>>> getBills() {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), abstractService.getBills()), HttpStatus.OK);
+    }
 
     @GetMapping("/all-transactions")
     public ResponseEntity<ServiceResponse<PagingResponse<AbstractTransactionDTO>>> getAllTransactions(
