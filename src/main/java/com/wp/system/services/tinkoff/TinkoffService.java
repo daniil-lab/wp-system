@@ -2,6 +2,7 @@ package com.wp.system.services.tinkoff;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wp.system.dto.tinkoff.TinkoffCardDTO;
 import com.wp.system.dto.tinkoff.TinkoffTransactionDTO;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.tinkoff.TinkoffCard;
@@ -13,6 +14,7 @@ import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.tinkoff.TinkoffCardRepository;
 import com.wp.system.repository.tinkoff.TinkoffTransactionRepository;
+import com.wp.system.request.HideCardRequest;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.TinkoffSubmitAuthRequest;
 import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
@@ -163,6 +165,24 @@ public class TinkoffService {
         tinkoffChromeTabs.removeIf(tab -> tab.getExpiredAt().isBefore(Instant.now()));
     }
 
+    public TinkoffCardDTO hideCard(HideCardRequest request) {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        TinkoffIntegration integration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId())
+                .orElseThrow(() -> {
+                    throw new ServiceException("Интеграция не найдена", HttpStatus.NOT_FOUND);
+                });
+
+        TinkoffCard card = tinkoffCardRepository.findByIntegrationIdAndId(integration.getId(), user.getId()).orElseThrow(() -> {
+            throw new ServiceException("Карта не найдена", HttpStatus.NOT_FOUND);
+        });
+
+        card.setHidden(request.getHidden());
+
+        tinkoffCardRepository.save(card);
+
+        return new TinkoffCardDTO(card);
+    }
     public TinkoffAuthChromeTab startTinkoffConnect(TinkoffStartAuthRequest request) {
         User user = authHelper.getUserFromAuthCredentials();
 

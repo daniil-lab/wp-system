@@ -9,6 +9,7 @@ import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
+import com.wp.system.request.HideCardRequest;
 import com.wp.system.request.sber.CreateSberIntegrationRequest;
 import com.wp.system.request.sber.SubmitCreateSberIntegrationRequest;
 import com.wp.system.request.sber.UpdateSberTransactionRequest;
@@ -43,6 +44,18 @@ import java.util.stream.Collectors;
 public class SberController {
     @Autowired
     private SberService sberService;
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PreAuthorize("hasAnyAuthority('SBER_UPDATE', 'SBER_FULL')")
+    @PatchMapping(value = "/card/hide")
+    @Operation(summary = "Сркрытие карты")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<SberCardDTO>> hideCard(
+            @RequestBody
+            HideCardRequest request
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), sberService.hideCard(request), ""), HttpStatus.OK);
+    }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PreAuthorize("hasAnyAuthority('SBER_UPDATE', 'SBER_FULL')")

@@ -16,4 +16,6 @@ public interface TinkoffCardRepository extends JpaRepository<TinkoffCard, UUID> 
     Optional<TinkoffCard> getCardByCardId(String id, UUID userId);
 
     List<TinkoffCard> findByIntegrationUserId(UUID id);
+
+    Optional<TinkoffCard> findByIntegrationIdAndId(UUID integrationId, UUID id);
 }

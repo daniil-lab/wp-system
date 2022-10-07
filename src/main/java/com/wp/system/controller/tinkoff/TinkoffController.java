@@ -5,6 +5,7 @@ import com.wp.system.entity.tinkoff.TinkoffCard;
 import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.tinkoff.TinkoffSyncStage;
 import com.wp.system.entity.tinkoff.TinkoffTransaction;
+import com.wp.system.request.HideCardRequest;
 import com.wp.system.request.tinkoff.TinkoffStartAuthRequest;
 import com.wp.system.request.tinkoff.UpdateTinkoffTransactionRequest;
 import com.wp.system.response.PagingResponse;
@@ -63,6 +64,17 @@ public class TinkoffController {
                 TinkoffStartAuthRequest request
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), new TinkoffAuthRequestDTO(tinkoffService.startTinkoffConnect(request)), ""), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('TINKOFF_UPDATE', 'TINKOFF_FULL')")
+    @PatchMapping(value = "/card/hide")
+    @Operation(summary = "Скрытие карты")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<ServiceResponse<TinkoffCardDTO>> hideCard(
+            @RequestBody
+            HideCardRequest request
+    ) {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), tinkoffService.hideCard(request), ""), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('TINKOFF_UPDATE', 'TINKOFF_FULL')")

@@ -16,5 +16,7 @@ public interface SberCardRepository extends JpaRepository<SberCard, UUID> {
 
     List<SberCard> findByIntegrationId(UUID integrationId);
 
+    Optional<SberCard> findByIntegrationIdAndId(UUID integrationId, UUID id);
+
     List<SberCard> findByIntegrationUserId(UUID userId);
 }

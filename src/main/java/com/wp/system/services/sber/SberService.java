@@ -1,16 +1,21 @@
 package com.wp.system.services.sber;
 
+import com.wp.system.dto.sber.SberCardDTO;
 import com.wp.system.dto.sber.SberTransactionDTO;
+import com.wp.system.dto.tinkoff.TinkoffCardDTO;
 import com.wp.system.entity.category.Category;
 import com.wp.system.entity.sber.SberCard;
 import com.wp.system.entity.sber.SberIntegration;
 import com.wp.system.entity.sber.SberTransaction;
+import com.wp.system.entity.tinkoff.TinkoffCard;
+import com.wp.system.entity.tinkoff.TinkoffIntegration;
 import com.wp.system.entity.user.User;
 import com.wp.system.exception.ServiceException;
 import com.wp.system.repository.category.CategoryRepository;
 import com.wp.system.repository.sber.SberCardRepository;
 import com.wp.system.repository.sber.SberIntegrationRepository;
 import com.wp.system.repository.sber.SberTransactionRepository;
+import com.wp.system.request.HideCardRequest;
 import com.wp.system.request.sber.CreateSberIntegrationRequest;
 import com.wp.system.request.sber.SubmitCreateSberIntegrationRequest;
 import com.wp.system.request.sber.UpdateSberTransactionRequest;
@@ -57,6 +62,25 @@ public class SberService {
     private AuthHelper authHelper;
 
     private List<SberRegister> registerList = new ArrayList<>();
+
+    public SberCardDTO hideCard(HideCardRequest request) {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        SberIntegration integration = sberIntegrationRepository.getSberIntegrationByUserId(user.getId())
+                .orElseThrow(() -> {
+                    throw new ServiceException("Интеграция не найдена", HttpStatus.NOT_FOUND);
+                });
+
+        SberCard card = sberCardRepository.findByIntegrationIdAndId(integration.getId(), user.getId()).orElseThrow(() -> {
+            throw new ServiceException("Карта не найдена", HttpStatus.NOT_FOUND);
+        });
+
+        card.setHidden(request.getHidden());
+
+        sberCardRepository.save(card);
+
+        return new SberCardDTO(card);
+    }
 
     public SberTransaction updateSberTransaction(UpdateSberTransactionRequest request, UUID transactionId) {
         SberTransaction transaction = sberTransactionRepository.findById(transactionId).orElseThrow(() -> {
