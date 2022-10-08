@@ -102,43 +102,47 @@ public class SberRegister {
     }
 
     public void submitRegister(String code) {
-        if(!state.equals(SberRegisterState.WAIT_SUBMIT))
-            throw new ServiceException("Try recreate sber register instance", HttpStatus.INTERNAL_SERVER_ERROR);
+        try {
+            if(!state.equals(SberRegisterState.WAIT_SUBMIT))
+                throw new ServiceException("Try recreate sber register instance", HttpStatus.INTERNAL_SERVER_ERROR);
 
-        state = SberRegisterState.SUBMIT;
+            state = SberRegisterState.SUBMIT;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Set-Cookie", jSession);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.set("Set-Cookie", jSession);
 
-        MultiValueMap<String, String> confirmRequestBody = new LinkedMultiValueMap<String, String>();
-        confirmRequestBody.add("operation", "confirm");
-        confirmRequestBody.add("confirmData", code);
-        confirmRequestBody.add("smsPassword", code);
-        confirmRequestBody.add("mGUID", mGUID);
-        confirmRequestBody.add("appType", "android");
-        confirmRequestBody.add("version", "9.20");
-        confirmRequestBody.add("appVersion", "10.2.0");
-        confirmRequestBody.add("deviceName", "HUAWEI_ANE-LX1");
-        confirmRequestBody.add("devID", "607d725604d1f032e50bb3c0622e791d3f400000");
-        confirmRequestBody.add("devIdOld", "607d725604d1f032e50bb3c0622e791d3f400000");
+            MultiValueMap<String, String> confirmRequestBody = new LinkedMultiValueMap<String, String>();
+            confirmRequestBody.add("operation", "confirm");
+            confirmRequestBody.add("confirmData", code);
+            confirmRequestBody.add("smsPassword", code);
+            confirmRequestBody.add("mGUID", mGUID);
+            confirmRequestBody.add("appType", "android");
+            confirmRequestBody.add("version", "9.20");
+            confirmRequestBody.add("appVersion", "10.2.0");
+            confirmRequestBody.add("deviceName", "HUAWEI_ANE-LX1");
+            confirmRequestBody.add("devID", "607d725604d1f032e50bb3c0622e791d3f400000");
+            confirmRequestBody.add("devIdOld", "607d725604d1f032e50bb3c0622e791d3f400000");
 
-        confirmRequestBody.add("mobileSdkData", "{\\\"TIMESTAMP\\\":\\\"2019-09-13T07:23:14Z\\\",\\\"HardwareID\\\":\\\"-1\\\",\\\"SIM_ID\\\":\\\"-1\\\",\\\"PhoneNumber\\\":\\\"-1\\\",\\\"GeoLocationInfo\\\":[{\\\"Timestamp\\\":\\\"0\\\",\\\"Status\\\":\\\"1\\\"}],\\\"DeviceModel\\\":\\\"ANE-LX1\\\",\\\"MultitaskingSupported\\\":true,\\\"DeviceName\\\":\\\"marky\\\",\\\"DeviceSystemName\\\":\\\"Android\\\",\\\"DeviceSystemVersion\\\":\\\"28\\\",\\\"Languages\\\":\\\"ru\\\",\\\"WiFiMacAddress\\\":\\\"02:00:00:00:00:00\\\",\\\"WiFiNetworksData\\\":{\\\"BBSID\\\":\\\"02:00:00:00:00:00\\\",\\\"SignalStrength\\\":\\\"-47\\\",\\\"Channel\\\":\\\"null\\\"},\\\"CellTowerId\\\":\\\"-1\\\",\\\"LocationAreaCode\\\":\\\"-1\\\",\\\"ScreenSize\\\":\\\"1080x2060\\\",\\\"RSA_ApplicationKey\\\":\\\"2C501591EA5BF79F1C0ABA8B628C2571\\\",\\\"MCC\\\":\\\"286\\\",\\\"MNC\\\":\\\"02\\\",\\\"OS_ID\\\":\\\"1f32651b72df5515\\\",\\\"SDK_VERSION\\\":\\\"3.10.0\\\",\\\"Compromised\\\":0,\\\"Emulator\\\":0}");
-        confirmRequestBody.add("mobileSDKKAV", "{\\\"osVersion\\\":0,\\\"KavSdkId\\\":\\\"\\\",\\\"KavSdkVersion\\\":\\\"\\\",\\\"KavSdkVirusDBVersion\\\":\\\"SdkVirusDbInfo(year=0, month=0, day=0, hour=0, minute=0, second=0, knownThreatsCount=0, records=0, size=0)\\\",\\\"KavSdkVirusDBStatus\\\":\\\"\\\",\\\"KavSdkVirusDBStatusDate\\\":\\\"\\\",\\\"KavSdkRoot\\\":false,\\\"LowPasswordQuality\\\":false,\\\"NonMarketAppsAllowed\\\":false,\\\"UsbDebugOn\\\":false,\\\"ScanStatus\\\":\\\"NONE\\\"}");
+            confirmRequestBody.add("mobileSdkData", "{\\\"TIMESTAMP\\\":\\\"2019-09-13T07:23:14Z\\\",\\\"HardwareID\\\":\\\"-1\\\",\\\"SIM_ID\\\":\\\"-1\\\",\\\"PhoneNumber\\\":\\\"-1\\\",\\\"GeoLocationInfo\\\":[{\\\"Timestamp\\\":\\\"0\\\",\\\"Status\\\":\\\"1\\\"}],\\\"DeviceModel\\\":\\\"ANE-LX1\\\",\\\"MultitaskingSupported\\\":true,\\\"DeviceName\\\":\\\"marky\\\",\\\"DeviceSystemName\\\":\\\"Android\\\",\\\"DeviceSystemVersion\\\":\\\"28\\\",\\\"Languages\\\":\\\"ru\\\",\\\"WiFiMacAddress\\\":\\\"02:00:00:00:00:00\\\",\\\"WiFiNetworksData\\\":{\\\"BBSID\\\":\\\"02:00:00:00:00:00\\\",\\\"SignalStrength\\\":\\\"-47\\\",\\\"Channel\\\":\\\"null\\\"},\\\"CellTowerId\\\":\\\"-1\\\",\\\"LocationAreaCode\\\":\\\"-1\\\",\\\"ScreenSize\\\":\\\"1080x2060\\\",\\\"RSA_ApplicationKey\\\":\\\"2C501591EA5BF79F1C0ABA8B628C2571\\\",\\\"MCC\\\":\\\"286\\\",\\\"MNC\\\":\\\"02\\\",\\\"OS_ID\\\":\\\"1f32651b72df5515\\\",\\\"SDK_VERSION\\\":\\\"3.10.0\\\",\\\"Compromised\\\":0,\\\"Emulator\\\":0}");
+            confirmRequestBody.add("mobileSDKKAV", "{\\\"osVersion\\\":0,\\\"KavSdkId\\\":\\\"\\\",\\\"KavSdkVersion\\\":\\\"\\\",\\\"KavSdkVirusDBVersion\\\":\\\"SdkVirusDbInfo(year=0, month=0, day=0, hour=0, minute=0, second=0, knownThreatsCount=0, records=0, size=0)\\\",\\\"KavSdkVirusDBStatus\\\":\\\"\\\",\\\"KavSdkVirusDBStatusDate\\\":\\\"\\\",\\\"KavSdkRoot\\\":false,\\\"LowPasswordQuality\\\":false,\\\"NonMarketAppsAllowed\\\":false,\\\"UsbDebugOn\\\":false,\\\"ScanStatus\\\":\\\"NONE\\\"}");
 
-        HttpEntity<MultiValueMap<String, String>> confirmRequest = new HttpEntity<MultiValueMap<String, String>>(confirmRequestBody, headers);
+            HttpEntity<MultiValueMap<String, String>> confirmRequest = new HttpEntity<MultiValueMap<String, String>>(confirmRequestBody, headers);
 
-        ResponseEntity<String> confirmResponse = restTemplate.postForEntity( "https://online.sberbank.ru:4477/CSAMAPI/registerApp.do", confirmRequest , String.class);
+            ResponseEntity<String> confirmResponse = restTemplate.postForEntity( "https://online.sberbank.ru:4477/CSAMAPI/registerApp.do", confirmRequest , String.class);
 
-        System.out.println(confirmResponse.getBody());
+            System.out.println(confirmResponse.getBody());
 
-        Integer responseCode = SberUtils.getCodeFromResponse(confirmResponse.getBody());
+            Integer responseCode = SberUtils.getCodeFromResponse(confirmResponse.getBody());
 
-        if(responseCode == null || responseCode != 0) {
-            throw new ServiceException("Invalid response code from SBER", HttpStatus.INTERNAL_SERVER_ERROR);
+            if(responseCode == null || responseCode != 0) {
+                throw new ServiceException("Invalid response code from SBER", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            state = SberRegisterState.WAIT_CREATE_PIN;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        state = SberRegisterState.WAIT_CREATE_PIN;
     }
 
     public void createPin() {
