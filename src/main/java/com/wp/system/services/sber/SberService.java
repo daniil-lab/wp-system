@@ -209,7 +209,7 @@ public class SberService {
 
         SberSync sberSync = new SberSync(user.getId(), sberCardRepository, sberTransactionRepository, sberIntegrationRepository);
 
-        sberSync.sync();
+        new Thread(sberSync::sync).start();
 
         return true;
     }
