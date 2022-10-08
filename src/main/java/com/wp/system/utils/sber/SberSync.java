@@ -201,48 +201,54 @@ public class SberSync implements BankSync  {
     }
 
     private String syncCards() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Cookie", sberIntegration.getSession());
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.set("Cookie", sberIntegration.getSession());
 
-        ResponseEntity<String> getCardResponse = restTemplate.exchange( "https://" + sberIntegration.getHost() + ":4477/mobile9/private/products/list.do?showProductType=cards,accounts,imaccounts,loans", HttpMethod.POST, new HttpEntity<>(headers) , String.class);
+            ResponseEntity<String> getCardResponse = restTemplate.exchange( "https://" + sberIntegration.getHost() + ":4477/mobile9/private/products/list.do?showProductType=cards,accounts,imaccounts,loans", HttpMethod.POST, new HttpEntity<>(headers) , String.class);
 
-        Integer responseCode = SberUtils.getCodeFromResponse(getCardResponse.getBody());
+            Integer responseCode = SberUtils.getCodeFromResponse(getCardResponse.getBody());
 
-        if(responseCode == null || responseCode != 0)
-            throw new ServiceException("Error on getting SBER card", HttpStatus.BAD_REQUEST);
+            if(responseCode == null || responseCode != 0)
+                throw new ServiceException("Error on getting SBER card", HttpStatus.BAD_REQUEST);
 
-        NodeList cardList = (NodeList) SberUtils.getListDataFromResponse(getCardResponse.getBody(), "card");
+            NodeList cardList = (NodeList) SberUtils.getListDataFromResponse(getCardResponse.getBody(), "card");
 
-        for(int i = 0; i < cardList.getLength(); i++) {
-            Element el = (Element) cardList.item(i);
+            for(int i = 0; i < cardList.getLength(); i++) {
+                Element el = (Element) cardList.item(i);
 
-            String cardId = el.getElementsByTagName("id").item(0).getTextContent();
+                String cardId = el.getElementsByTagName("id").item(0).getTextContent();
 
-            Optional<SberCard> foundCard = sberCardRepository.findByCardIdAndIntegrationId(cardId, sberIntegration.getId());
+                Optional<SberCard> foundCard = sberCardRepository.findByCardIdAndIntegrationId(cardId, sberIntegration.getId());
 
-            SberCard card = null;
+                SberCard card = null;
 
-            card = foundCard.orElseGet(SberCard::new);
+                card = foundCard.orElseGet(SberCard::new);
 
-            Element balanceEl = (Element) el.getElementsByTagName("availableLimit").item(0);
-            Element balanceCurrencyEl = (Element) balanceEl.getElementsByTagName("currency").item(0);
+                Element balanceEl = (Element) el.getElementsByTagName("availableLimit").item(0);
+                Element balanceCurrencyEl = (Element) balanceEl.getElementsByTagName("currency").item(0);
 
-            card.setName(el.getElementsByTagName("name").item(0).getTextContent());
-            card.setDescription(el.getElementsByTagName("description").item(0).getTextContent());
-            card.setCardNumber(el.getElementsByTagName("number").item(0).getTextContent());
-            card.setCardId(cardId);
-            card.setExpireDate(el.getElementsByTagName("expireDate").item(0).getTextContent());
-            card.setCardAccount(el.getElementsByTagName("cardAccount").item(0).getTextContent());
-            card.setStatus(el.getElementsByTagName("state").item(0).getTextContent());
-            card.setCurrency(WalletType.valueOf(balanceCurrencyEl.getElementsByTagName("code").item(0).getTextContent()));
-            card.setBalance(new BigDecimal(balanceEl.getElementsByTagName("amount").item(0).getTextContent()));
-            card.setIntegration(sberIntegration);
+                card.setName(el.getElementsByTagName("name").item(0).getTextContent());
+                card.setDescription(el.getElementsByTagName("description").item(0).getTextContent());
+                card.setCardNumber(el.getElementsByTagName("number").item(0).getTextContent());
+                card.setCardId(cardId);
+                card.setExpireDate(el.getElementsByTagName("expireDate").item(0).getTextContent());
+                card.setCardAccount(el.getElementsByTagName("cardAccount").item(0).getTextContent());
+                card.setStatus(el.getElementsByTagName("state").item(0).getTextContent());
+                card.setCurrency(WalletType.valueOf(balanceCurrencyEl.getElementsByTagName("code").item(0).getTextContent()));
+                card.setBalance(new BigDecimal(balanceEl.getElementsByTagName("amount").item(0).getTextContent()));
+                card.setIntegration(sberIntegration);
 
-            cards.add(card);
+                cards.add(card);
+            }
+
+
+            return getCardResponse.getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
         }
-
-
-        return getCardResponse.getBody();
     }
 }
