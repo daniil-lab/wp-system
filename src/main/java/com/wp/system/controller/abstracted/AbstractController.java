@@ -44,12 +44,15 @@ public class AbstractController {
             @RequestParam
                     int pageSize,
             @RequestParam(required = false)
-                TransactionType transactionType
+                TransactionType transactionType,
+            @RequestParam(required = false)
+                String billType
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), abstractService.getAllTransactions(
                 startDate,
                 endDate,
                 transactionType,
+                billType,
                 page,
                 pageSize
         )), HttpStatus.OK);

@@ -299,6 +299,7 @@ public class TinkoffService {
             phone = request.getPhone();
             startExportDate = request.getExportStartDate();
         }
+
         WebDriver driver = WebDriverCreator.create();
 
         driver.get("https://www.tinkoff.ru/login/");
