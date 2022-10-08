@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @Tag(name = "Abstract API")
@@ -46,13 +47,16 @@ public class AbstractController {
             @RequestParam(required = false)
                 TransactionType transactionType,
             @RequestParam(required = false)
-                String billType
+                String billType,
+            @RequestParam(required = false)
+                UUID billId
     ) {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), abstractService.getAllTransactions(
                 startDate,
                 endDate,
                 transactionType,
                 billType,
+                billId,
                 page,
                 pageSize
         )), HttpStatus.OK);
