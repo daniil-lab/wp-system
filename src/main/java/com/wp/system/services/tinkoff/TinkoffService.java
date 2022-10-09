@@ -173,7 +173,7 @@ public class TinkoffService {
                     throw new ServiceException("Интеграция не найдена", HttpStatus.NOT_FOUND);
                 });
 
-        TinkoffCard card = tinkoffCardRepository.findByIntegrationIdAndId(integration.getId(), user.getId()).orElseThrow(() -> {
+        TinkoffCard card = tinkoffCardRepository.findByIntegrationIdAndId(integration.getId(), request.getId()).orElseThrow(() -> {
             throw new ServiceException("Карта не найдена", HttpStatus.NOT_FOUND);
         });
 

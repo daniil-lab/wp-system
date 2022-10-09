@@ -71,7 +71,7 @@ public class SberService {
                     throw new ServiceException("Интеграция не найдена", HttpStatus.NOT_FOUND);
                 });
 
-        SberCard card = sberCardRepository.findByIntegrationIdAndId(integration.getId(), user.getId()).orElseThrow(() -> {
+        SberCard card = sberCardRepository.findByIntegrationIdAndId(integration.getId(), request.getId()).orElseThrow(() -> {
             throw new ServiceException("Карта не найдена", HttpStatus.NOT_FOUND);
         });
 
