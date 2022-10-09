@@ -131,6 +131,8 @@ public class AbstractService {
             }
         }
 
+        System.out.println(queryString);
+
         query = entityManager.createNativeQuery(queryString);
         // TOCHKA =                 union
         //                (select CAST(id as varchar), CAST(category_id as varchar), amount as sum, transaction_type, date, currency, description, 'TOCHKA' as transactionType, (SELECT tkc.card_number FROM tochka_card as tkc WHERE tkc.id = tochka_transaction.card_id) as billName from tochka_transaction WHERE date BETWEEN :startDate AND :endDate AND card_id in (select sc.id from sber_card as sc where sc.integration_id = (select si.id from sber_integration as si where si.user_id = :userId)))
