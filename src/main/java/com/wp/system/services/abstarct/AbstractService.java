@@ -137,7 +137,7 @@ public class AbstractService {
         if(queryString.contains("userId"))
             query.setParameter("userId", user.getId());
 
-        if(billId != null)
+        if(queryString.contains("cardId"))
             query.setParameter("cardId", billId);
 
         query.setParameter("startDate", Timestamp.from(startDate));
