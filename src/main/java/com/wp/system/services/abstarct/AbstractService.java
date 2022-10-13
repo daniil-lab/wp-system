@@ -89,6 +89,8 @@ public class AbstractService {
         }).collect(Collectors.toList());
     }
 
+    
+
     public PagingResponse<AbstractTransactionDTO> getAllTransactions(Instant startDate, Instant endDate, TransactionType transactionType, String billType, UUID billId, int page, int pageSize) {
         User user = authHelper.getUserFromAuthCredentials();
 
