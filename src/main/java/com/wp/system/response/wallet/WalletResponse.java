@@ -6,11 +6,22 @@ public class WalletResponse {
 
     private String walletDisplayName;
 
+    private String symbol;
+
     public WalletResponse() {};
 
-    public WalletResponse(String walletSystemName, String walletDisplayName) {
+    public WalletResponse(String walletSystemName, String walletDisplayName, String symbol) {
         this.walletSystemName = walletSystemName;
         this.walletDisplayName = walletDisplayName;
+        this.symbol = symbol;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public String getWalletSystemName() {

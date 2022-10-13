@@ -31,7 +31,7 @@ public class WalletController extends DocumentedRestController {
     @Operation(summary = "Получение всех возможных валют в системе")
     @GetMapping("/")
     public ResponseEntity<ServiceResponse<List<WalletResponse>>> getWalletTypes() {
-        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), Arrays.stream(WalletType.values()).map(walletType -> new WalletResponse(walletType.name(), walletType.getWalletName())).collect(Collectors.toList())), HttpStatus.OK);
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), Arrays.stream(WalletType.values()).map(walletType -> new WalletResponse(walletType.name(), walletType.getWalletName(), walletType.getSymbol())).collect(Collectors.toList())), HttpStatus.OK);
     }
 
     @Operation(summary = "Получение всех курсов валют по отношению к доллару")
