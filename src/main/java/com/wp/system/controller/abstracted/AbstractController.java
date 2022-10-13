@@ -1,5 +1,6 @@
 package com.wp.system.controller.abstracted;
 
+import com.wp.system.dto.AbstractIntegrationDTO;
 import com.wp.system.dto.AbstractTransactionDTO;
 import com.wp.system.dto.bill.AbstractBillDTO;
 import com.wp.system.entity.transaction.Transaction;
@@ -32,6 +33,11 @@ public class AbstractController {
     @GetMapping("/bills")
     public ResponseEntity<ServiceResponse<List<AbstractBillDTO>>> getBills() {
         return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), abstractService.getBills()), HttpStatus.OK);
+    }
+
+    @GetMapping("/integrations")
+    public ResponseEntity<ServiceResponse<List<AbstractIntegrationDTO>>> getIntegrations() {
+        return new ResponseEntity<>(new ServiceResponse<>(HttpStatus.OK.value(), abstractService.getIntegrations()), HttpStatus.OK);
     }
 
     @GetMapping("/all-transactions")

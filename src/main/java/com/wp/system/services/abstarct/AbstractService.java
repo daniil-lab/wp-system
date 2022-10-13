@@ -1,5 +1,6 @@
 package com.wp.system.services.abstarct;
 
+import com.wp.system.dto.AbstractIntegrationDTO;
 import com.wp.system.dto.AbstractTransactionDTO;
 import com.wp.system.dto.bill.AbstractBillDTO;
 import com.wp.system.dto.category.CategoryDTO;
@@ -48,6 +49,17 @@ public class AbstractService {
     @Autowired
     private TochkaIntegrationRepository tochkaIntegrationRepository;
 
+    public List<AbstractIntegrationDTO> getIntegrations() {
+        User user = authHelper.getUserFromAuthCredentials();
+
+        List<AbstractIntegrationDTO> integrations = new ArrayList<>();
+
+        tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId()).ifPresent((i) -> integrations.add(new AbstractIntegrationDTO(i)));
+        sberIntegrationRepository.getSberIntegrationByUserId(user.getId()).ifPresent((i) -> integrations.add(new AbstractIntegrationDTO(i)));
+
+        return integrations;
+    }
+
     public List<AbstractBillDTO> getBills() {
         User user = authHelper.getUserFromAuthCredentials();
         TinkoffIntegration tinkoffIntegration = tinkoffIntegrationRepository.getTinkoffIntegrationByUserId(user.getId()).orElse(null);
@@ -89,7 +101,7 @@ public class AbstractService {
         }).collect(Collectors.toList());
     }
 
-    
+
 
     public PagingResponse<AbstractTransactionDTO> getAllTransactions(Instant startDate, Instant endDate, TransactionType transactionType, String billType, UUID billId, int page, int pageSize) {
         User user = authHelper.getUserFromAuthCredentials();
