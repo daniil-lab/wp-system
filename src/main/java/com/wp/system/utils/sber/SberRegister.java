@@ -119,7 +119,7 @@ public class SberRegister {
             confirmRequestBody.add("mGUID", mGUID);
             confirmRequestBody.add("appType", "android");
             confirmRequestBody.add("version", "9.20");
-            confirmRequestBody.add("appVersion", "10.2.0");
+            confirmRequestBody.add("appVersion", "12.14.0");
             confirmRequestBody.add("deviceName", "HUAWEI_ANE-LX1");
             confirmRequestBody.add("devID", "607d725604d1f032e50bb3c0622e791d3f400000");
             confirmRequestBody.add("devIdOld", "607d725604d1f032e50bb3c0622e791d3f400000");
