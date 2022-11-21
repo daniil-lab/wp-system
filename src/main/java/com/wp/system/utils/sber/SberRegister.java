@@ -61,7 +61,7 @@ public class SberRegister {
             map.add("login", phone);
             map.add("appType", "android");
             map.add("version", "9.20");
-            map.add("appVersion", "10.2.0");
+            map.add("appVersion", "14.5.0");
             map.add("deviceName", "HUAWEI_ANE-LX1");
             map.add("devID", "607d725604d1f032e50bb3c0622e791d3f400000");
             map.add("devIdOld", "607d725604d1f032e50bb3c0622e791d3f400000");
