@@ -73,8 +73,6 @@ public class SberRegister {
 
             ResponseEntity<String> response = restTemplate.postForEntity( "https://online.sberbank.ru:4477/CSAMAPI/registerApp.do", request , String.class);
 
-            System.out.println(response.getBody());
-
             Integer responseCode = SberUtils.getCodeFromResponse(response.getBody());
 
             if(responseCode == null || responseCode != 0) {
