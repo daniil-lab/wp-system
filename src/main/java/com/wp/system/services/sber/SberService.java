@@ -186,6 +186,8 @@ public class SberService {
         integration.setSession(sberRegister.getjSession());
         integration.setStartDate(sberRegister.getStartExportDate());
 
+        System.out.println(integration.getHost());
+
         sberIntegrationRepository.save(integration);
 
         return integration;
