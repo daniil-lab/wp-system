@@ -61,7 +61,7 @@ public class SberRegister {
             map.add("login", phone);
             map.add("appType", "android");
             map.add("version", "9.20");
-            map.add("appVersion", "11.0.0");
+            map.add("appVersion", "12.0.0");
             map.add("deviceName", "HUAWEI_ANE-LX1");
             map.add("devID", "607d725604d1f032e50bb3c0622e791d3f400000");
             map.add("devIdOld", "607d725604d1f032e50bb3c0622e791d3f400000");
@@ -117,7 +117,7 @@ public class SberRegister {
             confirmRequestBody.add("mGUID", mGUID);
             confirmRequestBody.add("appType", "android");
             confirmRequestBody.add("version", "9.20");
-            confirmRequestBody.add("appVersion", "11.0.0");
+            confirmRequestBody.add("appVersion", "12.0.0");
             confirmRequestBody.add("deviceName", "HUAWEI_ANE-LX1");
             confirmRequestBody.add("devID", "607d725604d1f032e50bb3c0622e791d3f400000");
             confirmRequestBody.add("devIdOld", "607d725604d1f032e50bb3c0622e791d3f400000");
@@ -159,7 +159,7 @@ public class SberRegister {
         createPinRequestBody.add("mGUID", mGUID);
         createPinRequestBody.add("appType", "android");
         createPinRequestBody.add("version", "9.20");
-        createPinRequestBody.add("appVersion", "11.0.0");
+        createPinRequestBody.add("appVersion", "12.0.0");
         createPinRequestBody.add("deviceName", "HUAWEI_ANE-LX1");
         createPinRequestBody.add("devID", "607d725604d1f032e50bb3c0622e791d3f400000");
         createPinRequestBody.add("devIdOld", "607d725604d1f032e50bb3c0622e791d3f400000");
