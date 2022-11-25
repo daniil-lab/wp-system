@@ -106,7 +106,7 @@ public class SberSync implements BankSync  {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Cookie", sberIntegration.getSession());
 
-        ResponseEntity<String> getTransactionsResponse = restTemplate.exchange("https://" + sberIntegration.getHost() +":4477/mobile9/private/payments/list.do?" +
+        ResponseEntity<String> getTransactionsResponse = restTemplate.exchange("https://" + sberIntegration.getHost() +"/mobile9/private/payments/list.do?" +
                 "from=" + SberDateConverter.getStringByInstant(sberIntegration.getStartDate()) +
                 "&to=" + SberDateConverter.getStringByInstant(Instant.now()) +
                 "&usedResource=card:" + cardId +
