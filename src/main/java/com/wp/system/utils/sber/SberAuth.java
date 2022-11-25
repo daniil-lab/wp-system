@@ -47,7 +47,7 @@ public class SberAuth {
         preAuthRequestBody.add("mGUID", sberIntegration.getmGUID());
         preAuthRequestBody.add("appType", "android");
         preAuthRequestBody.add("version", "9.20");
-        preAuthRequestBody.add("appVersion", "12.0.0");
+        preAuthRequestBody.add("appVersion", "12.15.0");
         preAuthRequestBody.add("osVersion", "28.0");
         preAuthRequestBody.add("isLightScheme", "false");
         preAuthRequestBody.add("isSafe", "true");
@@ -97,7 +97,7 @@ public class SberAuth {
         submitAuthRequestBody.add("token", sberIntegration.getToken());
         submitAuthRequestBody.add("appName", "��������");
         submitAuthRequestBody.add("appBuildOSType", "android");
-        submitAuthRequestBody.add("appVersion", "12.0.0");
+        submitAuthRequestBody.add("appVersion", "12.15.0");
         submitAuthRequestBody.add("appBuildType", "RELEASE");
         submitAuthRequestBody.add("appFormat", "STANDALONE");
         submitAuthRequestBody.add("deviceName", "HUAWEI_ANE-LX1");
