@@ -107,7 +107,7 @@ public class SberAuth {
 
         HttpEntity<MultiValueMap<String, String>> submitAuthRequest = new HttpEntity<MultiValueMap<String, String>>(submitAuthRequestBody, headers);
 
-        ResponseEntity<String> submitAuthResponse = restTemplate.postForEntity( "https://" + sberIntegration.getHost() + "/mobile9/postCSALogin.do", submitAuthRequest , String.class);
+        ResponseEntity<String> submitAuthResponse = restTemplate.postForEntity( "https://online.sberbank.ru:4477/mobile9/postCSALogin.do", submitAuthRequest , String.class);
 
         System.out.println(submitAuthResponse.getBody());
 
