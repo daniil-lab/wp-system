@@ -193,6 +193,8 @@ public class SberSync implements BankSync  {
                         pageOffset += 50;
                     }
                 }
+
+                System.out.println("TRANSACTIONS");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,7 +208,7 @@ public class SberSync implements BankSync  {
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             headers.set("Cookie", sberIntegration.getSession());
 
-            ResponseEntity<String> getCardResponse = restTemplate.exchange( "https://" + sberIntegration.getHost() + ":4477/mobile9/private/products/list.do?showProductType=cards,accounts,imaccounts,loans", HttpMethod.POST, new HttpEntity<>(headers) , String.class);
+            ResponseEntity<String> getCardResponse = restTemplate.exchange( "https://" + sberIntegration.getHost() + "/mobile9/private/products/list.do?showProductType=cards,accounts,imaccounts,loans", HttpMethod.POST, new HttpEntity<>(headers) , String.class);
 
             Integer responseCode = SberUtils.getCodeFromResponse(getCardResponse.getBody());
 
@@ -243,6 +245,7 @@ public class SberSync implements BankSync  {
                 cards.add(card);
             }
 
+            System.out.println("CARDS");
 
             return getCardResponse.getBody();
         } catch (Exception e) {
