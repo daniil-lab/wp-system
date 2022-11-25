@@ -173,8 +173,6 @@ public class SberRegister {
 
         ResponseEntity<String> createPinResponse = restTemplate.postForEntity( "https://online.sberbank.ru:4477/CSAMAPI/registerApp.do", createPinRequest , String.class);
 
-        System.out.println(createPinResponse.getBody());
-
         Integer responseCode = SberUtils.getCodeFromResponse(createPinResponse.getBody());
 
         if(responseCode == null || responseCode != 0) {
